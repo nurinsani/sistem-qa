@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('param_ketentuan', function (Blueprint $table) {
-            $table->id();
-            $table->string('id_ketentuan');
+            $table->string('id_ketentuan')->primary();
             $table->string('id_param_profil');
             $table->string('nomer_ketentuan');
-            $table->string('deskripsi_ketentuan');
-            $table->string('point_ketentuan');
-            $table->string('isi_ketentuan');
-            $table->string('halaman');
+            $table->text('deskripsi_ketentuan');
+            $table->text('point_ketentuan');
+            $table->text('isi_ketentuan');
+            $table->text('halaman');
             $table->timestamps();
         });
     }

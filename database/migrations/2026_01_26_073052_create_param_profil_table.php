@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('param_profil', function (Blueprint $table) {
-            $table->id();
-            $table->string('id_param');
-            $table->string('deskripsi');
+            $table->string('id_param')->primary();
+            $table->text('deskripsi',255);
             $table->string('level');
             $table->integer('kategori_param');
             $table->timestamps();

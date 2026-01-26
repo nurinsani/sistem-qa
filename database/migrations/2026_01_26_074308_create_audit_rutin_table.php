@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('audit_rutin', function (Blueprint $table) {
-            $table->id();
-            $table->string('id_audit');
+            $table->string('id_audit')->primary();
             $table->string('id_sampling');
-            $table->string('cif');
+            $table->string('cif',10);
             $table->date('tanggal');
             $table->string('jenis_audit');
             $table->string('user_id');

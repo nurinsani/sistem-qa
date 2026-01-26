@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rencana_audit', function (Blueprint $table) {
-            $table->id();
-            $table->string('unit');
+            $table->id()->primary();
+            $table->string('unit',6);
             $table->date('tanggal_awal');
             $table->date('tanggal_akhir');
             $table->integer('jumlah_sampling');

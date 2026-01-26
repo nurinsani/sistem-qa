@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_sampling', function (Blueprint $table) {
-            $table->id();
-            $table->integer('id_sampling');
-            $table->string('unit');
-            $table->string('cif');
+            $table->integer('id_sampling')->primary();
+            $table->string('unit',6);
+            $table->string('cif',10);
             $table->integer('id_ref_sampling');
-            $table->string('nama');
+            $table->string('nama',100);
             $table->string('kode_kel');
-            $table->string('cao');
+            $table->string('cao',6);
             $table->string('kategori_audit');
             $table->string('user_id');
             $table->timestamps();            

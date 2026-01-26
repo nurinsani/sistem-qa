@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dokumen_pendukung', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->string('id_audit_rutin_detail');
+            $table->id();
+            $table->string('id_audit_detail');
             $table->string('status');
-            $table->text('deskripsi',255);
+            $table->text('deskripsi');
             $table->timestamps();
         });
     }

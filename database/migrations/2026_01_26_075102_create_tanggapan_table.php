@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tanggapan', function (Blueprint $table) {
-            $table->string('id_audit')->primary();
-            $table->text('tanggapan_ao',255);
-            $table->text('tanggapan_mm',255);
-            $table->text('tanggapan_bm',255);
-            $table->text('tindak_lanjut',255);
+            $table->id();
+            $table->text('tanggapan_ao');
+            $table->text('tanggapan_mm');
+            $table->text('tanggapan_bm');
+            $table->text('tindak_lanjut');
             $table->date('due_date');
             $table->timestamps();
         });

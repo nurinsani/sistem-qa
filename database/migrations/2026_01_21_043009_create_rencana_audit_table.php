@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rencana_audit', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
+            $table->string('id_ref_sampling',25);
             $table->string('unit',6);
             $table->date('tanggal_awal');
             $table->date('tanggal_akhir');
             $table->integer('jumlah_sampling');
             $table->string('status)');
-            $table->integer('id_ref_sampling');
             $table->timestamps();
         });
     }

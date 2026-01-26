@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('temuan_lain', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->string('id_audit_rutin');
-            $table->string('id_param_profil');
-            $table->string('id_ketentuan');
-            $table->string('status_audit');
-            $table->text('deskripsi_temuan',255);
+            $table->id();
+            $table->bigInteger('id_audit');
+            $table->bigInteger('id_param_profil');
+            $table->bigInteger('id_ketentuan');
+            $table->string('status_audit',10);
+            $table->text('deskripsi_temuan');
             $table->timestamps();
         });
     }

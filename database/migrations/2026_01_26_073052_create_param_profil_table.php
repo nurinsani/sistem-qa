@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('param_profil', function (Blueprint $table) {
-            $table->string('id_param')->primary();
-            $table->text('deskripsi',255);
-            $table->string('level');
-            $table->integer('kategori_param');
+            $table->id();
+            $table->text('deskripsi');
+            $table->enum('level',['low','medium','high']);
+            $table->string('kategori_param',50);
             $table->timestamps();
 
         });

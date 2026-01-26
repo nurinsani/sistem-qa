@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('audit_detail', function (Blueprint $table) {
-            $table->string('id_audit_detail');
-            $table->string('id_audit')->primary();
-            $table->text('usaha',255);
-            $table->text('kondisi_keluarga',255);
-            $table->text('kondisi_lingkungan',255);
-            $table->text('wawancara_anggota',255);
-            $table->text('wawancara_ketua_kel',255);
+            $table->id();
+            $table->bigInteger('id_audit');
+            $table->text('kondisi_usaha');
+            $table->text('kondisi_keluarga');
+            $table->text('kondisi_lingkungan');
+            $table->text('wawancara_anggota');
+            $table->text('wawancara_ketua_kel');
             $table->string('foto_wawancara_ketua');
             $table->string('foto_wawancara_anggota');
             $table->string('foto_usaha');
-            $table->text('temuan',255);
+            $table->text('temuan');
             $table->timestamps();
         });
     }

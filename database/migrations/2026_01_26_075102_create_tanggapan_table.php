@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tanggapan', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('id_audit');
             $table->text('tanggapan_ao');
             $table->text('tanggapan_mm');
             $table->text('tanggapan_bm');

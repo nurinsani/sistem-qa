@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('param_ketentuan', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_param_profil');
-            $table->string('nomer_ketentuan',30);
+            $table->string('nomor_ketentuan',30);
             $table->text('heading');
             $table->text('sub_heading');
             $table->text('sub_sub_heading');

@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('cif',10);
             $table->string('id_ref_sampling',25);
             $table->string('nama',100);
-            $table->string('kode_kel');
+            $table->string('kode_kel',10);
             $table->string('cao',6);
-            $table->string('kategori_audit');
+            $table->enum('jenis_audit',['audit_rutin','audit_khusus']);
             $table->bigInteger('user_id');
             $table->timestamps();            
         });

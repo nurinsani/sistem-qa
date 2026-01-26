@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal_awal');
             $table->date('tanggal_akhir');
             $table->integer('jumlah_sampling');
-            $table->string('status)');
+            $table->string('status');
             $table->timestamps();
         });
     }

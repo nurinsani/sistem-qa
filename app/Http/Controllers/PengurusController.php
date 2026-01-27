@@ -24,7 +24,7 @@ class PengurusController extends Controller
         ->orderBy('order')
         ->get();
 
-        $title = 'Q&A System';
-        return view('pengurus.index', compact('title', 'menus'));
+        $title = 'QA System';
+        return view('pengurus.dashboard', compact('title', 'menus'));
     }
 }

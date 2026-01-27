@@ -24,7 +24,7 @@ class QamController extends Controller
         ->orderBy('order')
         ->get();
 
-        $title = 'Q&A System';
-        return view('qam.index', compact('title'));
+        $title = 'QA System';
+        return view('qam.dashboard', compact('title', 'menus'));
     }
 }

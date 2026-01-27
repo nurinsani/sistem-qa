@@ -20,7 +20,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Dashboard',
             'icon' => 'fas fa-tachometer-alt nav-icon',
-            'url' => '/qa',
+            'url' => '/qa/dashboard',
             'role_id' => 1,
             'order' => 1,
         ]);
@@ -29,16 +29,16 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Dashboard',
             'icon' => 'fas fa-tachometer-alt nav-icon',
-            'url' => '/qal',
+            'url' => '/qal/dashboard',
             'role_id' => 2,
             'order' => 1,
         ]);
 
-        // dashboard QAL
+        // dashboard QAM
         Menu::create([
             'name' => 'Dashboard',
             'icon' => 'fas fa-tachometer-alt nav-icon',
-            'url' => '/qal',
+            'url' => '/qam/dashboard',
             'role_id' => 3,
             'order' => 1,
         ]);
@@ -47,15 +47,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Dashboard',
             'icon' => 'fas fa-tachometer-alt nav-icon',
-            'url' => '/pengurus',
-            'role_id' => 4,
-            'order' => 1,
-        ]);
-
-        Menu::create([
-            'name' => 'Dashboard',
-            'icon' => 'fas fa-tachometer-alt nav-icon',
-            'url' => '/pengurus',
+            'url' => '/pengurus/dashboard',
             'role_id' => 4,
             'order' => 1,
         ]);

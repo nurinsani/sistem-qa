@@ -24,7 +24,7 @@ class QalController extends Controller
         ->orderBy('order')
         ->get();
 
-        $title = 'Q&A System';
-        return view('qal.index', compact('title'));
+        $title = 'QA System';
+        return view('qal.dashboard', compact('title', 'menus'));
     }
 }

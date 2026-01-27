@@ -16,17 +16,17 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['role:1'])->group(function () {
-    Route::get('/qa', [QaController::class, 'index']);
+    Route::get('/qa/dashboard', [QaController::class, 'index']);
 });
 
 Route::middleware(['role:2'])->group(function () {
-    Route::get('/qal', [QalController::class, 'index']);
+    Route::get('/qal/dashboard', [QalController::class, 'index']);
 });
 
 Route::middleware(['role:3'])->group(function () {
-    Route::get('/qam', [QamController::class, 'index']);
+    Route::get('/qam/dashboard', [QamController::class, 'index']);
 });
 
 Route::middleware(['role:4'])->group(function () {
-    Route::get('/pengurus', [PengurusController::class, 'index']);
+    Route::get('/pengurus/dashboard', [PengurusController::class, 'index']);
 });

@@ -24,10 +24,10 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             return match (auth()->user()->role_id) {
-                '1' => redirect('/qa'),
-                '2' => redirect('/qal'),
-                '3' => redirect('/qam'),
-                '4' => redirect('/pengurus'),
+                '1' => redirect('/qa/dashboard'),
+                '2' => redirect('/qal/dashboard'),
+                '3' => redirect('/qam/dashboard'),
+                '4' => redirect('/pengurus/dashboard'),
             };
         }
 

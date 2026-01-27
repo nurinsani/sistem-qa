@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rencana_audit', function (Blueprint $table) {
+        Schema::create('audit', function (Blueprint $table) {
             $table->id();
-            $table->string('id_ref_sampling',25);
-            $table->string('unit',6);
-            $table->date('tanggal_awal');
-            $table->date('tanggal_akhir');
-            $table->integer('jumlah_sampling');
-            $table->string('status');
+            $table->bigInteger('id_sampling');
+            $table->string('cif',10);
+            $table->date('tanggal');
+            $table->enum('jenis_audit',['audit_rutin','audit_khusus']);
+            $table->bigInteger('user_id');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rencana_audit');
+        Schema::dropIfExists('audit');
     }
 };

@@ -24,7 +24,7 @@ class QaController extends Controller
         ->orderBy('order')
         ->get();
             
-        $title = 'Q&A System';
+        $title = 'QA System';
         return view('qa.dashboard', compact('title', 'menus'));
     }
 }

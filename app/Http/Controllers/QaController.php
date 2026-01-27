@@ -25,6 +25,6 @@ class QaController extends Controller
         ->get();
             
         $title = 'Q&A System';
-        return view('qa.index', compact('title', 'menus'));
+        return view('qa.dashboard', compact('title', 'menus'));
     }
 }

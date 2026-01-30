@@ -5,6 +5,7 @@ use App\Http\Controllers\PengurusController;
 use App\Http\Controllers\QaController;
 use App\Http\Controllers\QalController;
 use App\Http\Controllers\QamController;
+use App\Http\Controllers\RencanaAuditController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,6 +18,15 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/dashboard', [QaController::class, 'index']);
+
+    Route::get('/qa/rencana-audit', [RencanaAuditController::class, 'index']);
+    Route::get('/qa/rencana-audit/data', [RencanaAuditController::class, 'data'])->name('rencana.audit.data');
+    Route::get('/qa/rencana-audit/data_detail', [RencanaAuditController::class, 'data_detail'])->name('rencana.audit.data_detail');
+    Route::post('/qa/rencana-audit-rutin', [RencanaAuditController::class, 'auditRutinStore'])->name('audit.rutin.store');
+    Route::post('/qa/rencana-audit-khusus', [RencanaAuditController::class, 'auditKhususStore'])->name('audit.khusus.store');
+    Route::get('/qa/rencana-audit/{ref_sampling}', [RencanaAuditController::class, 'show'])->name('rencana.audit.show');
+    Route::get('/qa/rencana-audit/{id}/start', [RencanaAuditController::class, 'start'])->name('rencana.audit.start');
+
 });
 
 Route::middleware(['role:2'])->group(function () {

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,6 +19,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MenuSeeder::class,
             UserSeeder::class,
+            KelompokSeeder::class,
+            BranchSeeder::class,
+            DataLoanMobSeeder::class,
+            SamplingSeeder::class,
         ]);
     }
 }

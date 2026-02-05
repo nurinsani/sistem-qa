@@ -19,13 +19,17 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/dashboard', [QaController::class, 'index']);
 
+    // Rencana Audit Routes
     Route::get('/qa/rencana-audit', [RencanaAuditController::class, 'index']);
     Route::get('/qa/rencana-audit/data', [RencanaAuditController::class, 'data'])->name('rencana.audit.data');
-    Route::get('/qa/rencana-audit/data_detail', [RencanaAuditController::class, 'data_detail'])->name('rencana.audit.data_detail');
+    Route::get('/qa/rencana-audit/{ref_sampling}', [RencanaAuditController::class, 'show'])->name('rencana.audit.show');
     Route::post('/qa/rencana-audit-rutin', [RencanaAuditController::class, 'auditRutinStore'])->name('audit.rutin.store');
     Route::post('/qa/rencana-audit-khusus', [RencanaAuditController::class, 'auditKhususStore'])->name('audit.khusus.store');
-    Route::get('/qa/rencana-audit/{ref_sampling}', [RencanaAuditController::class, 'show'])->name('rencana.audit.show');
-    Route::get('/qa/rencana-audit/{id}/start', [RencanaAuditController::class, 'start'])->name('rencana.audit.start');
+    Route::get('/qa/rencana-audit/{ref_sampling}/{cif}', [RencanaAuditController::class, 'detail_sampling'])->name('rencana.audit.detail_sampling');
+    Route::post('/qa/rencana-audit/{id}/start', [RencanaAuditController::class, 'start'])->name('rencana.audit.start');
+    Route::get('/kelompok/search', [RencanaAuditController::class, 'search'])->name('kelompok.search');
+    Route::get('/kelompok/get-cif', [RencanaAuditController::class, 'getCif'])->name('kelompok.get-cif');
+    // End Rencana Audit Routes
 
 });
 

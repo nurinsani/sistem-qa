@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             BranchSeeder::class,
             DataLoanMobSeeder::class,
             SamplingSeeder::class,
+            AoSeeder::class,
         ]);
     }
 }

@@ -63,7 +63,6 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    
     let table;
     
     $(document).ready(function () {
@@ -75,19 +74,19 @@
             ajax: "{{ route('rencana.audit.data') }}",
             columns: [
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'unit' },
+                { data: 'area' },
                 { data: 'unit' },
                 { data: 'id_ref_sampling' },
                 { data: 'tanggal_awal' },
                 { data: 'tanggal_akhir' },
-                { data: 'status', orderable: false, searchable: false },
-                { data: 'aksi', orderable: false, searchable: false }
+                { data: 'status' },
+                { data: 'aksi' }
             ]
         });
-
-        // Initialize Select2
+        
+        // Initialize Select2 untuk Audit Rutin
         $('#modalAuditRutin').on('shown.bs.modal', function () {
-            $('.select2').select2({
+            $('.select2', this).select2({
                 theme: 'bootstrap4',
                 dropdownParent: $('#modalAuditRutin'),
                 placeholder: '-- Pilih AP --',
@@ -95,16 +94,7 @@
             });
         });
 
-        $('#modalAuditKhusus').on('shown.bs.modal', function () {
-            $('.select2').select2({
-                theme: 'bootstrap4',
-                dropdownParent: $('#modalAuditKhusus'),
-                placeholder: '-- Kelompok --',
-                allowClear: true
-            });
-        });
-
-        // AJAX Form Submit
+        // Form Submit Audit Rutin
         $('#formAuditRutin').on('submit', function(e) {
             e.preventDefault();
             
@@ -117,18 +107,13 @@
                 processData: false,
                 contentType: false,
                 beforeSend: function() {
-                    // Disable button saat loading
-                    $('#formAuditRutin button[type="submit"]').prop('disabled', true).html('Loading...');
+                    $('#formAuditRutin button[type="submit"]').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
                 },
                 success: function(response) {
-                    // Close modal
                     $('#modalAuditRutin').modal('hide');
-                    
-                    // Reset form
                     $('#formAuditRutin')[0].reset();
-                    $('.select2').val(null).trigger('change');
+                    $('#modalAuditRutin .select2').val(null).trigger('change');
                     
-                    // Show success message
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
@@ -137,18 +122,12 @@
                         timer: 1500
                     });
                     
-                    // Reload DataTable jika ada
-                    if ($.fn.DataTable.isDataTable('#dataTable')) {
-                        $('#dataTable').DataTable().ajax.reload();
-                    } else {
-                        location.reload();
-                    }
+                    table.ajax.reload();
                 },
                 error: function(xhr) {
                     let errorMessage = 'Terjadi kesalahan!';
                     
                     if (xhr.status === 422) {
-                        // Validation errors
                         let errors = xhr.responseJSON.errors;
                         errorMessage = Object.values(errors).flat().join('<br>');
                     } else if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -162,56 +141,157 @@
                     });
                 },
                 complete: function() {
-                    // Enable button kembali
-                    $('#formAuditRutin button[type="submit"]').prop('disabled', false).html('Simpan');
+                    $('#formAuditRutin button[type="submit"]').prop('disabled', false).html('<i class="fa fa-save"></i> Simpan');
+                }
+            });
+        });
+        
+        $('#modalAuditKhusus').on('shown.bs.modal', function () {
+            $('#kode_kel').select2({
+                theme: 'bootstrap4',
+                dropdownParent: $('#modalAuditKhusus'),
+                placeholder: '-- Pilih Kelompok --',
+                allowClear: true,
+                minimumInputLength: 2,
+                ajax: {
+                    url: "{{ route('kelompok.search') }}",
+                    dataType: 'json',
+                    delay: 300,
+                    data: function (params) {
+                        return {
+                            q: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
                 }
             });
         });
 
+
+        // Reset form ketika modal ditutup
+        $('#modalAuditKhusus').on('hidden.bs.modal', function () {
+            $('#formAuditKhusus')[0].reset();
+            $('#kode_kel').val(null).trigger('change');
+            $('#nama_kelompok').val('');
+            $('#nama_ao').val('');
+            $('#list-cif').html('<p class="text-muted text-center mb-0"><i class="fa fa-info-circle"></i> Pilih kelompok terlebih dahulu</p>');
+            $('#selected-count').text('0');
+        });
+
+        // Ketika kelompok dipilih, ambil data CIF
+        $('#kode_kel').on('change', function() {
+            let kodeKel = $(this).val();
+            
+            if (!kodeKel) {
+                $('#nama_kelompok').val('');
+                $('#nama_ao').val('');
+                $('#list-cif').html('<p class="text-muted text-center mb-0"><i class="fa fa-info-circle"></i> Pilih kelompok terlebih dahulu</p>');
+                $('#selected-count').text('0');
+                return;
+            }
+
+            // Set nama kelompok dari option yang dipilih
+            $('#nama_kelompok').val($(this).find('option:selected').text());
+
+            // Ambil data CIF via AJAX
+            $.ajax({
+                url: "{{ route('kelompok.get-cif') }}", // Sesuaikan dengan route Anda
+                type: 'GET',
+                data: { kode_kel: kodeKel },
+                beforeSend: function() {
+                    $('#list-cif').html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Memuat data...</p>');
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Set nama AO
+                        $('#nama_ao').val(response.data.nama_ao || '-');
+                        
+                        // Render checkbox CIF
+                        let html = '';
+                        if (response.data.cif_list && response.data.cif_list.length > 0) {
+                            response.data.cif_list.forEach(function(cif, index) {
+                                html += `
+                                    <div class="custom-control custom-checkbox mb-2">
+                                        <input type="checkbox" class="custom-control-input cif-checkbox" 
+                                               id="cif_${index}" 
+                                               name="cif[]" 
+                                               value="${cif.cif}">
+                                        <label class="custom-control-label" for="cif_${index}">
+                                            ${cif.cif} - ${cif.Cust_Short_name || 'N/A'}
+                                        </label>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            html = '<p class="text-muted text-center mb-0"><i class="fa fa-info-circle"></i> Tidak ada data CIF</p>';
+                        }
+                        
+                        $('#list-cif').html(html);
+                        updateSelectedCount();
+                    } else {
+                        $('#list-cif').html('<p class="text-danger text-center mb-0"><i class="fa fa-exclamation-circle"></i> ' + (response.message || 'Gagal memuat data') + '</p>');
+                    }
+                },
+                error: function(xhr) {
+                    $('#list-cif').html('<p class="text-danger text-center mb-0"><i class="fa fa-exclamation-circle"></i> Terjadi kesalahan saat memuat data</p>');
+                }
+            });
+        });
+
+        // Event handler untuk checkbox CIF (menggunakan event delegation)
+        $(document).on('change', '.cif-checkbox', function() {
+            updateSelectedCount();
+        });
+
+        // Form Submit Audit Khusus
         $('#formAuditKhusus').on('submit', function(e) {
             e.preventDefault();
             
+            // Validasi minimal 1 CIF dipilih
+            if ($('.cif-checkbox:checked').length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian!',
+                    text: 'Pilih minimal 1 CIF untuk audit khusus'
+                });
+                return;
+            }
+
             let formData = new FormData(this);
             
             $.ajax({
-                url: "{{ route('audit.khusus.store') }}",
+                url: "{{ route('audit.khusus.store') }}", // Sesuaikan dengan route Anda
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 beforeSend: function() {
-                    // Disable button saat loading
-                    $('#formAuditKhusus button[type="submit"]').prop('disabled', true).html('Loading...');
+                    $('#btnSubmit').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
                 },
                 success: function(response) {
-                    // Close modal
                     $('#modalAuditKhusus').modal('hide');
-                    
-                    // Reset form
                     $('#formAuditKhusus')[0].reset();
-                    $('.select2').val(null).trigger('change');
+                    $('#kode_kel').val(null).trigger('change');
                     
-                    // Show success message
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: response.message || 'Data berhasil disimpan',
+                        text: response.message || 'Data audit khusus berhasil disimpan',
                         showConfirmButton: false,
                         timer: 1500
                     });
                     
-                    // Reload DataTable jika ada
-                    if ($.fn.DataTable.isDataTable('#dataTable')) {
-                        $('#dataTable').DataTable().ajax.reload();
-                    } else {
-                        location.reload();
-                    }
+                    table.ajax.reload();
                 },
                 error: function(xhr) {
                     let errorMessage = 'Terjadi kesalahan!';
                     
                     if (xhr.status === 422) {
-                        // Validation errors
                         let errors = xhr.responseJSON.errors;
                         errorMessage = Object.values(errors).flat().join('<br>');
                     } else if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -225,11 +305,11 @@
                     });
                 },
                 complete: function() {
-                    // Enable button kembali
-                    $('#formAuditKhusus button[type="submit"]').prop('disabled', false).html('Simpan');
+                    $('#btnSubmit').prop('disabled', false).html('<i class="fa fa-save"></i> Simpan');
                 }
             });
         });
+        
     });
 </script>
 @endpush

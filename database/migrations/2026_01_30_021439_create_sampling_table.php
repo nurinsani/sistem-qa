@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('sampling', function (Blueprint $table) {
             $table->string('cif', 10)->primary();
             $table->string('unit', 6);
-            $table->string('kode_status', 6);
+            $table->string('kode_profil', 15);
+            $table->string('status_sampling', 15);
+            $table->string('kode_kel', 15);
+            $table->string('kode_ao', 15);
+            $table->date('tgl_pull');
         });
     }
 

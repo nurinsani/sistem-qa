@@ -18,6 +18,11 @@
 
 @section('content')
     <div class="container-fluid">
+
+        <a href="{{ url('/qa/rencana-audit') }}" class="btn btn-primary mb-3">
+            ← Kembali
+        </a>
+
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -30,13 +35,40 @@
                                     <th>CIF</th>
                                     <th>Ref Sampling</th>
                                     <th>Nama</th>
-                                    <th>Kode Kel</th>
-                                    <th>Code AO</th>
+                                    <th>Nama Kel</th>
+                                    <th>Nama AO</th>
                                     <th>Kategori Audit</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {{-- @dd($data_sampling) --}}
+                                @foreach ($data_sampling as $item)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->branch->unit }}</td>
+                                        <td>{{ $item->cif }}</td>
+                                        <td>{{ $item->id_ref_sampling }}</td>
+                                        <td>{{ $item->nama }}</td>
+                                        <td>{{ $item->kelompok->nama_kel }}</td>
+                                        <td>{{ $item->ao->nama_ao ?? '-' }}</td>
+                                        <td>
+                                            @if ($item->status_sampling === 'LOW')
+                                                <span class="badge badge-success">LOW</span>
+                                            @elseif ($item->status_sampling === 'MEDIUM')
+                                                <span class="badge badge-warning">MEDIUM</span>
+                                            @elseif ($item->status_sampling === 'HIGH')
+                                                <span class="badge badge-danger">HIGH</span>
+                                            @else
+                                                <span class="badge badge-danger">HIGH</span>
+                                            @endif
+                                        <td>
+                                            <a href="{{ route('rencana.audit.detail_sampling', ['ref_sampling' => $item->id_ref_sampling, 'cif' => $item->cif]) }}" class="btn btn-info btn-sm">
+                                                Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 
                             </tbody>
                         </table>
@@ -47,32 +79,3 @@
     </div>
 
 @endsection
-
-@push('scripts')
-<script>
-    
-    let table;
-    
-    $(document).ready(function () {
-
-        // Initialize DataTable dengan AJAX
-        table = $('#dataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('rencana.audit.data_detail') }}",
-            columns: [
-                { data: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'unit' },
-                { data: 'cif' },
-                { data: 'id_ref_sampling' },
-                { data: 'nama' },
-                { data: 'kode_kel' },
-                { data: 'cao' },
-                { data: 'status_sampling' },
-                { data: 'aksi', orderable: false, searchable: false }
-            ]
-        });
-        
-    });
-</script>
-@endpush

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('cao',6);
             $table->enum('jenis_audit',['audit_rutin','audit_khusus']);
             $table->bigInteger('user_id');
+            $table->string('status_sampling', 15);
             $table->timestamps();            
         });
     }

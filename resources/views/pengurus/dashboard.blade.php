@@ -4,12 +4,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Dashboard</h1>
+                <h1 class="m-0">{{ $title }}</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard</li>
+                    <li class="breadcrumb-item active">{{ $title }}</li>
                 </ol>
             </div>
         </div>
@@ -34,7 +34,17 @@
             const current = Number(box.dataset.current);
             const total   = Number(box.dataset.total);
 
-            if (!total) return;
+            // jika 0/0 → tetap merah
+            if (total === 0) {
+                box.style.background = `
+                    linear-gradient(
+                        135deg,
+                        #ff7a7a,
+                        #e03131
+                    )
+                `;
+                return;
+            }
 
             const percent = Math.min((current / total) * 100, 100);
 
@@ -74,4 +84,5 @@
             `;
         });
     </script>
+
 @endpush

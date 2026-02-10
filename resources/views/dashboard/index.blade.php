@@ -1,3 +1,10 @@
+<style>
+    .gradient-box {
+        color: #fff;
+    }
+</style>
+
+
 <div class="container-fluid">
     <div class="row">
         @foreach ($dataBulanan as $item)

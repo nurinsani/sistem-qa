@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('audit', function (Blueprint $table) {
+        Schema::create('temuan', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_ref_sampling');
-            $table->string('cif',10);
-            $table->date('tanggal');
-            $table->enum('jenis_audit',['audit_rutin','audit_khusus']);
-            $table->bigInteger('user_id');
+            $table->bigInteger('id_param_profil');
+            $table->bigInteger('id_ketentuan');
+            $table->string('cif', 10);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('audit');
+        Schema::dropIfExists('temuan');
     }
 };

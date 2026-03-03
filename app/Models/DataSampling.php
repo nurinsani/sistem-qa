@@ -8,17 +8,7 @@ class DataSampling extends Model
 {
     protected $table = 'data_sampling';
 
-    protected $fillable = [
-        'unit',
-        'cif',
-        'id_ref_sampling',
-        'nama',
-        'kode_kel',
-        'cao',
-        'jenis_audit',
-        'user_id',
-        'status_sampling',
-    ];
+    protected $guarded = [];
 
     public function data_loan_mob()
     {

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('temuan_lain', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('id_audit');
+            $table->bigInteger('id_ref_sampling');
             $table->bigInteger('id_param_profil');
             $table->bigInteger('id_ketentuan');
+            $table->string('cif', 10);
             $table->string('status_audit',10);
             $table->text('deskripsi_temuan');
             $table->timestamps();

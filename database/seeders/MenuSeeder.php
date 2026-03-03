@@ -60,12 +60,20 @@ class MenuSeeder extends Seeder
             'order' => 1,
         ]);
 
+        Menu::create([
+            'name' => 'Audit Rutin',
+            'icon' => 'fas fa-tasks nav-icon',
+            'url' => '/qa/audit-rutin',
+            'role_id' => 1,
+            'order' => 2,
+        ]);
+
         $masterData = Menu::create([
             'name' => 'Master Data',
             'icon' => 'fas fa-database nav-icon',
             'url' => null,
             'role_id' => 1,
-            'order' => 1,
+            'order' => 3,
         ]);
 
         Menu::create([

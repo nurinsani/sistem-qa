@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuditRutinController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PengurusController;
 use App\Http\Controllers\QaController;
@@ -30,6 +31,23 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/kelompok/search', [RencanaAuditController::class, 'search'])->name('kelompok.search');
     Route::get('/kelompok/get-cif', [RencanaAuditController::class, 'getCif'])->name('kelompok.get-cif');
     // End Rencana Audit Routes
+
+    // Audit Rutin Routes
+    Route::get('/qa/audit-rutin', [AuditRutinController::class, 'index'])->name('audit.rutin.index');
+    Route::get('/qa/audit-rutin/data', [AuditRutinController::class, 'getData'])->name('audit.rutin.data');
+    Route::get('/qa/audit-rutin/detail/{id}/{cif}', [AuditRutinController::class, 'detail'])->name('audit.rutin.detail');
+    Route::post('/qa/audit-rutin/store/{id}', [AuditRutinController::class, 'store'])->name('audit.rutin.tambah');
+
+    Route::post('/qa/audit-rutin/ketentuan/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'storeKetentuan'])
+    ->name('audit.rutin.ketentuan.store');
+
+    Route::post('/qa/audit-rutin/temuan/store/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'storeTemuanLain'])
+    ->name('audit.rutin.temuan-lain.store');
+
+    Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
+    ->name('param.ketentuan.get');
+
+    // End Audit Rutin Routes
 
 });
 

@@ -229,6 +229,7 @@ class RencanaAuditController extends Controller
                         'jenis_audit' => 'audit_rutin',
                         'user_id' => Auth::id(),
                         'status_sampling' => $item->status_sampling,
+                        'status' => 'pending',
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -329,6 +330,7 @@ class RencanaAuditController extends Controller
                             'created_at' => now(),
                             'updated_at' => now(),
                             'status_sampling' => 'KH01',
+                            'status' => 'pending',
                         ]);
                     }
                 }
@@ -461,14 +463,46 @@ class RencanaAuditController extends Controller
         }
     }
 
+    // public function start($id)
+    // {
+    //     $audit = RencanaAudit::findOrFail($id);
+
+    //     $audit->status = 'proses';
+    //     $audit->updated_at = now();
+    //     $audit->save();
+
+    //     return redirect()->back()->with('success', 'Audit berhasil dimulai');
+    // }
+
     public function start($id)
     {
-        $audit = RencanaAudit::findOrFail($id);
+        DB::beginTransaction();
 
-        $audit->status = 'proses';
-        $audit->updated_at = now();
-        $audit->save();
+        try {
 
-        return redirect()->back()->with('success', 'Audit berhasil dimulai');
+            // Ambil rencana audit
+            $audit = RencanaAudit::findOrFail($id);
+
+            // Update status rencana audit
+            $audit->update([
+                'status' => 'proses'
+            ]);
+
+            // Update data sampling berdasarkan id_ref_sampling
+            DataSampling::where('id_ref_sampling', $audit->id_ref_sampling)
+                ->update([
+                    'status' => 'proses'
+                ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Audit berhasil dimulai');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', 'Gagal memulai audit: ' . $e->getMessage());
+        }
     }
 }

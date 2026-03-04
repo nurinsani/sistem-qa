@@ -68,6 +68,14 @@ class MenuSeeder extends Seeder
             'order' => 2,
         ]);
 
+        Menu::create([
+            'name' => 'Audit Khusus',
+            'icon' => 'fas fa-tasks nav-icon',
+            'url' => '/qa/audit-khusus',
+            'role_id' => 1,
+            'order' => 3,
+        ]);
+
         $masterData = Menu::create([
             'name' => 'Master Data',
             'icon' => 'fas fa-database nav-icon',

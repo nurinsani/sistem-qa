@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuditKhususController;
 use App\Http\Controllers\AuditRutinController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PengurusController;
@@ -26,7 +27,8 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/rencana-audit/{ref_sampling}', [RencanaAuditController::class, 'show'])->name('rencana.audit.show');
     Route::post('/qa/rencana-audit-rutin', [RencanaAuditController::class, 'auditRutinStore'])->name('audit.rutin.store');
     Route::post('/qa/rencana-audit-khusus', [RencanaAuditController::class, 'auditKhususStore'])->name('audit.khusus.store');
-    Route::get('/qa/rencana-audit/{ref_sampling}/{cif}', [RencanaAuditController::class, 'detail_sampling'])->name('rencana.audit.detail_sampling');
+    Route::get('/qa/rencana-audit/{ref_sampling}/{cif}', [RencanaAuditController::class, 'detail_sampling'])
+    ->name('rencana.audit.detail_sampling');
     Route::post('/qa/rencana-audit/{id}/start', [RencanaAuditController::class, 'start'])->name('rencana.audit.start');
     Route::get('/kelompok/search', [RencanaAuditController::class, 'search'])->name('kelompok.search');
     Route::get('/kelompok/get-cif', [RencanaAuditController::class, 'getCif'])->name('kelompok.get-cif');
@@ -46,8 +48,23 @@ Route::middleware(['role:1'])->group(function () {
 
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
     ->name('param.ketentuan.get');
-
     // End Audit Rutin Routes
+
+    // Audit Khusus Routes
+    Route::get('/qa/audit-khusus', [AuditKhususController::class, 'index'])->name('audit.khusus.index');
+    Route::get('/qa/audit-khusus/data', [AuditKhususController::class, 'getData'])->name('audit.khusus.data');
+    Route::get('/qa/audit-khusus/detail/{id}/{cif}', [AuditKhususController::class, 'detail'])->name('audit.khusus.detail');
+    Route::post('/qa/audit-khusus/store/{id}', [AuditKhususController::class, 'store'])->name('audit.khusus.tambah');
+
+    Route::post('/qa/audit-khusus/ketentuan/{id_ref_sampling}/{cif}', [AuditKhususController::class, 'storeKetentuan'])
+    ->name('audit.khusus.ketentuan.store');
+
+    Route::post('/qa/audit-khusus/temuan/store/{id_ref_sampling}/{cif}', [AuditKhususController::class, 'storeTemuanLain'])
+    ->name('audit.khusus.temuan-lain.store');
+    Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
+    ->name('param.ketentuan.get');
+    // End Audit Khusus Routes
+
 
 });
 

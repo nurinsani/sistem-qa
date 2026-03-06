@@ -92,5 +92,13 @@ class MenuSeeder extends Seeder
             'role_id' => 1,
             'order' => 1,
         ]);
+
+        Menu::create([
+            'name' => 'Tanggapan',
+            'icon' => 'fas fa-reply nav-icon',
+            'url' => '/qa/tanggapan',
+            'role_id' => 1,
+            'order' => 4,
+        ]);
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\QaController;
 use App\Http\Controllers\QalController;
 use App\Http\Controllers\QamController;
 use App\Http\Controllers\RencanaAuditController;
+use App\Http\Controllers\TanggapanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,6 +66,11 @@ Route::middleware(['role:1'])->group(function () {
     ->name('param.ketentuan.get');
     // End Audit Khusus Routes
 
+    // Tanggapan Routes
+    Route::get('/qa/tanggapan', [TanggapanController::class, 'index'])->name('tanggapan.index');
+    Route::get('/qa/tanggapan/data', [TanggapanController::class, 'getData'])->name('tanggapan.data');
+    Route::get('/qa/tanggapan/detail/{id}/{cif}', [TanggapanController::class, 'detail'])->name('tanggapan.detail');
+    Route::post('/qa/tanggapan/{id}', [TanggapanController::class, 'store'])->name('tanggapan.store');
 
 });
 

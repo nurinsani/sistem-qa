@@ -76,29 +76,20 @@ class MenuSeeder extends Seeder
             'order' => 3,
         ]);
 
-        $masterData = Menu::create([
-            'name' => 'Master Data',
-            'icon' => 'fas fa-database nav-icon',
-            'url' => null,
-            'role_id' => 1,
-            'order' => 3,
-        ]);
-
-        Menu::create([
-            'name' => 'User',
-            'icon' => 'far fa-circle nav-icon',
-            'url' => '/qa/user',
-            'parent_id' => $masterData->id,
-            'role_id' => 1,
-            'order' => 1,
-        ]);
-
         Menu::create([
             'name' => 'Tanggapan',
             'icon' => 'fas fa-reply nav-icon',
             'url' => '/qa/tanggapan',
             'role_id' => 1,
             'order' => 4,
+        ]);
+
+        Menu::create([
+            'name' => 'Laporan',
+            'icon' => 'fas fa-file-alt nav-icon',
+            'url' => '/qa/laporan',
+            'role_id' => 1,
+            'order' => 5,
         ]);
     }
 }

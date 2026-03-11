@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditKhususController;
 use App\Http\Controllers\AuditRutinController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PengurusController;
 use App\Http\Controllers\QaController;
 use App\Http\Controllers\QalController;
@@ -40,13 +41,10 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/audit-rutin/data', [AuditRutinController::class, 'getData'])->name('audit.rutin.data');
     Route::get('/qa/audit-rutin/detail/{id}/{cif}', [AuditRutinController::class, 'detail'])->name('audit.rutin.detail');
     Route::post('/qa/audit-rutin/store/{id}', [AuditRutinController::class, 'store'])->name('audit.rutin.tambah');
-
     Route::post('/qa/audit-rutin/ketentuan/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'storeKetentuan'])
     ->name('audit.rutin.ketentuan.store');
-
     Route::post('/qa/audit-rutin/temuan/store/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'storeTemuanLain'])
     ->name('audit.rutin.temuan-lain.store');
-
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
     ->name('param.ketentuan.get');
     // End Audit Rutin Routes
@@ -56,10 +54,8 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/audit-khusus/data', [AuditKhususController::class, 'getData'])->name('audit.khusus.data');
     Route::get('/qa/audit-khusus/detail/{id}/{cif}', [AuditKhususController::class, 'detail'])->name('audit.khusus.detail');
     Route::post('/qa/audit-khusus/store/{id}', [AuditKhususController::class, 'store'])->name('audit.khusus.tambah');
-
     Route::post('/qa/audit-khusus/ketentuan/{id_ref_sampling}/{cif}', [AuditKhususController::class, 'storeKetentuan'])
     ->name('audit.khusus.ketentuan.store');
-
     Route::post('/qa/audit-khusus/temuan/store/{id_ref_sampling}/{cif}', [AuditKhususController::class, 'storeTemuanLain'])
     ->name('audit.khusus.temuan-lain.store');
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
@@ -71,6 +67,13 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/tanggapan/data', [TanggapanController::class, 'getData'])->name('tanggapan.data');
     Route::get('/qa/tanggapan/detail/{id}/{cif}', [TanggapanController::class, 'detail'])->name('tanggapan.detail');
     Route::post('/qa/tanggapan/{id}', [TanggapanController::class, 'store'])->name('tanggapan.store');
+    // End Tanggapan Routes
+
+    // Laporan Routes
+    Route::get('/qa/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/qa/laporan/pdf/{id}', [LaporanController::class,'pdf'])->name('laporan.pdf');
+    Route::get('/qa/laporan/export-excel', [LaporanController::class, 'export_excel']);
+    // End Laporan Routes
 
 });
 

@@ -98,12 +98,6 @@ class LaporanController extends Controller
         )
         ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Generate QR AO
-        |--------------------------------------------------------------------------
-        */
-
         $renderer = new ImageRenderer(
             new RendererStyle(80),
             new SvgImageBackEnd()
@@ -111,18 +105,11 @@ class LaporanController extends Controller
 
         $writer = new Writer($renderer);
 
-        $ao = "AO : ".$data->nama_ao."\nUnit : ".$data->unit;
+        $ao = "Nama AO : ".$data->nama_ao."\nUnit : ".$data->unit;
         $qr_ao = base64_encode($writer->writeString($ao));
 
-        $qa = "AO : ".$data->nama_user."\nUnit : ".$data->unit;
+        $qa = "Nama QA : ".$data->nama_user."\nUnit : ".$data->unit;
         $qr_qa = base64_encode($writer->writeString($qa));
-
-        /*
-        |--------------------------------------------------------------------------
-        | Generate PDF
-        |--------------------------------------------------------------------------
-        */
-
 
         $pdf = Pdf::loadView('laporan.pdf', compact('data', 'temuan', 'qr_ao', 'qr_qa'))
                 ->setPaper('F4','landscape')

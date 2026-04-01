@@ -463,17 +463,6 @@ class RencanaAuditController extends Controller
         }
     }
 
-    // public function start($id)
-    // {
-    //     $audit = RencanaAudit::findOrFail($id);
-
-    //     $audit->status = 'proses';
-    //     $audit->updated_at = now();
-    //     $audit->save();
-
-    //     return redirect()->back()->with('success', 'Audit berhasil dimulai');
-    // }
-
     public function start($id)
     {
         DB::beginTransaction();

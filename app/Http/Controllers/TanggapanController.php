@@ -40,6 +40,12 @@ class TanggapanController extends Controller
             ->where('status', 'tanggapan')
             ->get();
 
+        $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+            ->leftJoin('audit', 'data_sampling.id_ref_sampling', '=', 'audit.id_ref_sampling')
+            ->where('data_sampling.status', 'tanggapan')
+            ->select('data_sampling.*', 'audit.id as id_audit')
+            ->get();
+
         return response()->json(['data' => $data_sampling]);
     }
 

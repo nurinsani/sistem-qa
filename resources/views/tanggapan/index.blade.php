@@ -65,7 +65,7 @@
                     return '<span class="badge badge-danger">HIGH</span>';
                 }},
                 { data: null, render: function(data){
-                    return `<a href="{{ url('/qa/tanggapan/detail/${data.id}/${data.cif}') }}" class="btn btn-info btn-sm">Detail</a>`;
+                    return `<a href="{{ url('/qa/tanggapan/detail/${data.id_audit}/${data.cif}') }}" class="btn btn-info btn-sm">Detail</a>`;
                 }}
             ]
         });

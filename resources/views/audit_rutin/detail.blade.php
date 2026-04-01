@@ -43,7 +43,7 @@
                             <div class="form-group">
                                 <label>Tanggal Kunjungan</label>
                                 <input type="date" name="tanggal_kunjungan" id="tanggal_kunjungan"
-                                    class="form-control @error('tanggal_kunjungan') is-invalid @enderror">
+                                    class="form-control @error('tanggal_kunjungan') is-invalid @enderror" value="{{ old('tanggal_kunjungan') }}">
                                 @error('tanggal_kunjungan')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -56,7 +56,7 @@
                             <div class="form-group">
                                 <label>Kondisi Usaha</label>
                                 <textarea name="kondisi_usaha" id="kondisi_usaha" cols="10" rows="3"
-                                    class="form-control @error('kondisi_usaha') is-invalid @enderror"></textarea>
+                                    class="form-control @error('kondisi_usaha') is-invalid @enderror">{{ old('kondisi_usaha') }}</textarea>
                                 @error('kondisi_usaha')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -67,7 +67,7 @@
                             <div class="form-group">
                                 <label>Kondisi Keluarga</label>
                                 <textarea name="kondisi_keluarga" id="kondisi_keluarga" cols="10" rows="3"
-                                    class="form-control @error('kondisi_keluarga') is-invalid @enderror"></textarea>
+                                    class="form-control @error('kondisi_keluarga') is-invalid @enderror">{{ old('kondisi_keluarga') }}</textarea>
                                 @error('kondisi_keluarga')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -78,7 +78,7 @@
                             <div class="form-group">
                                 <label>Kondisi Lingkungan</label>
                                 <textarea name="kondisi_lingkungan" id="kondisi_lingkungan" cols="10" rows="3"
-                                    class="form-control @error('kondisi_lingkungan') is-invalid @enderror"></textarea>
+                                    class="form-control @error('kondisi_lingkungan') is-invalid @enderror">{{ old('kondisi_lingkungan') }}</textarea>
                                 @error('kondisi_lingkungan')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -121,12 +121,11 @@
                                 @enderror
                             </div>
 
-                            {{-- Temuan --}}
                             <div class="form-group">
                                 <label>Temuan</label>
 
                                 <div class="d-flex">
-                                    <textarea name="temuan" id="temuan" class="form-control @error('temuan') is-invalid @enderror" rows="3"></textarea>
+                                    <textarea name="temuan" id="temuan" class="form-control @error('temuan') is-invalid @enderror" rows="3">{{ old('temuan') }}</textarea>
 
                                     <button type="button" 
                                             class="btn btn-danger btn-sm ml-2 align-self-start"
@@ -154,7 +153,6 @@
 
                             </div>
 
-                            {{-- Action Buttons --}}
                             <div class="form-group mt-3">
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                                 <button type="reset" class="btn btn-warning">Reset</button>

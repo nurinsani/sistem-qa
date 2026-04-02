@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('kode_kel', 15);
             $table->string('kode_ao', 15);
             $table->date('tgl_pull');
+            $table->text('keterangan')->nullable();
         });
     }
 

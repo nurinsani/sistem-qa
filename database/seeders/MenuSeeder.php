@@ -68,5 +68,15 @@ class MenuSeeder extends Seeder
             'role_id' => 1,
             'order' => 1,
         ]);
+
+            //informasi anggota
+           Menu::create([
+            'name' => 'Informasi Anggota',
+            'icon' => 'fas fa-database nav-icon',
+            'url' => '/informasi_anggota',
+            'role_id' => 1,
+            'order' => 1,
+        ]);
+
     }
 }

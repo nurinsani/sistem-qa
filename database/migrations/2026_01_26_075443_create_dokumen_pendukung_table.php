@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('dokumen_pendukung', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('id_audit_detail');
+            $table->bigInteger('id_ref_sampling');
+            $table->string('cif', 50);
             $table->string('status',50);
             $table->text('deskripsi');
             $table->timestamps();

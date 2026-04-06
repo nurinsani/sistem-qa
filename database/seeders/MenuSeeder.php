@@ -52,21 +52,44 @@ class MenuSeeder extends Seeder
             'order' => 1,
         ]);
 
-        $masterData = Menu::create([
-            'name' => 'Master Data',
-            'icon' => 'fas fa-database nav-icon',
-            'url' => null,
+        Menu::create([
+            'name' => 'Rencana Audit',
+            'icon' => 'fas fa-clipboard-list nav-icon',
+            'url' => '/qa/rencana-audit',
             'role_id' => 1,
             'order' => 1,
         ]);
 
         Menu::create([
-            'name' => 'User',
-            'icon' => 'far fa-circle nav-icon',
-            'url' => '/qa/user',
-            'parent_id' => $masterData->id,
+            'name' => 'Audit Rutin',
+            'icon' => 'fas fa-tasks nav-icon',
+            'url' => '/qa/audit-rutin',
             'role_id' => 1,
-            'order' => 1,
+            'order' => 2,
+        ]);
+
+        Menu::create([
+            'name' => 'Audit Khusus',
+            'icon' => 'fas fa-tasks nav-icon',
+            'url' => '/qa/audit-khusus',
+            'role_id' => 1,
+            'order' => 3,
+        ]);
+
+        Menu::create([
+            'name' => 'Tanggapan',
+            'icon' => 'fas fa-reply nav-icon',
+            'url' => '/qa/tanggapan',
+            'role_id' => 1,
+            'order' => 4,
+        ]);
+
+        Menu::create([
+            'name' => 'Laporan',
+            'icon' => 'fas fa-file-alt nav-icon',
+            'url' => '/qa/laporan',
+            'role_id' => 1,
+            'order' => 5,
         ]);
 
             //informasi anggota

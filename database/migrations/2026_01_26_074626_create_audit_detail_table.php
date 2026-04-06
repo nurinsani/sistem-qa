@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('foto_wawancara_anggota');
             $table->string('foto_usaha');
             $table->text('temuan');
+            $table->date('tanggal_kunjungan');
             $table->timestamps();
         });
     }

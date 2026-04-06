@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditKhususController;
 use App\Http\Controllers\AuditRutinController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\FraudAlertController;
 use App\Http\Controllers\InformasiAnggotaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PengurusController;
@@ -84,6 +85,11 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/laporan/pdf/{id}', [LaporanController::class,'pdf'])->name('laporan.pdf');
     Route::get('/qa/laporan/export-excel', [LaporanController::class, 'export_excel']);
     // End Laporan Routes
+
+    // Fraud Alert Routes
+    Route::get('/qa/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
+    Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
+    ->name('fraud.alerts.export');
 
 });
 

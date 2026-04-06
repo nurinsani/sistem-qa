@@ -137,6 +137,12 @@
                 </div>
 
             </div>
+            
+        </div>
+        <div class="form-group">
+            <a href="{{ route('tanggapan.edit', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-primary">
+                Edit
+            </a>
         </div>
     </div>
 </div>

@@ -64,7 +64,7 @@
             ← Kembali
         </a>
 
-        @include('tanggapan.form_hasil_audit')
+        @include('tanggapan.form_hasil_audit_edit')
         @include('tanggapan.modal_foto_hasil_audit')
         @include('tanggapan.modal_temuan_lain')
         @include('tanggapan.modal_ketentuan_temuan')
@@ -128,7 +128,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Tgl Penyelesaian</label>
+                                <label>Due Date</label>
                                 <input type="date" name="due_date" id="due_date"
                                     class="form-control @error('due_date') is-invalid @enderror" value="{{ old('due_date', $tanggapan->due_date ?? '') }}">
                                 @error('due_date')

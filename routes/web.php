@@ -66,6 +66,8 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/tanggapan', [TanggapanController::class, 'index'])->name('tanggapan.index');
     Route::get('/qa/tanggapan/data', [TanggapanController::class, 'getData'])->name('tanggapan.data');
     Route::get('/qa/tanggapan/detail/{id}/{cif}', [TanggapanController::class, 'detail'])->name('tanggapan.detail');
+    Route::get('/qa/tanggapan/edit/{id}/{cif}', [TanggapanController::class, 'edit'])->name('tanggapan.edit');
+    Route::put('/qa/tanggapan/{id}', [TanggapanController::class, 'update'])->name('tanggapan.update');
     Route::post('/qa/tanggapan/{id}', [TanggapanController::class, 'store'])->name('tanggapan.store');
     // End Tanggapan Routes
 

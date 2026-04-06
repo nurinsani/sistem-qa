@@ -4,6 +4,7 @@ use App\Http\Controllers\AuditKhususController;
 use App\Http\Controllers\AuditRutinController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FraudAlertController;
+use App\Http\Controllers\InformasiAnggotaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PengurusController;
 use App\Http\Controllers\QaController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\RencanaAuditController;
 use App\Http\Controllers\TanggapanController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -20,6 +22,12 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/informasi_anggota',[InformasiAnggotaController::class,'index'])->name('informasi_anggota');
+Route::get('/informasi_anggota_detail/{cif}',[InformasiAnggotaController::class,'informasi_anggota'])->name('informasi_anggota_detail');
+Route::get('/mutasi_anggota/{cif}',[InformasiAnggotaController::class,'mutasi_anggota'])->name('mutasi_anggota');
+Route::get('/search-anggota', [InformasiAnggotaController::class, 'searchAnggota']);
+Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
+    ->name('mutasi_anggota_print');
 
 Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/dashboard', [QaController::class, 'index']);

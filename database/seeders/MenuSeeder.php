@@ -91,5 +91,13 @@ class MenuSeeder extends Seeder
             'role_id' => 1,
             'order' => 5,
         ]);
+
+        Menu::create([
+            'name' => 'Fraud Alert',
+            'icon' => 'fas fa-exclamation-triangle nav-icon',
+            'url' => '/qa/fraud-alert',
+            'role_id' => 1,
+            'order' => 6,
+        ]);
     }
 }

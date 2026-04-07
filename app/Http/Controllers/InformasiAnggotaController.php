@@ -216,9 +216,9 @@ class InformasiAnggotaController extends Controller
 
     $mutasi = $dataMutasiRaw['data'] ?? [];
 
-    // ambil data CIF juga (biar header tetap ada)
-    $url = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
-    $responseCif = file_get_contents($url);
+    // // ambil data CIF juga (biar header tetap ada)
+    $urlCifMutasi = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
+    $responseCif = file_get_contents($urlCifMutasi);
     $dataCifRaw = json_decode($responseCif, true);
     $dataCif = $dataCifRaw['data'][0] ?? [];
 

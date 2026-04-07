@@ -14,7 +14,7 @@ class DataLoanMobSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = database_path('data_loan_mob.sql');
+        $path = database_path('data_loan_copy.sql');
 
         if (!File::exists($path)) {
             $this->command->error("File not found: $path");

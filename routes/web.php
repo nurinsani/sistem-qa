@@ -19,7 +19,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/informasi_anggota',[InformasiAnggotaController::class,'index'])->name('informasi_anggota');
 Route::get('/informasi_anggota_detail/{cif}',[InformasiAnggotaController::class,'informasi_anggota'])->name('informasi_anggota_detail');
 Route::get('/mutasi_anggota/{cif}',[InformasiAnggotaController::class,'mutasi_anggota'])->name('mutasi_anggota');
-Route::get('/search-anggota', [InformasiAnggotaController::class, 'searchAnggota']);
+Route::get('/search_anggota', [InformasiAnggotaController::class, 'search']);
 Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
     ->name('mutasi_anggota_print');
 

@@ -44,9 +44,9 @@
 
     <div class="container">
             <h4><strong>Informasi Anggota</strong></h4>
-        <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm mb-3">
-            ← Kembali
-        </a>
+        <a href="{{ route('informasi_anggota', ['cif' => request()->route('cif')]) }}" class="btn btn-primary btn-sm mb-3">
+    ← Kembali
+</a>
 
         <div class="card">
             <div class="card-header">

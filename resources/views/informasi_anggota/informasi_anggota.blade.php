@@ -1,98 +1,65 @@
 @extends('layouts.main')
 
 @section('content')
-    <style>
-        .result {
-            margin-top: 30px;
-        }
-
-        .result input {
-            width: 100%;
-            padding: 10px;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
 
     <div class="row justify-content-center mt-4">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-body text-center">
+                <div class="card-body">
                     <h5 class="card-title mb-3">Cari Anggota</h5>
-                    <form action="{{ route('informasi_anggota') }}" method="GET">
+                    <form>
                         <div class="input-group">
-                                <input type="text" name="cif" class="form-control" placeholder="masukkan nama anggota"
-                                    value="{{ request('cif') }}">
-                                @if (request('cif'))
-                                <a href="{{ route('informasi_anggota_detail', request('cif')) }}"
-                                    class="btn btn-primary">🔍</a>
-                            @endif
-                        </div>
+                            <select id="search" class="form-control">
+                                <option value=""></option>
+                            </select>
                     </form>
 
                 </div>
             </div>
         </div>
     </div>
-    {{-- @if (request('cif'))
-                <div class="result">
-                    <p>Hasil Pencarian</p>
-
-                    <input type="text" value="{{ request('cif') }}" class="form-control mb-2">
-
-                    <a href="{{ route('informasi_anggota_detail', request('cif')) }}"
-                    class="btn btn-primary">
-                        Detail
-                    </a>
-                </div>
-                @endif
-</div> --}}
-    </div>
-    </div>
-    </div>
-    </div>
 @endsection
 
+@push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+
 <script>
-    $('#search').on('keyup', function() {
-        let query = $(this).val();
+    $(document).ready(function() {
 
-        if (query.length < 2) {
-            $('#result-box').hide();
-            return;
-        }
-
-        $.ajax({
-            url: '/search-anggota',
-            method: 'GET',
-            data: {
-                q: query
-            },
-            success: function(data) {
-                let html = '';
-
-                data.forEach(function(item) {
-                    html += `
-                    <div class="result-item" data-cif="${item.cif}">
-                        ${item.cif} &nbsp; ${item.nama} &nbsp; ${item.nama_kelompok}
-                    </div>
-                `;
-                });
-
-                $('#result-box').html(html).show();
+        $('#search').select2({
+            placeholder: 'Masukkan nama anggota',
+            allowClear: true,
+            minimumInputLength: 1,
+            dropdownParent: $('.card-body'),
+            ajax: {
+                url: '/search_anggota',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.map(function(item) {
+                            return {
+                                id: item.cif,
+                                text: item.cif + ' - ' + item.cust_short_name + ' - ' + item.nama_kel
+                            };
+                        })
+                    };
+                }
             }
         });
-    });
 
+        $('#search').on('select2:select', function(e) {
+            let cif = e.params.data.id;
+            window.location.href = "/informasi_anggota_detail/" + cif;
+        });
 
-    // klik item
-    $(document).on('click', '.result-item', function() {
-        let nama = $(this).text();
-        let cif = $(this).data('cif');
-
-        $('#search').val(nama);
-        $('#cif').val(cif);
-        $('#result-box').hide();
-
-        // redirect (opsional)
-        window.location.href = "/informasi_anggota_detail/" + cif;
     });
 </script>
+@endpush

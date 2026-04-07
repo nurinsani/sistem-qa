@@ -225,22 +225,17 @@ class InformasiAnggotaController extends Controller
     return view('informasi_anggota.cetak_mutasi_anggota', compact('mutasi', 'dataCif'));
 }
 
+public function search(Request $request)
+{
+    $q = $request->q;
 
-    public function searchAnggota(Request $request)
-    {
-        $term = $request->q;
+    $data = DB::table('data_loan_mob as a')
+        ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
+        ->where('a.cust_short_name', 'like', "%$q%")
+        ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
+        ->limit(10)
+        ->get();
 
-        $data = DB::table('anggota as a')
-            ->join('kelompok as k', 'a.code_kel', '=', 'k.id')
-            ->select(
-                'a.cif',
-                'a.nama',
-                'k.nama_kel'
-            )
-            ->where('a.nama', 'LIKE', '%' . $term . '%')
-            ->limit(10)
-            ->get();
-
-        return response()->json($data);
-    }
+    return response()->json($data);
+}
 }

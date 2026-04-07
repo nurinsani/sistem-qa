@@ -72,14 +72,14 @@
     <table>
 
         <tr>
-            <td>Kantor Cabang : {{ $data->unit }}</td>
+            <td colspan="2">Kantor Cabang : {{ $data->unit }}</td>
             <td>Area Pemasaran : {{ $data->area ?? '-' }}</td>
             <td>Tgl Kunjungan : {{ $data->tanggal_kunjungan }}</td>
         </tr>
 
         <tr>
             <th>Referensi (SOP/MI/MOA)</th>
-            <th>Isi Ketentuan</th>
+            <th colspan="2">Isi Ketentuan</th>
             <th>Temuan</th>
         </tr>
 
@@ -91,7 +91,7 @@
                 @endforeach
             </td>
 
-            <td>
+            <td colspan="2">
                 @foreach ($temuan as $item)
                     <p>
                         <strong>
@@ -114,6 +114,7 @@
 
         <tr>
             <th>Tanggapan MM, AL, BM</th>
+            <th>Paraf AO</th>
             <th>Tindak Lanjut</th>
             <th>Batas Waktu</th>
         </tr>
@@ -137,6 +138,14 @@
                 </small>
             </td>
 
+                <!-- Paraf AO -->
+            <td class="qr" style="text-align:center; width:20%;">
+                <br><br>
+                <img src="data:image/png;base64,{{ $qr_ao }}">
+                <br>
+                <small>Paraf AO</small>
+            </td>
+
             <td>
                 {{ $data->tindak_lanjut ?? '-' }}
             </td>
@@ -154,14 +163,6 @@
     <table>
 
         <tr>
-
-            <td class="qr">
-                Paraf AO
-                <br><br>
-                <img src="data:image/png;base64,{{ $qr_ao }}">
-                <br>
-                Nama AO
-            </td>
 
             <td class="qr">
                 Dibuat Oleh

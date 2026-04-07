@@ -38,7 +38,29 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Foto Hasil Audit (Klik untuk ganti)</label><br>
+                        <label>Temuan</label>
+                        <div class="d-flex">
+                            <textarea name="temuan" id="temuan" class="form-control @error('temuan') is-invalid @enderror" rows="3">{{ old('temuan', $audit->temuan) }}</textarea>
+                            <button type="button" class="btn btn-danger btn-sm ml-2 align-self-start" data-toggle="modal" data-target="#modalKetentuanTemuan">
+                                Ketentuan
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Temuan Lain</label><br>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalTemuanLain">
+                            Lihat Temuan Lain
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+                    <h5>Wawancara</h5>
+
+                    <div class="form-group">
+                        <label>Foto Hasil Audit</label><br>
                         <div class="row text-center">
                             {{-- Foto Wawancara Anggota --}}
                             <div class="col-md-4">
@@ -68,38 +90,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-6">
-                    <h5>Wawancara</h5>
-                    <div class="form-group">
-                        <label>Wawancara Anggota</label>
-                        <textarea name="wawancara_anggota" id="wawancara_anggota" cols="10" rows="3"
-                            class="form-control @error('wawancara_anggota') is-invalid @enderror">{{ old('wawancara_anggota', $audit->wawancara_anggota ?? '') }}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Wawancara Ketua Kelompok</label>
-                        <textarea name="wawancara_ketua_kel" id="wawancara_ketua_kel" cols="10" rows="3"
-                            class="form-control @error('wawancara_ketua_kel') is-invalid @enderror">{{ old('wawancara_ketua_kel', $audit->wawancara_ketua_kel ?? '') }}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Temuan</label>
-                        <div class="d-flex">
-                            <textarea name="temuan" id="temuan" class="form-control @error('temuan') is-invalid @enderror" rows="3">{{ old('temuan', $audit->temuan) }}</textarea>
-                            <button type="button" class="btn btn-danger btn-sm ml-2 align-self-start" data-toggle="modal" data-target="#modalKetentuanTemuan">
-                                Ketentuan
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Temuan Lain</label><br>
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalTemuanLain">
-                            Lihat Temuan Lain
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>

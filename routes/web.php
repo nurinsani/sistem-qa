@@ -22,15 +22,19 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('/informasi_anggota',[InformasiAnggotaController::class,'index'])->name('informasi_anggota');
-Route::get('/informasi_anggota_detail/{cif}',[InformasiAnggotaController::class,'informasi_anggota'])->name('informasi_anggota_detail');
-Route::get('/mutasi_anggota/{cif}',[InformasiAnggotaController::class,'mutasi_anggota'])->name('mutasi_anggota');
-Route::get('/search_anggota', [InformasiAnggotaController::class, 'search']);
-Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
-    ->name('mutasi_anggota_print');
 
 Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/dashboard', [QaController::class, 'index']);
+
+    // informasi anggota
+    Route::get('/informasi_anggota', [InformasiAnggotaController::class, 'index'])->name('informasi_anggota');
+    Route::get('/informasi_anggota_detail/{cif}', [InformasiAnggotaController::class, 'informasi_anggota'])->name('informasi_anggota_detail');
+    Route::get('/mutasi_anggota/{cif}', [InformasiAnggotaController::class, 'mutasi_anggota'])->name('mutasi_anggota');
+    Route::get('/search_anggota', [InformasiAnggotaController::class, 'search'])
+    ->name('search_anggota');
+    Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
+        ->name('mutasi_anggota_print');
+    //end informasi anggota
 
     // Rencana Audit Routes
     Route::get('/qa/rencana-audit', [RencanaAuditController::class, 'index']);
@@ -39,7 +43,7 @@ Route::middleware(['role:1'])->group(function () {
     Route::post('/qa/rencana-audit-rutin', [RencanaAuditController::class, 'auditRutinStore'])->name('audit.rutin.store');
     Route::post('/qa/rencana-audit-khusus', [RencanaAuditController::class, 'auditKhususStore'])->name('audit.khusus.store');
     Route::get('/qa/rencana-audit/{ref_sampling}/{cif}', [RencanaAuditController::class, 'detail_sampling'])
-    ->name('rencana.audit.detail_sampling');
+        ->name('rencana.audit.detail_sampling');
     Route::post('/qa/rencana-audit/{id}/start', [RencanaAuditController::class, 'start'])->name('rencana.audit.start');
     Route::get('/kelompok/search', [RencanaAuditController::class, 'search'])->name('kelompok.search');
     Route::get('/kelompok/get-cif', [RencanaAuditController::class, 'getCif'])->name('kelompok.get-cif');
@@ -51,11 +55,11 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/audit-rutin/detail/{id}/{cif}', [AuditRutinController::class, 'detail'])->name('audit.rutin.detail');
     Route::post('/qa/audit-rutin/store/{id}', [AuditRutinController::class, 'store'])->name('audit.rutin.tambah');
     Route::post('/qa/audit-rutin/ketentuan/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'storeKetentuan'])
-    ->name('audit.rutin.ketentuan.store');
+        ->name('audit.rutin.ketentuan.store');
     Route::post('/qa/audit-rutin/temuan/store/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'storeTemuanLain'])
-    ->name('audit.rutin.temuan-lain.store');
+        ->name('audit.rutin.temuan-lain.store');
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
-    ->name('param.ketentuan.get');
+        ->name('param.ketentuan.get');
     // End Audit Rutin Routes
 
     // Audit Khusus Routes
@@ -64,11 +68,11 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/qa/audit-khusus/detail/{id}/{cif}', [AuditKhususController::class, 'detail'])->name('audit.khusus.detail');
     Route::post('/qa/audit-khusus/store/{id}', [AuditKhususController::class, 'store'])->name('audit.khusus.tambah');
     Route::post('/qa/audit-khusus/ketentuan/{id_ref_sampling}/{cif}', [AuditKhususController::class, 'storeKetentuan'])
-    ->name('audit.khusus.ketentuan.store');
+        ->name('audit.khusus.ketentuan.store');
     Route::post('/qa/audit-khusus/temuan/store/{id_ref_sampling}/{cif}', [AuditKhususController::class, 'storeTemuanLain'])
-    ->name('audit.khusus.temuan-lain.store');
+        ->name('audit.khusus.temuan-lain.store');
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
-    ->name('param.ketentuan.get');
+        ->name('param.ketentuan.get');
     // End Audit Khusus Routes
 
     // Tanggapan Routes
@@ -82,15 +86,14 @@ Route::middleware(['role:1'])->group(function () {
 
     // Laporan Routes
     Route::get('/qa/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('/qa/laporan/pdf/{id}', [LaporanController::class,'pdf'])->name('laporan.pdf');
+    Route::get('/qa/laporan/pdf/{id}', [LaporanController::class, 'pdf'])->name('laporan.pdf');
     Route::get('/qa/laporan/export-excel', [LaporanController::class, 'export_excel']);
     // End Laporan Routes
 
     // Fraud Alert Routes
     Route::get('/qa/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
     Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
-    ->name('fraud.alerts.export');
-
+        ->name('fraud.alerts.export');
 });
 
 Route::middleware(['role:2'])->group(function () {

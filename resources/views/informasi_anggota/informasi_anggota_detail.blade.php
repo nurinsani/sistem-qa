@@ -17,36 +17,36 @@
     @endpush
 
     <style>
-.image-box {
-    width: 180px;
-    height: 180px;
-    margin: auto;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #ddd;
-    background: #f8f9fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .image-box {
+            width: 180px;
+            height: 180px;
+            margin: auto;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.no-image {
-    font-size: 14px;
-    color: #999;
-}
-</style>
+        .no-image {
+            font-size: 14px;
+            color: #999;
+        }
+    </style>
 
     <div class="container">
-            <h4><strong>Informasi Anggota</strong></h4>
+        <h4><strong>Informasi Anggota</strong></h4>
         <a href="{{ route('informasi_anggota', ['cif' => request()->route('cif')]) }}" class="btn btn-primary btn-sm mb-3">
-    ← Kembali
-</a>
+            ← Kembali
+        </a>
 
         <div class="card">
             <div class="card-header">
@@ -58,24 +58,24 @@
                     {{-- FOTO --}}
                     <div class="col-md-3 text-center">
 
-                      <div class="col-md-3 text-center">
+                        <div class="col-md-3 text-center">
 
-    <div class="image-box">
-        @if(!empty($dataDokumen['poto']))
-            <img src="{{ $linkRmc . $dataDokumen['poto'] }}"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="image-box">
+                                @if (!empty($dataDokumen['poto']))
+                                    <img src="{{ $linkRmc . $dataDokumen['poto'] }}"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
 
-            <span class="no-image" style="display:none;">
-                Gambar tidak ada
-            </span>
-        @else
-            <span class="no-image">
-                Gambar tidak ada
-            </span>
-        @endif
-    </div>
+                                    <span class="no-image" style="display:none;">
+                                        Gambar tidak ada
+                                    </span>
+                                @else
+                                    <span class="no-image">
+                                        Gambar tidak ada
+                                    </span>
+                                @endif
+                            </div>
 
-</div>
+                        </div>
                     </div>
 
                     {{-- DATA --}}
@@ -110,12 +110,13 @@
                             <tr>
                                 <td>Kelompok</td>
                                 <td>:</td>
-                                <td>{{ $dataCif['kodekel'] ?? '-' }}</td>
+                                <td>{{ $dataCif['nama_kelompok'] }}</td>
                             </tr>
+
                             <tr>
                                 <td>Nama AO</td>
                                 <td>:</td>
-                                <td>{{ $dataCif['cao'] ?? '-' }}</td>
+                                <td>{{ $dataCif['nama_ao'] }}</td>
                             </tr>
                             <tr>
                                 <td>No Telp</td>
@@ -150,7 +151,7 @@
                             <tr>
                                 <td>Pembiayaan Ke</td>
                                 <td>:</td>
-                                <td>{{ $dataCif['run_renor'] ?? '-' }}</td>
+                                <td>{{ $dataCif['suffix'] ?? '-' }}</td>
                             </tr>
                             <tr>
                                 <td>Simpanan Wadiah</td>

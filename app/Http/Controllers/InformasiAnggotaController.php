@@ -72,7 +72,22 @@ class InformasiAnggotaController extends Controller
         $dataCifRaw = json_decode($responseCif, true);
         $dataCif = $dataCifRaw['data'][0] ?? [];
 
+        $dataLocal = DB::table('data_loan_mob')
+            ->where('cif', $cif)
+            ->first();
 
+        $kelompok = DB::table('kelompok')
+            ->where('code_kel', $dataLocal->code_kel ?? null)
+            ->value('nama_kel');
+
+        $ao = DB::table('ao')
+            ->where('cao', $dataLocal->cao ?? null)
+            ->value('nama_ao');
+
+        // gabungkan
+        $dataCif['nama_kelompok'] = $kelompok ?? '-';
+        $dataCif['nama_ao'] = $ao ?? '-';
+        
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception('Response API bukan JSON valid');
         }
@@ -207,35 +222,35 @@ class InformasiAnggotaController extends Controller
     }
 
     public function printMutasi($cif)
-{
-    // ambil semua data (TANPA pagination)
-    $urlMutasiPrint = "http://mobcoll.nurinsani.co.id/apimobcol/data.php?function=get_saldo_mutasi&cif=" . $cif;
+    {
+        // ambil semua data (TANPA pagination)
+        $urlMutasiPrint = "http://mobcoll.nurinsani.co.id/apimobcol/data.php?function=get_saldo_mutasi&cif=" . $cif;
 
-    $response = file_get_contents($urlMutasiPrint);
-    $dataMutasiRaw = json_decode($response, true);
+        $response = file_get_contents($urlMutasiPrint);
+        $dataMutasiRaw = json_decode($response, true);
 
-    $mutasi = $dataMutasiRaw['data'] ?? [];
+        $mutasi = $dataMutasiRaw['data'] ?? [];
 
-    // // ambil data CIF juga (biar header tetap ada)
-    $urlCifMutasi = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
-    $responseCif = file_get_contents($urlCifMutasi);
-    $dataCifRaw = json_decode($responseCif, true);
-    $dataCif = $dataCifRaw['data'][0] ?? [];
+        // // ambil data CIF juga (biar header tetap ada)
+        $urlCifMutasi = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
+        $responseCif = file_get_contents($urlCifMutasi);
+        $dataCifRaw = json_decode($responseCif, true);
+        $dataCif = $dataCifRaw['data'][0] ?? [];
 
-    return view('informasi_anggota.cetak_mutasi_anggota', compact('mutasi', 'dataCif'));
-}
+        return view('informasi_anggota.cetak_mutasi_anggota', compact('mutasi', 'dataCif'));
+    }
 
-public function search(Request $request)
-{
-    $q = $request->q;
+    public function search(Request $request)
+    {
+        $q = $request->q;
 
-    $data = DB::table('data_loan_mob as a')
-        ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
-        ->where('a.cust_short_name', 'like', "%$q%")
-        ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
-        ->limit(10)
-        ->get();
+        $data = DB::table('data_loan_mob as a')
+            ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
+            ->where('a.cust_short_name', 'like', "%$q%")
+            ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
+            ->limit(10)
+            ->get();
 
-    return response()->json($data);
-}
+        return response()->json($data);
+    }
 }

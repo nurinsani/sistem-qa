@@ -26,40 +26,45 @@
 
 
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
 
-        $('#search').select2({
-            placeholder: 'Masukkan nama anggota',
-            allowClear: true,
-            minimumInputLength: 1,
-            dropdownParent: $('.card-body'),
-            ajax: {
-                url: '/search_anggota',
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function(data) {
-                    return {
-                        results: data.map(function(item) {
-                            return {
-                                id: item.cif,
-                                text: item.cif + ' - ' + item.cust_short_name + ' - ' + item.nama_kel
-                            };
-                        })
-                    };
-                }
+    $('#search').select2({
+        width: '100%',
+        placeholder: 'Masukkan nama anggota',
+        allowClear: true,
+        minimumInputLength: 1,
+        dropdownParent: $('.card-body'),
+        ajax: {
+            url: "{{ route('search_anggota') }}",
+            dataType: 'json',
+            delay: 250,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: function(params) {
+                return {
+                    q: params.term
+                };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.map(function(item) {
+                        return {
+                            id: item.cif,
+                            text: item.cif + ' - ' + item.cust_short_name + ' - ' + item.nama_kel
+                        };
+                    })
+                };
             }
-        });
-
-        $('#search').on('select2:select', function(e) {
-            let cif = e.params.data.id;
-            window.location.href = "/informasi_anggota_detail/" + cif;
-        });
-
+        }
     });
+
+    $('#search').on('select2:select', function (e) {
+    let cif = e.params.data.id;
+    window.location.href = "{{ url('informasi_anggota_detail') }}/" + cif;
+});
+
+});
 </script>
 @endpush

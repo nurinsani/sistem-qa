@@ -13,6 +13,7 @@ use App\Models\Temuanlain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AuditRutinController extends Controller
 {
@@ -224,6 +225,13 @@ class AuditRutinController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
+
+             Log::error('ERROR STORE AUDIT', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
             return back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }

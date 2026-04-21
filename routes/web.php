@@ -13,6 +13,7 @@ use App\Http\Controllers\QamController;
 use App\Http\Controllers\RencanaAuditController;
 use App\Http\Controllers\TanggapanController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LaporanPengurusController;
 
 
 Route::get('/', function () {
@@ -60,6 +61,11 @@ Route::middleware(['role:1'])->group(function () {
         ->name('audit.rutin.temuan-lain.store');
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
         ->name('param.ketentuan.get');
+
+    // Route::get('/audit-rutin/history/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'history'])
+    //     ->name('audit.rutin.history');
+    Route::get('/qa/audit-rutin/history/{id}/{cif}', [AuditRutinController::class, 'detail_history'])->name('audit.rutin.history');
+    
     // End Audit Rutin Routes
 
     // Audit Khusus Routes
@@ -106,4 +112,10 @@ Route::middleware(['role:3'])->group(function () {
 
 Route::middleware(['role:4'])->group(function () {
     Route::get('/pengurus/dashboard', [PengurusController::class, 'index']);
+
+    // Laporan Routes
+    Route::get('/pengurus/laporan', [LaporanPengurusController::class, 'index'])->name('pengurus.laporan.index');
+    Route::get('/pengurus/laporan/pdf/{id}', [LaporanPengurusController::class, 'pdf'])->name('pengurus.laporan.pdf');
+    Route::get('/pengurus/laporan/export-excel', [LaporanPengurusController::class, 'export_excel'])->name('pengurus.laporan.export_excel');
+    // End Laporan Routes
 });

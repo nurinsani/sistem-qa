@@ -281,6 +281,41 @@
             </div>
         </div>
 
+        {{-- histori audit --}}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">History Audit</h3>
+            </div>
+
+            <div class="card-body">
+                @if ($history_audit->isEmpty())
+                    <p class="text-muted">Belum ada history audit</p>
+                @else
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>ID Ref Sampling</th>
+                                <th>Jenis Audit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($history_audit as $item)
+                                <tr>
+                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') }}</td>
+                                    <td>{{ $item->id_ref_sampling ?? '-' }}</td>
+                                    <td>{{ $item->jenis_audit ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ url('/qa/audit-rutin/history/' . $item->id . '/' . $item->cif) }}" class="btn btn-info btn-sm">Detail</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            </div>
+        </div>
+
         {{-- Modal Preview Dokumen --}}
         <div class="modal fade" id="modalPreview" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">

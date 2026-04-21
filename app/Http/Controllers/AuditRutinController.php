@@ -8,6 +8,7 @@ use App\Models\DataSampling;
 use App\Models\Menu;
 use App\Models\ParamKetentuan;
 use App\Models\ParamProfil;
+use App\Models\Tanggapan;
 use App\Models\Temuan;
 use App\Models\Temuanlain;
 use Illuminate\Http\Request;
@@ -130,6 +131,14 @@ class AuditRutinController extends Controller
             ->distinct()
             ->pluck('kategori_param');
 
+        $history_audit = DB::table('audit')
+            ->select(
+                'audit.*',
+            )
+            ->where('audit.cif', $cif)
+            ->orderBy('audit.created_at', 'desc')
+            ->get();
+
 
         return view('audit_rutin.detail', compact(
             'menus',
@@ -141,7 +150,8 @@ class AuditRutinController extends Controller
             'ketentuans',
             'groupedKetentuan',
             'params',
-            'kategoriParams'
+            'kategoriParams',
+            'history_audit'
         ));
     }
 
@@ -332,6 +342,126 @@ class AuditRutinController extends Controller
         return response()->json([
             'success' => true
         ]);
+    }
+
+    public function historyAudit($cif)
+    {
+        $history_audit = DB::table('audit')
+            ->select(
+                'audit.*',
+            )
+            ->where('audit.cif', $cif)
+            ->orderBy('audit.created_at', 'desc')
+            ->get();
+
+        return view('audit_rutin.detail', compact('history_audit'));
+    }
+
+    public function detail_history($id, $cif)
+    {
+        $roleId = Auth::user()->role_id;
+
+        $menus = Menu::whereNull('parent_id')
+            ->where(function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            })
+            ->with(['children' => function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            }])
+            ->orderBy('order')
+            ->get();
+
+        $title = 'Tanggapan Detail';
+
+        $audit = DB::table('audit')
+            ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
+            ->where('audit.id', $id)
+            ->first();
+        
+        $temuanLain = DB::table('temuan_lain')
+            ->leftJoin('param_profil', 'param_profil.id', '=', 'temuan_lain.id_param_profil')
+            ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan_lain.id_ketentuan')
+            ->where('temuan_lain.id_ref_sampling', $audit->id_ref_sampling)
+            ->where('temuan_lain.cif', $audit->cif)
+            ->select(
+                'temuan_lain.*',
+                'param_profil.deskripsi as pertanyaan',
+                'param_ketentuan.*',
+            )
+            ->get();
+
+        $temuan = DB::table('temuan')
+            ->leftJoin('param_profil', 'param_profil.id', '=', 'temuan.id_param_profil')
+            ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan.id_ketentuan')
+            ->where('temuan.id_ref_sampling', $audit->id_ref_sampling)
+            ->where('temuan.cif', $audit->cif)
+            ->select(
+                'temuan.*',
+                'param_profil.deskripsi as pertanyaan',
+                'param_ketentuan.*',
+            )
+            ->get();
+
+        $tanggapan = Tanggapan::where('id_audit', $audit->id)->first();
+
+        // api CIF
+        $urlCif = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $urlCif,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+        ]);
+
+        $responseCif = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new \Exception('Gagal koneksi API CIF');
+        }
+
+        curl_close($ch);
+
+        $data_api_raw = json_decode($responseCif, true);
+        $data_api = $data_api_raw['data'][0] ?? [];
+
+        // api RMC dokumen
+        $urlDokumen = "http://mobcoll.nurinsani.co.id/apimobcol/rmc.php?cif=" . $cif;
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $urlDokumen,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+        ]);
+
+        $responseDokumen = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new \Exception('Gagal koneksi API Dokumen');
+        }
+
+        curl_close($ch);
+
+        $dokumen_raw = json_decode($responseDokumen, true);
+        $dokumen_api = $dokumen_raw['data'][0] ?? [];
+
+        // Base URL file
+        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+
+        return view('tanggapan.detail', compact(
+            'menus',
+            'title',
+            'audit',
+            'data_api',
+            'dokumen_api',
+            'baseFile',
+            'temuanLain',
+            'temuan',
+            'tanggapan'
+        ));
     }
 
 }

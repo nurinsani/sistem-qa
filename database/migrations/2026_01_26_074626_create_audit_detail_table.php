@@ -17,8 +17,6 @@ return new class extends Migration
             $table->text('kondisi_usaha');
             $table->text('kondisi_keluarga');
             $table->text('kondisi_lingkungan');
-            $table->text('wawancara_anggota');
-            $table->text('wawancara_ketua_kel');
             $table->string('foto_wawancara_ketua');
             $table->string('foto_wawancara_anggota');
             $table->string('foto_usaha');

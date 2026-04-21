@@ -18,7 +18,7 @@
 
 @section('content')
 
-    @include('layouts.dashboard')
+    @include('dashboard.index')
 
 @endsection
 

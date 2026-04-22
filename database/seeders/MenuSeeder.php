@@ -108,5 +108,13 @@ class MenuSeeder extends Seeder
             'order' => 1,
         ]);
 
+        Menu::create([
+            'name' => 'Laporan',
+            'icon' => 'fas fa-file-alt nav-icon',
+            'url' => '/pengurus/laporan',
+            'role_id' => 4,
+            'order' => 2,
+        ]);
+
     }
 }

@@ -29,4 +29,14 @@ class DataSampling extends Model
     {
         return $this->belongsTo(Ao::class, 'cao', 'cao');
     }
+
+    public function qa()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function audit()
+    {
+        return $this->hasOne(Audit::class, 'cif', 'cif');
+    }
 }

@@ -61,9 +61,6 @@ Route::middleware(['role:1'])->group(function () {
         ->name('audit.rutin.temuan-lain.store');
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
         ->name('param.ketentuan.get');
-
-    // Route::get('/audit-rutin/history/{id_ref_sampling}/{cif}', [AuditRutinController::class, 'history'])
-    //     ->name('audit.rutin.history');
     Route::get('/qa/audit-rutin/history/{id}/{cif}', [AuditRutinController::class, 'detail_history'])->name('audit.rutin.history');
     
     // End Audit Rutin Routes
@@ -112,6 +109,10 @@ Route::middleware(['role:3'])->group(function () {
 
 Route::middleware(['role:4'])->group(function () {
     Route::get('/pengurus/dashboard', [PengurusController::class, 'index']);
+    Route::get('/pengurus/dashboard/detail', [PengurusController::class, 'detail'])->name('pengurus.dashboard.detail');
+    Route::get('/pengurus/dashboard/detail/{user_id}', [PengurusController::class, 'detailByQa'])->name('pengurus.dashboard.detailByQa');
+    Route::get('/pengurus/dashboard/detail/{id}/{cif}', [PengurusController::class, 'detailAudit'])->name('pengurus.dashboard.detailAudit');
+
 
     // Laporan Routes
     Route::get('/pengurus/laporan', [LaporanPengurusController::class, 'index'])->name('pengurus.laporan.index');

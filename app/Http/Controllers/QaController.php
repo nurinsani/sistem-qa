@@ -42,7 +42,7 @@ class QaController extends Controller
             // hitung data yang sudah selesai (CURRENT)
             $selesai = DataSampling::whereMonth('created_at', $bulan)
                 ->whereYear('created_at', $year)
-                ->where('status', 'done')
+                ->where('status', 'selesai')
                 ->count();
 
             $dataBulanan[] = [

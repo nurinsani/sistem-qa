@@ -82,7 +82,7 @@
                             <div class="form-group">
                                 <label>Tanggapan AO</label>
                                 <textarea name="tanggapan_ao" id="tanggapan_ao" cols="10" rows="3"
-                                    class="form-control @error('tanggapan_ao') is-invalid @enderror">{{ old('tanggapan_ao', $tanggapan->tanggapan_ao ?? '') }}</textarea>
+                                    class="form-control @error('tanggapan_ao') is-invalid @enderror"></textarea>
                                 @error('tanggapan_ao')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -93,7 +93,7 @@
                             <div class="form-group">
                                 <label>Tanggapan MM</label>
                                 <textarea name="tanggapan_mm" id="tanggapan_mm" cols="10" rows="3"
-                                    class="form-control @error('tanggapan_mm') is-invalid @enderror">{{ old('tanggapan_mm', $tanggapan->tanggapan_mm ?? '') }}</textarea>
+                                    class="form-control @error('tanggapan_mm') is-invalid @enderror"></textarea>
                                 @error('tanggapan_mm')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -104,7 +104,7 @@
                             <div class="form-group">
                                 <label>Tanggapan BM</label>
                                 <textarea name="tanggapan_bm" id="tanggapan_bm" cols="10" rows="3"
-                                    class="form-control @error('tanggapan_bm') is-invalid @enderror">{{ old('tanggapan_bm', $tanggapan->tanggapan_bm ?? '') }}</textarea>
+                                    class="form-control @error('tanggapan_bm') is-invalid @enderror"></textarea>
                                 @error('tanggapan_bm')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -119,7 +119,7 @@
                             <div class="form-group">
                                 <label>Tindak Lanjut</label>
                                 <textarea name="tindak_lanjut" id="tindak_lanjut" cols="10" rows="3"
-                                    class="form-control @error('tindak_lanjut') is-invalid @enderror">{{ old('tindak_lanjut', $tanggapan->tindak_lanjut ?? '') }}</textarea>
+                                    class="form-control @error('tindak_lanjut') is-invalid @enderror"></textarea>
                                 @error('tindak_lanjut')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -130,7 +130,7 @@
                             <div class="form-group">
                                 <label>Tgl Penyelesaian</label>
                                 <input type="date" name="due_date" id="due_date"
-                                    class="form-control @error('due_date') is-invalid @enderror" value="{{ old('due_date', $tanggapan->due_date ?? '') }}">
+                                    class="form-control @error('due_date') is-invalid @enderror">
                                 @error('due_date')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}

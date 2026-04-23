@@ -80,6 +80,7 @@ class QalController extends Controller
         $bulan = $request->query('bulan');
         $tahun = $request->query('tahun', now()->year);
 
+        $namaBulan = \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->translatedFormat('F');
 
     $auditsGrouped = DataSampling::with('qa')
         ->whereMonth('created_at', $bulan)
@@ -87,7 +88,7 @@ class QalController extends Controller
         ->get()
         ->groupBy('user_id');
 
-        return view('qal.dashboard.detail', compact('title', 'menus', 'auditsGrouped', 'bulan', 'tahun'));
+        return view('qal.dashboard.detail', compact('title', 'menus', 'auditsGrouped', 'bulan', 'tahun', 'namaBulan'));
     }
 
     public function detailByQa(Request $request, $user_id)

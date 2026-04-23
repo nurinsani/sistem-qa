@@ -26,6 +26,7 @@ class LaporanAuditExport implements FromCollection, WithHeadings
                 'ao.nama_ao',
                 'data_sampling.jenis_audit',
             )
+            ->where('data_sampling.status', 'selesai')
             ->get();
     }
 

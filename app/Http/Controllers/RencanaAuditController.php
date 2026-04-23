@@ -198,16 +198,16 @@ class RencanaAuditController extends Controller
                     'status' => 'pending',
                 ]);
 
-                 // ambil data dari tabel sampling
-                $sampling = DB::table('sampling')
-                    ->join('data_loan_mob', 'sampling.cif', '=', 'data_loan_mob.cif')
-                    ->where('sampling.unit', $validated['unit'])
+                 // ambil data dari tabel fraud_alerts
+                $sampling = DB::table('fraud_alerts')
+                    ->join('data_loan_mob', 'fraud_alerts.cif', '=', 'data_loan_mob.cif')
+                    ->where('fraud_alerts.unit', $validated['unit'])
                     ->inRandomOrder()
                     ->limit($validated['jumlah_sampling'])
                     ->select(
-                        'sampling.unit',
-                        'sampling.cif',
-                        'sampling.status_sampling as status_sampling',
+                        'fraud_alerts.unit',
+                        'fraud_alerts.cif',
+                        'fraud_alerts.flag_status as status_sampling',
                         'data_loan_mob.Cust_short_name as nama',
                         'data_loan_mob.code_kel as kode_kel',
                         'data_loan_mob.cao as cao',

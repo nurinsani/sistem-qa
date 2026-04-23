@@ -1,6 +1,30 @@
 @extends('layouts.main')
 
 @section('content')
+@section('content-header')
+<div class="container-fluid">
+    <div class="row mb-2">
+        
+        {{-- TITLE --}}
+        <div class="col-sm-6">
+            <h1>Informasi Anggota</h1>
+        </div>
+
+        {{-- BREADCRUMB --}}
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+    <a href="{{ url('/qa/dashboard') }}">Home</a>
+</li>
+                <li class="breadcrumb-item active">
+                    Informasi Anggota
+                </li>
+            </ol>
+        </div>
+
+    </div>
+</div>
+@endsection
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -43,7 +67,6 @@
     </style>
 
     <div class="container">
-        <h4><strong>Informasi Anggota</strong></h4>
         <a href="{{ route('informasi_anggota', ['cif' => request()->route('cif')]) }}" class="btn btn-primary btn-sm mb-3">
             ← Kembali
         </a>

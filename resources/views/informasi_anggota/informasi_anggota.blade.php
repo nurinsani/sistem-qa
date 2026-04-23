@@ -1,8 +1,33 @@
 @extends('layouts.main')
 
 @section('content')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+@section('content-header')
+<div class="container-fluid">
+    <div class="row mb-2">
+        
+        {{-- TITLE --}}
+        <div class="col-sm-6">
+            <h1>Informasi Anggota</h1>
+        </div>
 
+        {{-- BREADCRUMB --}}
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+    <a href="{{ url('/qa/dashboard') }}">Home</a>
+</li>
+                <li class="breadcrumb-item active">
+                    Informasi Anggota
+                </li>
+            </ol>
+        </div>
+
+    </div>
+</div>
+@endsection
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
     <div class="row justify-content-center mt-4">
         <div class="col-md-6">
             <div class="card">

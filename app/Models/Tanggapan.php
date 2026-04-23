@@ -9,4 +9,9 @@ class Tanggapan extends Model
     protected $table = 'tanggapan';
 
     protected $guarded = [];
+
+    public function audit()
+    {
+        return $this->belongsTo(Audit::class, 'id_audit');
+    }
 }

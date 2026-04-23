@@ -103,7 +103,7 @@ Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/dashboard', [QalController::class, 'index']);
     Route::get('/qal/dashboard/detail', [QalController::class, 'detail'])->name('qal.dashboard.detail');
     Route::get('/qal/dashboard/detail/{user_id}', [QalController::class, 'detailByQa'])->name('qal.dashboard.detailByQa');
-    Route::get('/qal/dashboard/detail/{cif}', [QalController::class, 'detailAudit'])->name('qal.dashboard.detailAudit');
+    Route::get('/qal/dashboard/detail/{id}/{cif}', [QalController::class, 'detailAudit'])->name('qal.dashboard.detailAudit');
 
     // Rencana Audit Routes
     Route::get('/qal/rencana-audit', [QalRencanaAuditController::class, 'index']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Audit;
 use App\Models\DataSampling;
 use App\Models\Menu;
 use App\Models\ParamKetentuan;
@@ -308,11 +309,14 @@ class TanggapanController extends Controller
             $data
         );
 
-        $sampling = DataSampling::where('id', $id)->firstOrFail();
+        $audit = Audit::findOrFail($id);
 
-        $sampling->update([
-            'status' => 'selesai',
-        ]);
+        // Pastikan $audit->id_ref_sampling dikonversi ke string agar MySQL tidak melakukan kalkulasi math
+DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
+    ->where('cif', (string) $audit->cif)
+    ->update([
+        'status' => 'selesai',
+    ]);
 
         return redirect()->route('tanggapan.index')->with('success', 'Tanggapan berhasil disimpan');
     }

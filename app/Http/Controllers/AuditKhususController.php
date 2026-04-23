@@ -13,6 +13,7 @@ use App\Models\Temuanlain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AuditKhususController extends Controller
 {
@@ -220,10 +221,19 @@ class AuditKhususController extends Controller
                 ->with('success', 'Data audit berhasil disimpan.');
 
         } catch (\Exception $e) {
-
             DB::rollBack();
 
-            return back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
+            // 1. Catat ke file log sistem
+            Log::error('Gagal simpan Audit Khusus: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'input'   => $request->all(),
+                'trace'   => $e->getTraceAsString()
+            ]);
+
+            // 2. Kembalikan dengan error agar muncul di session
+            return back()
+                ->withInput() // Agar data di form tidak hilang saat reload
+                ->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
 

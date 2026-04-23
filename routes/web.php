@@ -14,7 +14,7 @@ use App\Http\Controllers\RencanaAuditController;
 use App\Http\Controllers\TanggapanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanPengurusController;
-
+use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -101,6 +101,20 @@ Route::middleware(['role:1'])->group(function () {
 
 Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/dashboard', [QalController::class, 'index']);
+    Route::get('/qal/dashboard/detail', [QalController::class, 'detail'])->name('qal.dashboard.detail');
+    Route::get('/qal/dashboard/detail/{user_id}', [QalController::class, 'detailByQa'])->name('qal.dashboard.detailByQa');
+    Route::get('/qal/dashboard/detail/{cif}', [QalController::class, 'detailAudit'])->name('qal.dashboard.detailAudit');
+
+    // Rencana Audit Routes
+    Route::get('/qal/rencana-audit', [QalRencanaAuditController::class, 'index']);
+    Route::get('/qal/rencana-audit/data', [QalRencanaAuditController::class, 'data'])->name('qal.rencana.audit.data');
+    Route::get('/qal/rencana-audit/{ref_sampling}', [QalRencanaAuditController::class, 'show'])->name('qal.rencana.audit.show');
+    Route::post('/qal/rencana-audit-khusus', [QalRencanaAuditController::class, 'auditKhususStore'])->name('qal.audit.khusus.store');
+    Route::get('/qal/rencana-audit/{ref_sampling}/{cif}', [QalRencanaAuditController::class, 'detail_sampling'])
+        ->name('qal.rencana.audit.detail_sampling');
+    Route::get('/qal/kelompok/search', [QalRencanaAuditController::class, 'search'])->name('qal.kelompok.search');
+    Route::get('/qal/kelompok/get-cif', [QalRencanaAuditController::class, 'getCif'])->name('qal.kelompok.get-cif');
+    // End Rencana Audit Routes
 });
 
 Route::middleware(['role:3'])->group(function () {

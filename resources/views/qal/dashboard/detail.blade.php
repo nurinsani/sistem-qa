@@ -27,22 +27,23 @@
 
     <div class="container-fluid">
         <div class="row">
-            @foreach ($dataBulanan as $item)
+            @foreach ($auditsGrouped as $user_id => $items)
+                
                 <div class="col-lg-3 col-6">
                     <div class="small-box gradient-box"
-                        data-current="{{ $item['selesai'] }}"
-                        data-total="{{ $item['total'] }}">
-
+                    data-current="{{ $items->where('status', 'selesai')->count() }}"
+                    data-total="{{ $items->count() }}">
+                
                         <div class="inner">
-                            <h3>{{ $item['selesai'] }}/{{ $item['total'] }}</h3>
-                            <p>{{ $item['bulan'] }}</p>
+                            <h3>{{ $items->where('status', 'selesai')->count() }}/{{ $items->count() }}</h3>
+                            <p>{{ $items->first()->qa->name ?? 'Tanpa QA' }}</p>
                         </div>
-
+                        
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-
-                        <a href="{{ route('qal.dashboard.detail', ['bulan' => $loop->iteration, 'tahun' => now()->year]) }}" class="small-box-footer">
+                        
+                        <a href="{{ route('qal.dashboard.detailByQa', ['user_id' => $user_id, 'bulan' => $bulan, 'tahun' => $tahun]) }}" class="small-box-footer">
                             Lihat <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>

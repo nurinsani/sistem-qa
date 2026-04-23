@@ -1,6 +1,30 @@
 @extends('layouts.main')
 
 @section('content')
+@section('content-header')
+<div class="container-fluid">
+    <div class="row mb-2">
+        
+        {{-- TITLE --}}
+        <div class="col-sm-6">
+            <h1>Informasi Anggota</h1>
+        </div>
+
+        {{-- BREADCRUMB --}}
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+    <a href="{{ url('/qa/dashboard') }}">Home</a>
+</li>
+                <li class="breadcrumb-item active">
+                    Informasi Anggota
+                </li>
+            </ol>
+        </div>
+
+    </div>
+</div>
+@endsection
 <div class="container my-4">
 <a href="{{ route('informasi_anggota_detail', ['cif' => request()->route('cif')]) }}" class="btn btn-primary btn-sm mb-3">
     ← Kembali

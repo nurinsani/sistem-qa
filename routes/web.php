@@ -16,6 +16,7 @@ use App\Http\Controllers\TanggapanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanPengurusController;
 use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
+use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -130,6 +131,20 @@ Route::middleware(['role:2'])->group(function () {
 
 Route::middleware(['role:3'])->group(function () {
     Route::get('/qam/dashboard', [QamController::class, 'index']);
+    Route::get('/qam/dashboard/detail', [QamController::class, 'detail'])->name('qam.dashboard.detail');
+    Route::get('/qam/dashboard/detail/{user_id}', [QamController::class, 'detailByQa'])->name('qam.dashboard.detailByQa');
+    Route::get('/qam/dashboard/detail/{id}/{cif}', [QamController::class, 'detailAudit'])->name('qam.dashboard.detailAudit');
+
+    // Rencana Audit Routes
+    Route::get('/qam/rencana-audit', [QamRencanaAuditController::class, 'index']);
+    Route::get('/qam/rencana-audit/data', [QamRencanaAuditController::class, 'data'])->name('qam.rencana.audit.data');
+    Route::get('/qam/rencana-audit/{ref_sampling}', [QamRencanaAuditController::class, 'show'])->name('qam.rencana.audit.show');
+    Route::post('/qam/rencana-audit-khusus', [QamRencanaAuditController::class, 'auditKhususStore'])->name('qam.audit.khusus.store');
+    Route::get('/qam/rencana-audit/{ref_sampling}/{cif}', [QamRencanaAuditController::class, 'detail_sampling'])
+        ->name('qam.rencana.audit.detail_sampling');
+    Route::get('/qam/kelompok/search', [QamRencanaAuditController::class, 'search'])->name('qam.kelompok.search');
+    Route::get('/qam/kelompok/get-cif', [QamRencanaAuditController::class, 'getCif'])->name('qam.kelompok.get-cif');
+    // End Rencana Audit Routes
 });
 
 Route::middleware(['role:4'])->group(function () {
@@ -137,7 +152,6 @@ Route::middleware(['role:4'])->group(function () {
     Route::get('/pengurus/dashboard/detail', [PengurusController::class, 'detail'])->name('pengurus.dashboard.detail');
     Route::get('/pengurus/dashboard/detail/{user_id}', [PengurusController::class, 'detailByQa'])->name('pengurus.dashboard.detailByQa');
     Route::get('/pengurus/dashboard/detail/{id}/{cif}', [PengurusController::class, 'detailAudit'])->name('pengurus.dashboard.detailAudit');
-
 
     // Laporan Routes
     Route::get('/pengurus/laporan', [LaporanPengurusController::class, 'index'])->name('pengurus.laporan.index');

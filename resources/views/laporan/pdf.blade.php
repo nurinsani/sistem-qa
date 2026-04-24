@@ -37,7 +37,7 @@
         <tr style="border:none;">
 
             <td style="border:none; width:15%;">
-                <img src="{{ asset('assets/dist/img/logo-with-text.png') }}" width="250">
+                <img src="{{ asset('assets/dist/img/logo-with-text.png') }}" width="80">
             </td>
 
             <td style="border:none; text-align:center;">

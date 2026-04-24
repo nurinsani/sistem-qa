@@ -132,5 +132,13 @@ class MenuSeeder extends Seeder
             'order' => 3,
         ]);
 
+        Menu::create([
+            'name' => 'Rencana Audit',
+            'icon' => 'fas fa-clipboard-list nav-icon',
+            'url' => '/qal/rencana-audit',
+            'role_id' => 3,
+            'order' => 1,
+        ]);
+
     }
 }

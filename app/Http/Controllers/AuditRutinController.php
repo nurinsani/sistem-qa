@@ -223,7 +223,7 @@ class AuditRutinController extends Controller
             ]);
 
             $sampling->update([
-                'status' => 'tanggapan'
+                'status' => 'evaluasi'
             ]);
 
             DB::commit();

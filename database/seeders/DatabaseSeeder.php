@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             AoSeeder::class,
             ParamProfilSeeder::class,
             ParamKetentuanSeeder::class,
+            MasterQASeeder::class,
+            FraudAlertsSeeder::class,
         ]);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditKhususController;
 use App\Http\Controllers\AuditRutinController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\EvaluasiController;
 use App\Http\Controllers\FraudAlertController;
 use App\Http\Controllers\InformasiAnggotaController;
 use App\Http\Controllers\LaporanController;
@@ -86,6 +87,16 @@ Route::middleware(['role:1'])->group(function () {
     Route::post('/qa/tanggapan/{id}', [TanggapanController::class, 'store'])->name('tanggapan.store');
     Route::put('/qa/tanggapan/{id}', [TanggapanController::class, 'update'])->name('tanggapan.update');
     // End Tanggapan Routes
+
+    // Evaluasi Routes
+    Route::get('/qa/evaluasi', [EvaluasiController::class, 'index'])->name('evaluasi.index');
+    Route::get('/qa/evaluasi/data', [EvaluasiController::class, 'getData'])->name('evaluasi.data');
+    Route::get('/qa/evaluasi/detail/{id}/{cif}', [EvaluasiController::class, 'detail'])->name('evaluasi.detail');
+    Route::get('/qa/evaluasi/edit/{id}/{cif}', [EvaluasiController::class, 'edit'])->name('evaluasi.edit');
+    Route::post('/qa/evaluasi/{id}', [EvaluasiController::class, 'store'])->name('evaluasi.store');
+    Route::put('/qa/evaluasi/{id}', [EvaluasiController::class, 'update'])->name('evaluasi.update');
+    Route::patch('/qa/evaluasi/lanjut/{id}', [EvaluasiController::class, 'updateStatusLanjut'])->name('evaluasi.lanjut');
+    // End Evaluasi Routes
 
     // Laporan Routes
     Route::get('/qa/laporan', [LaporanController::class, 'index'])->name('laporan.index');

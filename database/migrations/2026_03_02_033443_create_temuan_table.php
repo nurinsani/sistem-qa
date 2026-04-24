@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('temuan', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('id_ref_sampling');
+            $table->string('id_ref_sampling', 50);
             $table->bigInteger('id_param_profil');
             $table->bigInteger('id_ketentuan');
             $table->string('cif', 10);

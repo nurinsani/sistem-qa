@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('audit', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('id_ref_sampling');
+            $table->string('id_ref_sampling', 50);
             $table->string('cif',10);
             $table->date('tanggal');
             $table->enum('jenis_audit',['audit_rutin','audit_khusus']);

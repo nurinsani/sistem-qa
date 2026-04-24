@@ -124,5 +124,13 @@ class MenuSeeder extends Seeder
             'order' => 1,
         ]);
 
+        Menu::create([
+            'name' => 'Evaluasi',
+            'icon' => 'fas fa-check-circle nav-icon',
+            'url' => '/qa/evaluasi',
+            'role_id' => 1,
+            'order' => 3,
+        ]);
+
     }
 }

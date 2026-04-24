@@ -1,4 +1,4 @@
-<form action="{{ route('evaluasi.update', $audit->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('tanggapan.update', $audit->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 

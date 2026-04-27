@@ -129,7 +129,7 @@ class MenuSeeder extends Seeder
             'icon' => 'fas fa-check-circle nav-icon',
             'url' => '/qa/evaluasi',
             'role_id' => 1,
-            'order' => 3,
+            'order' => 4,
         ]);
 
         Menu::create([

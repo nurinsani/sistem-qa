@@ -57,6 +57,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     let table;
     
@@ -251,6 +252,16 @@
                     $('#btnSubmit').prop('disabled', false).html('<i class="fa fa-save"></i> Simpan');
                 }
             });
+        });
+
+        // fungsi selct2 ketika pilih QA
+        $(document).ready(function() {
+            $('.select2-qa').select2({
+                placeholder: '-- Pilih QA --',
+                allowClear: true,
+                theme: 'bootstrap4',
+                dropdownParent: $('#modalAuditKhusus'),
+            })
         });
         
     });

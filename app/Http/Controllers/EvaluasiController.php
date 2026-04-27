@@ -63,7 +63,7 @@ class EvaluasiController extends Controller
             ->orderBy('order')
             ->get();
 
-        $title = 'Tanggapan Detail';
+        $title = 'Evaluasi Detail';
 
         $audit = DB::table('audit')
             ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')

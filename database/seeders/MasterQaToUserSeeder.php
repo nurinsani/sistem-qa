@@ -15,11 +15,16 @@ class MasterQaToUserSeeder extends Seeder
      */
     public function run(): void
     {
+
+        // hapus data lama di tabel users yang memiliki code_qa yang sama dengan masterqa
+        $masterQaCodes = DB::table('masterqa')->pluck('code_qa');
+        DB::table('users')->whereIn('code_qa', $masterQaCodes)->delete();
+
         // 1. Ambil semua data dari master_qa
         $masterQa = DB::table('masterqa')->get();
 
         foreach ($masterQa as $data) {
-            $email = Str::lower(str_replace(' ', '.', $data->nama_qa)) . '@ni.com';
+            $email = Str::lower(str_replace(' ', '.', $data->code_qa)) . '@ni';
 
             // 3. Masukkan ke tabel users
             DB::table('users')->updateOrInsert(

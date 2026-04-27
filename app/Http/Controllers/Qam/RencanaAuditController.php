@@ -38,10 +38,15 @@ class RencanaAuditController extends Controller
         $branch = Branch::all();
         $kelompok = Kelompok::where('code_unit', '001')->get();
 
-        // $qa = User::where('role_id', 1)->get();
-        $qa = User::where('role_id', 1)
-          ->where('code_qa', '3330')
-          ->get();
+        $userLogin = auth()->user(); 
+        
+        $myCodeQa = $userLogin->code_qa;
+
+        $qa = DB::table('users')
+            ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
+            ->where('masterqa.atasan', $myCodeQa)
+            ->select('users.id', 'users.name')
+            ->get();
 
 
         return view('qam.rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok', 'qa'));

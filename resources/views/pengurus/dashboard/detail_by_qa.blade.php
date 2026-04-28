@@ -20,6 +20,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
+
+                <a href="{{ url()->previous() }}" class="btn btn-primary mb-3">
+                    ← Kembali
+                </a>
+
                 <div class="card">
                     <div class="card-body">
                         <table id="dataTable" class="table table-bordered table-hover">

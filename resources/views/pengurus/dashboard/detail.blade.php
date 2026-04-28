@@ -26,6 +26,9 @@
 
 
     <div class="container-fluid">
+        <a href="{{ url('pengurus/dashboard') }}" class="btn btn-primary mb-3">
+                    ← Kembali
+                </a>
         <div class="row">
             @foreach ($auditsGrouped as $user_id => $items)
                 

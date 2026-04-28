@@ -127,6 +127,11 @@ Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/kelompok/search', [QalRencanaAuditController::class, 'search'])->name('qal.kelompok.search');
     Route::get('/qal/kelompok/get-cif', [QalRencanaAuditController::class, 'getCif'])->name('qal.kelompok.get-cif');
     // End Rencana Audit Routes
+
+        // Fraud Alert Routes
+    Route::get('/qal/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
+    Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
+        ->name('fraud.alerts.export');
 });
 
 Route::middleware(['role:3'])->group(function () {
@@ -145,6 +150,11 @@ Route::middleware(['role:3'])->group(function () {
     Route::get('/qam/kelompok/search', [QamRencanaAuditController::class, 'search'])->name('qam.kelompok.search');
     Route::get('/qam/kelompok/get-cif', [QamRencanaAuditController::class, 'getCif'])->name('qam.kelompok.get-cif');
     // End Rencana Audit Routes
+
+        // Fraud Alert Routes
+    Route::get('/qam/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
+    Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
+        ->name('fraud.alerts.export');
 });
 
 Route::middleware(['role:4'])->group(function () {
@@ -158,4 +168,9 @@ Route::middleware(['role:4'])->group(function () {
     Route::get('/pengurus/laporan/pdf/{id}', [LaporanPengurusController::class, 'pdf'])->name('pengurus.laporan.pdf');
     Route::get('/pengurus/laporan/export-excel', [LaporanPengurusController::class, 'export_excel'])->name('pengurus.laporan.export_excel');
     // End Laporan Routes
+
+        // Fraud Alert Routes
+    Route::get('/pengurus/fraud-alert', [\App\Http\Controllers\Pengurus\FraudAlertController::class, 'index'])->name('pengurus.fraud.alerts');
+    Route::get('/pengurus/fraud-alert/export', [\App\Http\Controllers\Pengurus\FraudAlertController::class, 'export'])
+        ->name('pengurus.fraud.alerts.export');
 });

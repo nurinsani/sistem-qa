@@ -36,8 +36,6 @@ class AuditRutinController extends Controller
 
         $title = 'Audit Rutin';
 
-        // $data_sampling = DataSampling::where('jenis_audit', 'audit_rutin')->get();
-
         return view('audit_rutin.index', compact('menus', 'title'));
     }
 

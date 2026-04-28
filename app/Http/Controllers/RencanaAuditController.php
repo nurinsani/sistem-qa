@@ -8,7 +8,6 @@ use App\Models\DataSampling;
 use App\Models\Kelompok;
 use App\Models\Menu;
 use App\Models\RencanaAudit;
-use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -35,8 +34,15 @@ class RencanaAuditController extends Controller
 
         $title = 'Rencana Audit';
         
-        $branch = Branch::all();
-        $kelompok = Kelompok::where('code_unit', '001')->get();
+        $masterQa = DB::table('masterqa')
+            ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_area')
+            ->where('code_qa', Auth::user()->code_qa)
+            ->first();
+
+        $ambilArea = $masterQa ? $masterQa->kode_unit : null;
+
+        $branch = Branch::where('code_area', $ambilArea)->get();
+        $kelompok = Kelompok::where('code_unit', $masterQa->kode_branch)->get();
 
         return view('rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok'));
     }
@@ -59,7 +65,6 @@ class RencanaAuditController extends Controller
 
         return response()->json($result);
     }
-
 
     public function getCif(Request $request)
     {
@@ -275,10 +280,7 @@ class RencanaAuditController extends Controller
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
         
-        $idRefSampling = $tahun . $bulan . $request->code_kel . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT); // tambah no urut jika diperlukan untuk memastikan keunikan id_ref_sampling
-
-
-        // TODO: Validasi tambahan untuk memastikan tidak ada duplikasi id_ref_sampling jika sudah ada rencana audit dengan id_ref_sampling yang sama dan status belum selesai
+        $idRefSampling = $tahun . $bulan . $request->code_kel . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
 
         try {
             DB::transaction(function () use ($validated, $idRefSampling, $request) {
@@ -311,13 +313,13 @@ class RencanaAuditController extends Controller
                     $dataCif = DB::table('data_loan_mob')
                         ->where('cif', $cif)
                         ->where('code_kel', $validated['code_kel'])
-                        ->select(
+                        ->select([
                             'unit',
                             'cif',
                             'Cust_short_name as nama',
                             'code_kel as kode_kel',
                             'cao'
-                        )
+                        ])
                         ->first();
 
                     if ($dataCif) {

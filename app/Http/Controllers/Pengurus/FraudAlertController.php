@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pengurus;
 
 use App\Exports\FraudAlertExport;
+use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,7 +61,7 @@ class FraudAlertController extends Controller
             $data = $query->get();
         }
 
-        return view('qa.fraud_alert.index', compact('title', 'menus', 'data'));
+        return view('pengurus.fraud_alert.index', compact('title', 'menus', 'data'));
     }
 
     public function export(Request $request)

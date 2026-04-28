@@ -87,25 +87,17 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Laporan',
             'icon' => 'fas fa-file-alt nav-icon',
-            'url' => '/qa/laporan',
-            'role_id' => 1,
+            'url' => '/qal/laporan',
+            'role_id' => 2,
             'order' => 5,
         ]);
 
         Menu::create([
-            'name' => 'Fraud Alert',
-            'icon' => 'fas fa-exclamation-triangle nav-icon',
-            'url' => '/qa/fraud-alert',
-            'role_id' => 1,
-            'order' => 6,
-        ]);
-            //informasi anggota
-           Menu::create([
-            'name' => 'Informasi Anggota',
-            'icon' => 'fas fa-database nav-icon',
-            'url' => '/informasi_anggota',
-            'role_id' => 1,
-            'order' => 1,
+            'name' => 'Laporan',
+            'icon' => 'fas fa-file-alt nav-icon',
+            'url' => '/qam/laporan',
+            'role_id' => 3,
+            'order' => 5,
         ]);
 
         Menu::create([
@@ -114,6 +106,39 @@ class MenuSeeder extends Seeder
             'url' => '/pengurus/laporan',
             'role_id' => 4,
             'order' => 2,
+        ]);
+
+        Menu::create([
+            'name' => 'Fraud Alert',
+            'icon' => 'fas fa-exclamation-triangle nav-icon',
+            'url' => '/qal/fraud-alert',
+            'role_id' => 2,
+            'order' => 6,
+        ]);
+
+        Menu::create([
+            'name' => 'Fraud Alert',
+            'icon' => 'fas fa-exclamation-triangle nav-icon',
+            'url' => '/qam/fraud-alert',
+            'role_id' => 3,
+            'order' => 6,
+        ]);
+
+        Menu::create([
+            'name' => 'Fraud Alert',
+            'icon' => 'fas fa-exclamation-triangle nav-icon',
+            'url' => '/pengurus/fraud-alert',
+            'role_id' => 4,
+            'order' => 6,
+        ]);
+
+        //informasi anggota
+        Menu::create([
+            'name' => 'Informasi Anggota',
+            'icon' => 'fas fa-database nav-icon',
+            'url' => '/informasi_anggota',
+            'role_id' => 1,
+            'order' => 7,
         ]);
 
         Menu::create([
@@ -135,7 +160,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Rencana Audit',
             'icon' => 'fas fa-clipboard-list nav-icon',
-            'url' => '/qal/rencana-audit',
+            'url' => '/qam/rencana-audit',
             'role_id' => 3,
             'order' => 1,
         ]);

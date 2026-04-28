@@ -22,7 +22,7 @@
 
         <div class="card-body">
 
-            <form method="GET" action="{{ route('fraud.alerts') }}">
+            <form method="GET" action="{{ route('pengurus.fraud.alerts') }}">
 
                 <div class="row">
 
@@ -39,7 +39,7 @@
                             <i class="fas fa-search"></i> Cari
                         </button>
 
-                        <a href="{{ route('fraud.alerts') }}" class="btn btn-secondary">
+                        <a href="{{ route('pengurus.fraud.alerts') }}" class="btn btn-secondary">
                             Reset
                         </a>
 
@@ -89,7 +89,7 @@
                     <td>{{ $row->flag_reason }}</td>
                     <td>{{ $row->flag_status }}</td>
                     <td>
-                        <a href="{{ route('fraud.alerts.export', [
+                        <a href="{{ route('pengurus.fraud.alerts.export', [
                                 'tgl_tagih' => $row->tgl_tagih,
                                 'flag_status' => $row->flag_status,
                                 'flag_reason' => $row->flag_reason

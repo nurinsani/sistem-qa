@@ -345,9 +345,10 @@ DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
             'kondisi_usaha'     => $request->kondisi_usaha,
             'kondisi_keluarga'  => $request->kondisi_keluarga,
             'kondisi_lingkungan'=> $request->kondisi_lingkungan,
+            'temuan' => $request->temuan,
             'updated_at'          => now(),
         ]);
 
-        return redirect()->route('tanggapan.index')->with('success', 'Data Audit berhasil diperbarui');
+        return redirect()->back()->with('success', 'Data Audit berhasil diperbarui');
     }
 }

@@ -312,11 +312,11 @@ class EvaluasiController extends Controller
         $audit = Audit::findOrFail($id);
 
         // Pastikan $audit->id_ref_sampling dikonversi ke string agar MySQL tidak melakukan kalkulasi math
-DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
-    ->where('cif', (string) $audit->cif)
-    ->update([
-        'status' => 'selesai',
-    ]);
+        DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
+            ->where('cif', (string) $audit->cif)
+            ->update([
+                'status' => 'selesai',
+            ]);
 
         return redirect()->route('evaluasi.index')->with('success', 'Tanggapan berhasil disimpan');
     }
@@ -345,10 +345,11 @@ DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
             'kondisi_usaha'     => $request->kondisi_usaha,
             'kondisi_keluarga'  => $request->kondisi_keluarga,
             'kondisi_lingkungan'=> $request->kondisi_lingkungan,
+            'temuan'              => $request->temuan,
             'updated_at'          => now(),
         ]);
 
-        return redirect()->route('evaluasi.index')->with('success', 'Data Audit berhasil diperbarui');
+        return redirect()->back()->with('success', 'Data Audit berhasil diperbarui');
     }
 
     public function updateStatusLanjut(Request $request, $id)

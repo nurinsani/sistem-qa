@@ -60,7 +60,7 @@
 
     <div class="container-fluid">
 
-        <a href="{{ url()->previous() }}" class="btn btn-primary mb-3">
+        <a href="{{ route('tanggapan.index') }}" class="btn btn-primary mb-3">
             ← Kembali
         </a>
 

@@ -323,18 +323,6 @@ DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
 
     public function update(Request $request, $id)
     {
-        // $request->validate([
-        //     'kondisi_usaha'     => 'nullable|string',
-        //     'kondisi_keluarga'  => 'nullable|string',
-        //     'kondisi_lingkungan'=> 'nullable|string',
-        //     'wawancara_anggota' => 'nullable|string',
-        //     'wawancara_ketua_kel' => 'nullable|string',
-        //     'foto_wawancara_anggota' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        //     'foto_wawancara_ketua'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        //     'foto_usaha'             => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        // ]);
-
-        // dd($request->all(), $id);
         
         $audit = DB::table('audit')->where('id', $id)->first();
         $auditDetail = DB::table('audit_detail')->where('id_audit', $id)->first();
@@ -373,15 +361,9 @@ DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
         DB::table('data_sampling')
             ->where('id_ref_sampling', $audit->id_ref_sampling)
             ->where('cif', $request->cif)
-            ->update(['status' => 'tanggapan']);
+            ->update(['status' => 'selesai']);
 
-        // Redirect ke halaman edit tanggapan
-        // return redirect()->route('tanggapan.edit', [
-        //     'id' => $id, 
-        //     'cif' => $request->cif
-        // ])->with('success', 'Status berhasil diperbarui ke Tanggapan.');
-
-        return redirect()->route('evaluasi.index')->with('success', 'Status berhasil diperbarui ke Tanggapan.');
+        return redirect()->route('evaluasi.index')->with('success', 'Status berhasil diperbarui.');
 
     }
 }

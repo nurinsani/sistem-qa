@@ -221,7 +221,7 @@ class AuditRutinController extends Controller
             ]);
 
             $sampling->update([
-                'status' => 'evaluasi'
+                'status' => 'tanggapan'
             ]);
 
             DB::commit();
@@ -383,11 +383,11 @@ class AuditRutinController extends Controller
             ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan_lain.id_ketentuan')
             ->where('temuan_lain.id_ref_sampling', $audit->id_ref_sampling)
             ->where('temuan_lain.cif', $audit->cif)
-            ->select(
+            ->select([
                 'temuan_lain.*',
                 'param_profil.deskripsi as pertanyaan',
                 'param_ketentuan.*',
-            )
+            ])
             ->get();
 
         $temuan = DB::table('temuan')
@@ -395,11 +395,11 @@ class AuditRutinController extends Controller
             ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan.id_ketentuan')
             ->where('temuan.id_ref_sampling', $audit->id_ref_sampling)
             ->where('temuan.cif', $audit->cif)
-            ->select(
+            ->select([
                 'temuan.*',
                 'param_profil.deskripsi as pertanyaan',
                 'param_ketentuan.*',
-            )
+            ])
             ->get();
 
         $tanggapan = Tanggapan::where('id_audit', $audit->id)->first();

@@ -211,7 +211,7 @@ class AuditKhususController extends Controller
             ]);
 
             $sampling->update([
-                'status' => 'evaluasi',
+                'status' => 'tanggapan',
             ]);
 
             DB::commit();

@@ -128,8 +128,8 @@
             @csrf
             @method('PATCH')
             <input type="hidden" name="cif" value="{{ $audit->cif }}">
-            <button type="submit" class="btn btn-primary">
-                Lanjut
+            <button type="submit" class="btn btn-success">
+                Tandai Selesai
             </button>
         </form>
     </div>

@@ -121,9 +121,17 @@
     </div>
 
     <div class="card-footer text-right">
-        <a href="{{ route('tanggapan.edit', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-primary">
+        <a href="{{ route('evaluasi.edit', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-primary">
             Edit
         </a>
+        <form action="{{ route('evaluasi.lanjut', $audit->id_audit) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="cif" value="{{ $audit->cif }}">
+            <button type="submit" class="btn btn-success">
+                Tandai Selesai
+            </button>
+        </form>
     </div>
     
 </div>

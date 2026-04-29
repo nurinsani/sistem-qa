@@ -75,7 +75,7 @@
             </div>
             <div class="card-body">
 
-                <form action="{{ route('tanggapan.store', $audit->id_audit) }}" method="POST">
+                <form action="{{ route('evaluasi.store', $audit->id_audit) }}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">

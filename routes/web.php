@@ -106,9 +106,9 @@ Route::middleware(['role:1'])->group(function () {
     // End Laporan Routes
 
     // Fraud Alert Routes
-    Route::get('/qa/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
-    Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
-        ->name('fraud.alerts.export');
+    // Route::get('/qa/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
+    // Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
+    //     ->name('fraud.alerts.export');
 });
 
 Route::middleware(['role:2'])->group(function () {
@@ -128,10 +128,17 @@ Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/kelompok/get-cif', [QalRencanaAuditController::class, 'getCif'])->name('qal.kelompok.get-cif');
     // End Rencana Audit Routes
 
-        // Fraud Alert Routes
-    Route::get('/qal/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
-    Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
-        ->name('fraud.alerts.export');
+    // Laporan Routes
+    Route::get('/qal/laporan', [LaporanController::class, 'index'])->name('qal.laporan.index');
+    Route::get('/qal/laporan/pdf/{id}', [LaporanController::class, 'pdf'])->name('qal.laporan.pdf');
+    Route::get('/qal/laporan/export-excel', [LaporanController::class, 'export_excel'])->name('qal.laporan.export_excel');
+    // End Laporan Routes
+
+    // Fraud Alert Routes
+    Route::get('/qal/fraud-alert', [FraudAlertController::class, 'qal'])->name('qal.fraud.alerts');
+    Route::get('/qal/fraud-alerts/export', [FraudAlertController::class, 'export'])
+        ->name('qal.fraud.alerts.export');
+    // End Fraud Alert Routes
 });
 
 Route::middleware(['role:3'])->group(function () {
@@ -152,9 +159,9 @@ Route::middleware(['role:3'])->group(function () {
     // End Rencana Audit Routes
 
         // Fraud Alert Routes
-    Route::get('/qam/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
-    Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
-        ->name('fraud.alerts.export');
+    Route::get('/qam/fraud-alert', [FraudAlertController::class, 'qam'])->name('qam.fraud.alerts');
+    Route::get('/qam/fraud-alerts/export', [FraudAlertController::class, 'export'])
+        ->name('qam.fraud.alerts.export');
 });
 
 Route::middleware(['role:4'])->group(function () {

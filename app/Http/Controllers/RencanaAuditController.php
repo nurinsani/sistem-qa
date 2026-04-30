@@ -186,8 +186,7 @@ class RencanaAuditController extends Controller
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
 
-        $idRefSampling = $tahun . $bulan . $request->code_kel . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT); // tambah no urut jika diperlukan untuk memastikan keunikan id_ref_sampling
-
+        $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
 
         try {
 
@@ -280,7 +279,7 @@ class RencanaAuditController extends Controller
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
         
-        $idRefSampling = $tahun . $bulan . $request->code_kel . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
+        $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
 
         try {
             DB::transaction(function () use ($validated, $idRefSampling, $request) {

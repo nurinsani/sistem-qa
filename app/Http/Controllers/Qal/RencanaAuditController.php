@@ -35,11 +35,17 @@ class RencanaAuditController extends Controller
 
         $title = 'Rencana Audit';
         
-        $branch = Branch::all();
-        $kelompok = Kelompok::where('code_unit', '001')->get();
+        $masterQa = DB::table('masterqa')
+            ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_area')
+            ->where('code_qa', Auth::user()->code_qa)
+            ->first();
+
+        $ambilArea = $masterQa ? $masterQa->kode_unit : null;
+
+        $kelompok = Kelompok::where('code_unit', $masterQa->kode_branch)->get();
 
         // 1. Ambil data user yang sedang login
-        $userLogin = auth()->user(); 
+        $userLogin = auth()->user();
         
         // 2. Ambil code_qa dari user yang login (misal: 2220)
         $myCodeQa = $userLogin->code_qa;
@@ -51,7 +57,7 @@ class RencanaAuditController extends Controller
             ->select('users.id', 'users.name')
             ->get();
 
-        return view('qal.rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok', 'qa'));
+        return view('qal.rencana_audit.index', compact('menus', 'title', 'kelompok', 'qa'));
     }
 
     public function data(Request $request)
@@ -185,7 +191,7 @@ class RencanaAuditController extends Controller
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
         
-        $idRefSampling = $tahun . $bulan . $request->code_kel;
+        $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
 
         try {
             DB::transaction(function () use ($validated, $idRefSampling, $request) {

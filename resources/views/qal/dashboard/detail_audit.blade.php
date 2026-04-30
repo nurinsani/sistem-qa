@@ -192,14 +192,14 @@
         @include('tanggapan.modal_temuan_lain')
         @include('tanggapan.modal_ketentuan_temuan')
 
-{{--         
+        
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Form Tanggapan</h3>
             </div>
             <div class="card-body">
 
-                <form action="{{ route('tanggapan.store', $audit->id_audit) }}" method="POST">
+                <form action="#" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
@@ -263,14 +263,10 @@
                             </div>
                         </div> 
                     </div>
-
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
                     
                 </form>
             </div>
-        </div> --}}
+        </div>
 
         @include('tanggapan.informasi_anggota')
 

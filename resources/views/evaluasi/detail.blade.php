@@ -69,7 +69,7 @@
         @include('evaluasi.modal_temuan_lain')
         @include('evaluasi.modal_ketentuan_temuan')
 
-                <div class="card">
+        <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Form Tanggapan</h3>
             </div>
@@ -130,16 +130,17 @@
                             <div class="form-group">
                                 <label>Due Date</label>
                                 <input type="date" name="due_date" id="due_date"
-                                    class="form-control @error('due_date') is-invalid @enderror" value="{{ old('due_date', $tanggapan->due_date ?? '') }}">
+                                    class="form-control @error('due_date') is-invalid @enderror"
+                                    value="{{ old('due_date', $tanggapan->due_date ?? '') }}">
                                 @error('due_date')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
                                     </div>
                                 @enderror
                             </div>
-                        </div> 
+                        </div>
                     </div>
-                    
+
                 </form>
             </div>
         </div>

@@ -40,7 +40,8 @@ class AuditKhususController extends Controller
 
     public function getData()
     {
-        $data_sampling = DataSampling::with(['branch','kelompok','ao'])
+        $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+            ->where('user_id', auth()->id())
             ->where('jenis_audit', 'audit_khusus')
             ->where('status', 'proses')
             ->get();
@@ -223,14 +224,12 @@ class AuditKhususController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // 1. Catat ke file log sistem
             Log::error('Gagal simpan Audit Khusus: ' . $e->getMessage(), [
                 'user_id' => Auth::id(),
                 'input'   => $request->all(),
                 'trace'   => $e->getTraceAsString()
             ]);
 
-            // 2. Kembalikan dengan error agar muncul di session
             return back()
                 ->withInput() // Agar data di form tidak hilang saat reload
                 ->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());

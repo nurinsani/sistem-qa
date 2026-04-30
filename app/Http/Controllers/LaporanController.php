@@ -56,7 +56,7 @@ class LaporanController extends Controller
             ? $query->get()
             : collect();
 
-        return view('laporan.index',compact(
+        return view('qal.laporan.index',compact(
             'title',
             'data',
             'menus'

@@ -112,19 +112,21 @@ class QalController extends Controller
         $bulan = $request->query('bulan');
         $year = now()->year;
 
-        $audits = Audit::with('dataSampling.ao') // Load data sampling dan relasi di dalamnya (misal: ao)
-        ->whereHas('dataSampling.qa', function($query) use ($user_id) {
-            $query->where('id', $user_id);
+        $audits = Audit::with(['dataSampling.ao', 'dataSampling.qa'])
+        ->whereHas('dataSampling', function($query) use ($user_id, $bulan, $year) {
+            $query->where('user_id', $user_id)
+                ->whereMonth('created_at', $bulan)
+                ->whereYear('created_at', $year);
         })
-        ->whereMonth('created_at', $bulan)
-        ->whereYear('created_at', $year)
         ->get();
 
-    //     $audits = DataSampling::with(['ao', 'qa'])
-    // ->where('user_id', $user_id)
-    // ->whereMonth('created_at', $bulan)
-    // ->whereYear('created_at', $year)
-    // ->get();
+        // $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+        // ->where('user_id', auth()->id()) // Filter User Login
+        // ->whereMonth('created_at', $bulanSekarang) // Filter Bulan Berjalan
+        // ->whereYear('created_at', $tahunSekarang)   // Filter Tahun Berjalan
+        // ->where('jenis_audit', 'audit_khusus')
+        // ->where('status', 'proses')
+        // ->get();
 
         return view('qal.dashboard.detail_by_qa', [
             'audits' => $audits,

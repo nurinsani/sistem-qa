@@ -42,6 +42,7 @@ class AuditRutinController extends Controller
     public function getData()
     {
         $data_sampling = DataSampling::with(['branch','kelompok','ao'])
+            ->where('user_id', auth()->id())
             ->where('jenis_audit', 'audit_rutin')
             ->where('status', 'proses')
             ->get();

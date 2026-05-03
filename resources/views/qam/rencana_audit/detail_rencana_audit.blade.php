@@ -50,7 +50,7 @@
                                         <td>{{ $item->cif }}</td>
                                         <td>{{ $item->id_ref_sampling }}</td>
                                         <td>{{ $item->nama }}</td>
-                                        <td>{{ $item->kelompok->nama_kel }}</td>
+                                        <td>{{ $item->kelompok->nama_kel ?? '-' }}</td>
                                         <td>{{ $item->ao->nama_ao ?? '-' }}</td>
                                         <td>
                                             @if ($item->status_sampling === 'LOW')

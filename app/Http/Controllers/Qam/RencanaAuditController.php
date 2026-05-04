@@ -34,6 +34,10 @@ class RencanaAuditController extends Controller
         ->get();
 
         $title = 'Rencana Audit';
+
+        // Inisialisasi variabel dengan Collection kosong agar compact() tidak error
+        $branch = collect(); 
+        $kelompok = collect();
         
         $dataQa = DB::table('masterqa')
             ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_region')
@@ -169,7 +173,6 @@ class RencanaAuditController extends Controller
 
     public function auditKhususStore(Request $request)
     {
-        // 1. Tentukan aturan validasi berdasarkan input_method
         $isManual = $request->input_method === 'manual';
 
         $rules = [
@@ -200,14 +203,14 @@ class RencanaAuditController extends Controller
 
         $validated = $request->validate($rules, $messages);
 
-        // 2. Generate ID Ref Sampling
         $tanggal = Carbon::parse($request->tanggal_awal);
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
         
         // Jika manual, gunakan NIK sebagai pengganti kode kelompok untuk ID Ref
         $suffix = $isManual ? $validated['nik'] : $validated['code_kel'];
-        $idRefSampling = "KH" . $tahun . $bulan . $suffix;
+        $idRefSampling = $tahun . $bulan . $suffix . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
+
 
         try {
             DB::transaction(function () use ($validated, $idRefSampling, $isManual, $request) {
@@ -216,7 +219,6 @@ class RencanaAuditController extends Controller
                 $itemsToInsert = [];
 
                 if (!$isManual) {
-                    // LOGIKA KELOMPOK (Sama seperti sebelumnya)
                     $firstCif = $validated['cif'][0];
                     $unitData = DB::table('data_loan_mob')
                         ->where('cif', $firstCif)
@@ -269,7 +271,6 @@ class RencanaAuditController extends Controller
                     ];
                 }
 
-                // 3. Simpan ke Rencana Audit
                 RencanaAudit::create([
                     'unit'            => $unit,
                     'id_ref_sampling' => $idRefSampling,
@@ -281,7 +282,7 @@ class RencanaAuditController extends Controller
                     'updated_at'      => now(),
                 ]);
 
-                // 4. Bulk Insert ke Data Sampling
+                // Insert ke Data Sampling
                 DB::table('data_sampling')->insert($itemsToInsert);
             });
 

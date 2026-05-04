@@ -16,6 +16,7 @@ use App\Http\Controllers\TanggapanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanPengurusController;
 use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
+use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
 use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
 
 Route::get('/', function () {
@@ -157,6 +158,12 @@ Route::middleware(['role:3'])->group(function () {
     Route::get('/qam/kelompok/search', [QamRencanaAuditController::class, 'search'])->name('qam.kelompok.search');
     Route::get('/qam/kelompok/get-cif', [QamRencanaAuditController::class, 'getCif'])->name('qam.kelompok.get-cif');
     // End Rencana Audit Routes
+
+    // Laporan Routes
+    Route::get('/qam/laporan', [QamLaporanController::class, 'index'])->name('qam.laporan.index');
+    Route::get('/qam/laporan/pdf/{id}', [QamLaporanController::class, 'pdf'])->name('qam.laporan.pdf');
+    Route::get('/qam/laporan/export-excel', [QamLaporanController::class, 'export_excel'])->name('qam.laporan.export_excel');
+    // End Laporan Routes
 
         // Fraud Alert Routes
     Route::get('/qam/fraud-alert', [FraudAlertController::class, 'qam'])->name('qam.fraud.alerts');

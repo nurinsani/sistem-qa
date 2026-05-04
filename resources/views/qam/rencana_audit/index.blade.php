@@ -193,65 +193,120 @@
 
         // Form Submit Audit Khusus
         $('#formAuditKhusus').on('submit', function(e) {
-            e.preventDefault();
-            
-            // Validasi minimal 1 CIF dipilih
-            if ($('.cif-checkbox:checked').length === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Perhatian!',
-                    text: 'Pilih minimal 1 CIF untuk audit khusus'
-                });
-                return;
-            }
-
-            let formData = new FormData(this);
-            
-            $.ajax({
-                url: "{{ route('qam.audit.khusus.store') }}", // Sesuaikan dengan route Anda
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                beforeSend: function() {
-                    $('#btnSubmit').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
-                },
-                success: function(response) {
-                    $('#modalAuditKhusus').modal('hide');
-                    $('#formAuditKhusus')[0].reset();
-                    $('#kode_kel').val(null).trigger('change');
-                    
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: response.message || 'Data audit khusus berhasil disimpan',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    
-                    table.ajax.reload();
-                },
-                error: function(xhr) {
-                    let errorMessage = 'Terjadi kesalahan!';
-                    
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        errorMessage = Object.values(errors).flat().join('<br>');
-                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMessage = xhr.responseJSON.message;
-                    }
-                    
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        html: errorMessage
-                    });
-                },
-                complete: function() {
-                    $('#btnSubmit').prop('disabled', false).html('<i class="fa fa-save"></i> Simpan');
-                }
+    e.preventDefault();
+    
+    // Ambil metode input yang dipilih (kelompok atau manual)
+    let inputMethod = $('input[name="input_method"]:checked').val();
+    
+    // Validasi kondisional: Hanya cek CIF jika metodenya adalah 'kelompok'
+    if (inputMethod === 'kelompok') {
+        if ($('.cif-checkbox:checked').length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: 'Pilih minimal 1 CIF untuk audit khusus'
             });
-        });
+            return;
+        }
+    } else {
+        // Validasi tambahan untuk mode manual di sisi client (opsional tapi disarankan)
+        if ($('#nik').val().trim() === '' || $('#nama_manual').val().trim() === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: 'NIK dan Nama harus diisi untuk input manual'
+            });
+            return;
+        }
+    }
+
+    let formData = new FormData(this);
+    
+    $.ajax({
+        url: "{{ route('qam.audit.khusus.store') }}",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $('#btnSubmit').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+        },
+        success: function(response) {
+            $('#modalAuditKhusus').modal('hide');
+            $('#formAuditKhusus')[0].reset();
+            
+            // Reset Select2 jika ada
+            if ($('#kode_kel').hasClass("select2-hidden-accessible")) {
+                $('#kode_kel').val(null).trigger('change');
+            }
+            
+            // Bersihkan list CIF
+            $('#list-cif').html('<p class="text-muted text-center mb-0"><i class="fa fa-info-circle"></i> Pilih kelompok terlebih dahulu</p>');
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: response.message || 'Data audit khusus berhasil disimpan',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            
+            // Reload datatable jika variabel 'table' terdefinisi
+            if (typeof table !== 'undefined') {
+                table.ajax.reload();
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = 'Terjadi kesalahan!';
+            
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                errorMessage = Object.values(errors).flat().join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                html: errorMessage
+            });
+        },
+        complete: function() {
+            $('#btnSubmit').prop('disabled', false).html('<i class="fa fa-save"></i> Simpan');
+        }
+    });
+});
+
+        $(document).ready(function() {
+    $('input[name="input_method"]').on('change', function() {
+        let method = $(this).val();
+
+        if (method === 'manual') {
+            // Sembunyikan Kelompok & CIF
+            $('#section-kelompok').hide();
+            $('#section-cif').hide();
+            // Tampilkan Manual
+            $('#section-manual').fadeIn();
+
+            // Atur attribute required
+            $('#kode_kel').attr('required', false);
+            $('#nik').attr('required', true);
+            $('#nama_manual').attr('required', true);
+        } else {
+            // Tampilkan Kelompok & CIF
+            $('#section-kelompok').fadeIn();
+            $('#section-cif').fadeIn();
+            // Sembunyikan Manual
+            $('#section-manual').hide();
+
+            // Atur attribute required
+            $('#kode_kel').attr('required', true);
+            $('#nik').attr('required', false);
+            $('#nama_manual').attr('required', false);
+        }
+    });
+});
         
     });
 </script>

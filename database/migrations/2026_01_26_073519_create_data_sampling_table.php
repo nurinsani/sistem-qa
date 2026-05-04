@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('data_sampling', function (Blueprint $table) {
             $table->id();
             $table->string('unit',6);
-            $table->string('cif',10);
+            $table->string('cif',10)->nullable();
+            $table->string('nik',20)->nullable();
             $table->string('id_ref_sampling',25);
             $table->string('nama',100);
-            $table->string('kode_kel',10);
-            $table->string('cao',6);
+            $table->string('kode_kel',10)->nullable();
+            $table->string('cao',6)->nullable();
             $table->enum('jenis_audit',['audit_rutin','audit_khusus']);
             $table->bigInteger('user_id');
             $table->string('status_sampling', 15);

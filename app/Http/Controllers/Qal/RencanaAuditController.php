@@ -34,30 +34,38 @@ class RencanaAuditController extends Controller
         ->get();
 
         $title = 'Rencana Audit';
+
+        // Inisialisasi variabel dengan Collection kosong agar compact() tidak error
+        $branch = collect(); 
+        $kelompok = collect();
         
-        $masterQa = DB::table('masterqa')
-            ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_area')
+        $dataQa = DB::table('masterqa')
+            ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_region')
             ->where('code_qa', Auth::user()->code_qa)
-            ->first();
+            ->first(); // Gunakan first agar langsung jadi objek
 
-        $ambilArea = $masterQa ? $masterQa->kode_unit : null;
 
-        $kelompok = Kelompok::where('code_unit', $masterQa->kode_branch)->get();
+        if ($dataQa) {
+            $kodeBranch = $dataQa->kode_branch;
+            $kodeArea   = $dataQa->code_region;
 
-        // 1. Ambil data user yang sedang login
-        $userLogin = auth()->user();
+            // Untuk dropdown unit manual atau data lainnya
+            $branch = Branch::where('code_region', $kodeArea)->get();
+            $kelompok = Kelompok::where('code_unit', $kodeArea)->get();
+        }
+            
+        $userLogin = auth()->user(); 
         
-        // 2. Ambil code_qa dari user yang login (misal: 2220)
         $myCodeQa = $userLogin->code_qa;
 
-        // 3. Query ambil data dari tabel users, join ke masterqa untuk filter field 'atasan'
         $qa = DB::table('users')
             ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
             ->where('masterqa.atasan', $myCodeQa)
             ->select('users.id', 'users.name')
             ->get();
 
-        return view('qal.rencana_audit.index', compact('menus', 'title', 'kelompok', 'qa'));
+
+        return view('qal.rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok', 'qa'));
     }
 
     public function data(Request $request)
@@ -165,97 +173,123 @@ class RencanaAuditController extends Controller
 
     public function auditKhususStore(Request $request)
     {
-        $validated = $request->validate([
-            'code_kel' => 'required',
-            'nama_kelompok' => 'required',
-            'nama_ao' => 'nullable',
-            'user_id' => 'required',
-            'tanggal_awal' => 'required|date',
-            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
-            'cif' => 'required|array|min:1',
-            'cif.*' => 'required|string',
-        ],
-        [
-            'code_kel.required' => 'Kelompok harus dipilih',
-            'nama_kelompok.required' => 'Nama kelompok harus diisi',
-            'tanggal_awal.required' => 'Tanggal awal harus diisi',
-            'tanggal_akhir.required' => 'Tanggal akhir harus diisi',
-            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus setelah atau sama dengan tanggal awal',
-            'cif.required' => 'CIF harus dipilih minimal 1',
-            'cif.min' => 'CIF harus dipilih minimal 1',
-            'user_id.required' => 'QA harus dipilih',
-        ]);
+        // Tentukan aturan validasi berdasarkan input_method
+        $isManual = $request->input_method === 'manual';
 
-        // Generate ID Ref Sampling berdasarkan tanggal dan kode kelompok
+        $rules = [
+            'input_method'  => 'required|in:kelompok,manual',
+            'user_id'       => 'required',
+            'tanggal_awal'  => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
+        ];
+
+        if ($isManual) {
+            $rules['nik']          = 'required|string';
+            $rules['nama_manual']  = 'required|string';
+        } else {
+            $rules['code_kel']     = 'required';
+            $rules['nama_kelompok']= 'required';
+            $rules['cif']          = 'required|array|min:1';
+            $rules['cif.*']        = 'required|string';
+        }
+
+        $messages = [
+            'nik.required'           => 'NIK harus diisi',
+            'nama_manual.required'   => 'Nama harus diisi',
+            'code_kel.required'      => 'Kelompok harus dipilih',
+            'cif.required'           => 'CIF harus dipilih minimal 1',
+            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus setelah atau sama dengan tanggal awal',
+            'user_id.required'       => 'QA harus dipilih',
+        ];
+
+        $validated = $request->validate($rules, $messages);
+
+        // Generate ID Ref Sampling
         $tanggal = Carbon::parse($request->tanggal_awal);
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
         
-        $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
+        // Jika manual, gunakan NIK sebagai pengganti kode kelompok untuk ID Ref
+        $suffix = $isManual ? $validated['nik'] : $validated['code_kel'];
+        $idRefSampling = $tahun . $bulan . $suffix . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
 
         try {
-            DB::transaction(function () use ($validated, $idRefSampling, $request) {
+            DB::transaction(function () use ($validated, $idRefSampling, $isManual, $request) {
+                
+                $unit = null;
+                $itemsToInsert = [];
 
-                // Ambil data unit dari salah satu CIF yang dipilih
-                $firstCif = $validated['cif'][0];
-                $unitData = DB::table('data_loan_mob')
-                    ->where('cif', $firstCif)
-                    ->where('code_kel', $validated['code_kel'])
-                    ->first();
-
-                if (!$unitData) {
-                    throw new \Exception('Data CIF tidak ditemukan di database');
-                }
-
-                // Simpan data rencana audit
-                RencanaAudit::create([
-                    'unit' => $unitData->unit ?? '001',
-                    'id_ref_sampling' => $idRefSampling,
-                    'tanggal_awal' => $validated['tanggal_awal'],
-                    'tanggal_akhir' => $validated['tanggal_akhir'],
-                    'jumlah_sampling' => count($validated['cif']),
-                    'status' => 'proses',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-
-                // Ambil data detail untuk setiap CIF yang dipilih
-                foreach ($validated['cif'] as $cif) {
-                    $dataCif = DB::table('data_loan_mob')
-                        ->where('cif', $cif)
+                if (!$isManual) {
+                    $firstCif = $validated['cif'][0];
+                    $unitData = DB::table('data_loan_mob')
+                        ->where('cif', $firstCif)
                         ->where('code_kel', $validated['code_kel'])
-                        ->select(
-                            'unit',
-                            'cif',
-                            'Cust_short_name as nama',
-                            'code_kel as kode_kel',
-                            'cao'
-                        )
                         ->first();
 
-                    if ($dataCif) {
-                        // Insert ke data_sampling
-                        DB::table('data_sampling')->insert([
-                            'unit' => $dataCif->unit,
-                            'cif' => $dataCif->cif,
-                            'id_ref_sampling' => $idRefSampling,
-                            'nama' => $dataCif->nama,
-                            'kode_kel' => $dataCif->kode_kel,
-                            'cao' => $dataCif->cao,
-                            'jenis_audit' => 'audit_khusus',
-                            'user_id' => $validated['user_id'],
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                            'status_sampling' => 'KH01',
-                            'status' => 'proses',
-                        ]);
+                    if (!$unitData) throw new \Exception('Data CIF tidak ditemukan di database');
+                    $unit = $unitData->unit;
+
+                    foreach ($validated['cif'] as $cif) {
+                        $dataCif = DB::table('data_loan_mob')
+                            ->where('cif', $cif)
+                            ->where('code_kel', $validated['code_kel'])
+                            ->select('unit', 'cif', 'Cust_short_name as nama', 'code_kel', 'cao')
+                            ->first();
+
+                        if ($dataCif) {
+                            $itemsToInsert[] = [
+                                'unit'            => $dataCif->unit,
+                                'cif'             => $dataCif->cif,
+                                'id_ref_sampling' => $idRefSampling,
+                                'nama'            => $dataCif->nama,
+                                'kode_kel'        => $dataCif->code_kel,
+                                'cao'             => $dataCif->cao,
+                                'jenis_audit'     => 'audit_khusus',
+                                'user_id'         => $validated['user_id'],
+                                'created_at'      => now(),
+                                'updated_at'      => now(),
+                                'status_sampling' => 'KH01',
+                                'status'          => 'proses',
+                            ];
+                        }
                     }
+                } else {
+                    $unit = auth()->user()->unit ?? '001';
+                    
+                    $itemsToInsert[] = [
+                        'unit'            => $unit,
+                        'cif'             => $validated['nik'],
+                        'id_ref_sampling' => $idRefSampling,
+                        'nama'            => $validated['nama_manual'],
+                        'kode_kel'        => '-',
+                        'cao'             => '-',
+                        'jenis_audit'     => 'audit_khusus',
+                        'user_id'         => $validated['user_id'],
+                        'created_at'      => now(),
+                        'updated_at'      => now(),
+                        'status_sampling' => 'KH01',
+                        'status'          => 'proses',
+                    ];
                 }
+                // Simpan ke Rencana Audit
+                RencanaAudit::create([
+                    'unit'            => $unit,
+                    'id_ref_sampling' => $idRefSampling,
+                    'tanggal_awal'    => $validated['tanggal_awal'],
+                    'tanggal_akhir'   => $validated['tanggal_akhir'],
+                    'jumlah_sampling' => count($itemsToInsert),
+                    'status'          => 'proses',
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ]);
+
+                // Simpan data sampling ke tabel data_sampling
+                DB::table('data_sampling')->insert($itemsToInsert);
             });
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data audit khusus berhasil disimpan dengan ' . count($validated['cif']) . ' CIF'
+                'message' => 'Data audit khusus berhasil disimpan'
             ]);
             
         } catch (\Exception $e) {

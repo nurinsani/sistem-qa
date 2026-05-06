@@ -272,7 +272,7 @@
             </div>
         </div> --}}
 
-        @include('tanggapan.informasi_anggota')
+        @include('qam.dashboard.informasi_anggota')
 
         <div class="card">
             <div class="card-header">

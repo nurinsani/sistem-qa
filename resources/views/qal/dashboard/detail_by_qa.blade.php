@@ -48,11 +48,40 @@
                                         <td>{{ $item->dataSampling->nama }}</td>
                                         <td>{{ $item->dataSampling->kelompok->nama_kel }}</td>
                                         <td>{{ $item->dataSampling->ao->nama_ao }}</td>
-                                        <td>{{ $item->dataSampling->jenis_audit }}</td>
-                                        <td>{{ $item->dataSampling->status_sampling }}</td>
-                                        <td>{{ $item->dataSampling->status }}</td>
+                                        <td> 
+                                            @if ($item->dataSampling->jenis_audit === 'audit_khusus')
+                                                <span class="badge badge-primary">KHUSUS</span>
+                                            @elseif ($item->dataSampling->jenis_audit === 'audit_rutin')
+                                                <span class="badge badge-secondary">RUTIN</span>
+                                            @endif
+                                        </td>
                                         <td>
-                                            <a href="{{ route('qal.dashboard.detailAudit', ['id' => $item->id, 'cif' => $item->cif]) }}" class="btn btn-primary btn-sm">Lihat</a>
+                                            @if ($item->dataSampling->status_sampling === 'LOW')
+                                                <span class="badge badge-success">LOW</span>
+                                            @elseif ($item->dataSampling->status_sampling === 'MEDIUM')
+                                                <span class="badge badge-warning">MEDIUM</span>
+                                            @elseif ($item->dataSampling->status_sampling === 'HIGH')
+                                                <span class="badge badge-danger">HIGH</span>
+                                            @else
+                                                <span class="badge badge-danger">HIGH</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($item->dataSampling->status === 'proses')
+                                                <span class="badge badge-primary">PROSES</span>
+                                            @elseif ($item->dataSampling->status === 'tanggapan')
+                                                <span class="badge badge-warning">TANGGAPAN</span>
+                                            @elseif ($item->dataSampling->status === 'evaluasi')
+                                                <span class="badge badge-warning">EVALUASI</span>
+                                            @else
+                                                <span class="badge badge-success">SELESAI</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('qal.dashboard.detailAudit', ['id' => $item->id, 'cif' => $item->cif]) }}"
+                                                class="btn btn-primary btn-sm">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

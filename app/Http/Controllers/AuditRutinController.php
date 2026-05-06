@@ -42,7 +42,7 @@ class AuditRutinController extends Controller
     public function getData()
     {
         $data_sampling = DataSampling::with(['branch','kelompok','ao'])
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->where('jenis_audit', 'audit_rutin')
             ->where('status', 'proses')
             ->get();
@@ -138,6 +138,16 @@ class AuditRutinController extends Controller
             ->orderBy('audit.created_at', 'desc')
             ->get();
 
+        $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+            ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+            ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif')
+            ->where('data_sampling.cif', $cif)
+            ->select(
+                'data_sampling.*',
+                'fraud_alerts.flag_reason as flag_reason',
+            )
+            ->first();
+
 
         return view('audit_rutin.detail', compact(
             'menus',
@@ -150,7 +160,8 @@ class AuditRutinController extends Controller
             'groupedKetentuan',
             'params',
             'kategoriParams',
-            'history_audit'
+            'history_audit',
+            'data_sampling'
         ));
     }
 

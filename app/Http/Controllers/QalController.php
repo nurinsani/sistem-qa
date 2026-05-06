@@ -231,6 +231,18 @@ class QalController extends Controller
         // Base URL file
         $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
 
+        $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+            ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+            ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif')
+            ->where('data_sampling.cif', $cif)
+            ->select(
+                'data_sampling.*',
+                'fraud_alerts.flag_reason as flag_reason',
+            )
+            ->first();
+
+        // dd($data_sampling);
+
         return view('qal.dashboard.detail_audit', compact(
             'menus',
             'title',
@@ -240,7 +252,8 @@ class QalController extends Controller
             'baseFile',
             'temuanLain',
             'temuan',
-            'tanggapan'
+            'tanggapan',
+            'data_sampling'
         ));
     }
 }

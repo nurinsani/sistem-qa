@@ -172,11 +172,6 @@ class TanggapanController extends Controller
 
         $title = 'Tanggapan Edit';
 
-        // $audit = DB::table('audit')
-        //     ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
-        //     ->where('audit.id', $id)
-        //     ->first();
-
         $audit = DB::table('audit')
         ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
         ->where('audit.id', $id)

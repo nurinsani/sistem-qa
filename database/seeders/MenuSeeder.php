@@ -165,5 +165,20 @@ class MenuSeeder extends Seeder
             'order' => 1,
         ]);
 
+        Menu::create([
+            'name' => 'Param Ketentuan',
+            'icon' => 'fas fa-cogs nav-icon',
+            'url' => '/qam/param-ketentuan',
+            'role_id' => 3,
+            'order' => 7,
+        ]);
+                Menu::create([
+            'name' => 'Param Profil',
+            'icon' => 'fas fa-user-cog nav-icon',
+            'url' => '/qam/param-profil',
+            'role_id' => 3,
+            'order' => 8,
+        ]);
+
     }
 }

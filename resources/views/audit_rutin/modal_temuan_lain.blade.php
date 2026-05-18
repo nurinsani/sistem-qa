@@ -22,12 +22,10 @@
                         <div class="card-header p-0 pt-1 border-bottom-0">
                             <ul class="nav nav-tabs" role="tablist">
 
-                                @foreach($kategoriParams as $index => $kategori)
+                                @foreach ($kategoriParams as $index => $kategori)
                                     <li class="nav-item">
-                                        <a class="nav-link {{ $index == 0 ? 'active' : '' }}"
-                                        data-toggle="pill"
-                                        href="#tab-{{ Str::slug($kategori) }}"
-                                        role="tab">
+                                        <a class="nav-link {{ $index == 0 ? 'active' : '' }}" data-toggle="pill"
+                                            href="#tab-{{ Str::slug($kategori) }}" role="tab">
                                             {{ $kategori }}
                                         </a>
                                     </li>
@@ -35,10 +33,7 @@
 
                                 {{-- Dokumen Ceklis tetap manual --}}
                                 <li class="nav-item">
-                                    <a class="nav-link"
-                                    data-toggle="pill"
-                                    href="#tab-dokumen-ceklis"
-                                    role="tab">
+                                    <a class="nav-link" data-toggle="pill" href="#tab-dokumen-ceklis" role="tab">
                                         Dokumen Ceklis
                                     </a>
                                 </li>
@@ -101,7 +96,6 @@
                                                 </table>
                                             </div>
                                         @else
-
                                             @php
                                                 $dokumenList = [
                                                     'Aplikasi',
@@ -155,59 +149,55 @@
                                     </div>
                                 @endforeach
 
-                                <div class="tab-pane fade"
-    id="tab-dokumen-ceklis"
-    role="tabpanel">
+                                <div class="tab-pane fade" id="tab-dokumen-ceklis" role="tabpanel">
 
-    @php
-        $dokumenList = [
-            'Aplikasi',
-            'KTP',
-            'KTP Penjamin',
-            'Kartu Keluarga',
-            'Form Checklist Dokumen',
-            'Akad Wakalah',
-            'Akad Murabahah',
-            'Akad Laryswah',
-            'Form Permohonan Anggota',
-            'Kartu Angsuran',
-            'Persyaratan Lainya',
-        ];
-    @endphp
+                                    @php
+                                        $dokumenList = [
+                                            'Aplikasi',
+                                            'KTP',
+                                            'KTP Penjamin',
+                                            'Kartu Keluarga',
+                                            'Form Checklist Dokumen',
+                                            'Akad Wakalah',
+                                            'Akad Murabahah',
+                                            'Akad Laryswah',
+                                            'Form Permohonan Anggota',
+                                            'Kartu Angsuran',
+                                            'Persyaratan Lainya',
+                                        ];
+                                    @endphp
 
-    <input type="hidden" name="id_audit_detail"
-        value="{{ $auditDetail->id ?? 1 }}">
+                                    <input type="hidden" name="id_audit_detail" value="{{ $auditDetail->id ?? 1 }}">
 
-    <table class="table table-bordered table-sm">
-        <thead class="bg-light">
-            <tr>
-                <th width="60">#</th>
-                <th width="500">Dokumen</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($dokumenList as $i => $dok)
-                <tr>
-                    <td class="text-center">
-                        <input type="hidden"
-                            name="dokumen[{{ $i }}][status]"
-                            value="tidak ada">
+                                    <table class="table table-bordered table-sm">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th width="60">#</th>
+                                                <th width="500">Dokumen</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($dokumenList as $i => $dok)
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <input type="hidden"
+                                                            name="dokumen[{{ $i }}][status]"
+                                                            value="tidak ada">
 
-                        <input type="checkbox"
-                            name="dokumen[{{ $i }}][status]"
-                            value="ada">
+                                                        <input type="checkbox"
+                                                            name="dokumen[{{ $i }}][status]" value="ada">
 
-                        <input type="hidden"
-                            name="dokumen[{{ $i }}][deskripsi]"
-                            value="{{ $dok }}">
-                    </td>
-                    <td>{{ $dok }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                                                        <input type="hidden"
+                                                            name="dokumen[{{ $i }}][deskripsi]"
+                                                            value="{{ $dok }}">
+                                                    </td>
+                                                    <td>{{ $dok }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
 
-</div>
+                                </div>
 
                             </div>
                         </div>

@@ -55,7 +55,7 @@
                             <i class="fas fa-search"></i> Cari
                         </button>
 
-                        <a href="{{ route('laporan.index') }}"
+                        <a href="{{ route('pengurus.laporan.index') }}"
                             class="btn btn-secondary">
                             Reset
                         </a>

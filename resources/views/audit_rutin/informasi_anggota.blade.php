@@ -95,6 +95,12 @@
                             <td>:</td>
                             <td>{{ number_format($data_sampling->rata_rata_omzet ?? 0, 0, ',', '.') }}</td>
                         </tr>
+
+                        <tr>
+                            <td>Flag Reason</td>
+                            <td>:</td>
+                            <td>{{ $data_sampling->flag_reason }}</td>
+                        </tr>
                     </table>
 
                 </div>

@@ -60,8 +60,8 @@
                 { data: 'kelompok.nama_kel' },
                 { data: 'ao.nama_ao', defaultContent: '-' },
                 { data: 'status_sampling', render: function(data){
-                    if(data === 'LOW') return '<span class="badge badge-success">LOW</span>';
-                    if(data === 'MEDIUM') return '<span class="badge badge-warning">MEDIUM</span>';
+                    if(data === 'Low') return '<span class="badge badge-success">LOW</span>';
+                    if(data === 'Moderat') return '<span class="badge badge-warning">MEDIUM</span>';
                     return '<span class="badge badge-danger">HIGH</span>';
                 }},
                 { data: null, render: function(data){

@@ -116,15 +116,36 @@ class PengurusController extends Controller
         $year = now()->year;
 
         $audits = Audit::with('dataSampling.ao') // Load data sampling dan relasi di dalamnya (misal: ao)
-        ->whereHas('dataSampling.qa', function($query) use ($user_id) {
-            $query->where('id', $user_id);
-        })
-        ->whereMonth('created_at', $bulan)
-        ->whereYear('created_at', $year)
-        ->get();
+            ->whereHas('dataSampling.qa', function($query) use ($user_id) {
+                $query->where('id', $user_id);
+            })
+            ->whereMonth('created_at', $bulan)
+            ->whereYear('created_at', $year)
+            ->get();
+
+        $audit_proses = DB::table('data_sampling')
+            ->join('users', 'data_sampling.user_id', '=', 'users.id') 
+            ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
+            ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
+            ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
+            
+            ->where('users.id', $user_id)
+            ->whereIn('data_sampling.status', ['proses', 'pending'])
+            ->whereMonth('data_sampling.created_at', $bulan)
+            ->whereYear('data_sampling.created_at', $year)
+            
+            // Pilih kolom yang dibutuhkan saja agar performa ringan
+            ->select(
+                'data_sampling.*',
+                'branch.unit',
+                'kelompok.nama_kel',
+                'ao.nama_ao'
+            )
+            ->get();
 
         return view('pengurus.dashboard.detail_by_qa', [
             'audits' => $audits,
+            'audit_proses' => $audit_proses,
             'qaEmail' => $user_id,
             'bulan' => $bulan,
             'title' => $title,
@@ -154,12 +175,14 @@ class PengurusController extends Controller
             ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
             ->where('audit.id', $id)
             ->first();
+
+        $idRefSampling = $audit->id_ref_sampling ?? $id;
         
         $temuanLain = DB::table('temuan_lain')
             ->leftJoin('param_profil', 'param_profil.id', '=', 'temuan_lain.id_param_profil')
             ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan_lain.id_ketentuan')
-            ->where('temuan_lain.id_ref_sampling', $audit->id_ref_sampling)
-            ->where('temuan_lain.cif', $audit->cif)
+            ->where('temuan_lain.id_ref_sampling', $idRefSampling)
+            ->where('temuan_lain.cif', $cif)
             ->select(
                 'temuan_lain.*',
                 'param_profil.deskripsi as pertanyaan',
@@ -170,8 +193,8 @@ class PengurusController extends Controller
         $temuan = DB::table('temuan')
             ->leftJoin('param_profil', 'param_profil.id', '=', 'temuan.id_param_profil')
             ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan.id_ketentuan')
-            ->where('temuan.id_ref_sampling', $audit->id_ref_sampling)
-            ->where('temuan.cif', $audit->cif)
+            ->where('temuan.id_ref_sampling', $idRefSampling)
+            ->where('temuan.cif', $cif)
             ->select(
                 'temuan.*',
                 'param_profil.deskripsi as pertanyaan',
@@ -179,7 +202,8 @@ class PengurusController extends Controller
             )
             ->get();
 
-        $tanggapan = Tanggapan::where('id_audit', $audit->id)->first();
+        // $tanggapan = Tanggapan::where('id_audit', $id)->first();
+        $tanggapan = $audit ? Tanggapan::where('id_audit', $audit->id)->first() : null;
 
         // api CIF
         $urlCif = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;

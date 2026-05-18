@@ -41,7 +41,7 @@ class AuditKhususController extends Controller
     public function getData()
     {
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->where('jenis_audit', 'audit_khusus')
             ->where('status', 'proses')
             ->get();
@@ -129,6 +129,16 @@ class AuditKhususController extends Controller
             ->distinct()
             ->pluck('kategori_param');
 
+        $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+            ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+            ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif')
+            ->where('data_sampling.cif', $cif)
+            ->select(
+                'data_sampling.*',
+                'fraud_alerts.flag_reason as flag_reason',
+            )
+            ->first();
+
 
         return view('audit_khusus.detail', compact(
             'menus',
@@ -140,7 +150,8 @@ class AuditKhususController extends Controller
             'ketentuans',
             'groupedKetentuan',
             'params',
-            'kategoriParams'
+            'kategoriParams',
+            'data_sampling'
         ));
     }
 

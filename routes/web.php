@@ -15,6 +15,8 @@ use App\Http\Controllers\RencanaAuditController;
 use App\Http\Controllers\TanggapanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanPengurusController;
+use App\Http\Controllers\ParamKetentuanController;
+use App\Http\Controllers\ParamProfilController;
 use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
 use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
 use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
@@ -100,16 +102,6 @@ Route::middleware(['role:1'])->group(function () {
     Route::patch('/qa/evaluasi/lanjut/{id}', [EvaluasiController::class, 'updateStatusLanjut'])->name('evaluasi.lanjut');
     // End Evaluasi Routes
 
-    // Laporan Routes
-    Route::get('/qa/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('/qa/laporan/pdf/{id}', [LaporanController::class, 'pdf'])->name('laporan.pdf');
-    Route::get('/qa/laporan/export-excel', [LaporanController::class, 'export_excel']);
-    // End Laporan Routes
-
-    // Fraud Alert Routes
-    // Route::get('/qa/fraud-alert', [FraudAlertController::class, 'index'])->name('fraud.alerts');
-    // Route::get('/fraud-alerts/export', [FraudAlertController::class, 'export'])
-    //     ->name('fraud.alerts.export');
 });
 
 Route::middleware(['role:2'])->group(function () {
@@ -165,10 +157,29 @@ Route::middleware(['role:3'])->group(function () {
     Route::get('/qam/laporan/export-excel', [QamLaporanController::class, 'export_excel'])->name('qam.laporan.export_excel');
     // End Laporan Routes
 
-        // Fraud Alert Routes
+    // Fraud Alert Routes
     Route::get('/qam/fraud-alert', [FraudAlertController::class, 'qam'])->name('qam.fraud.alerts');
     Route::get('/qam/fraud-alerts/export', [FraudAlertController::class, 'export'])
         ->name('qam.fraud.alerts.export');
+    // End Fraud Alert Routes
+
+    // Parameter Ketentuan Routes
+    Route::get('/qam/param-ketentuan', [ParamKetentuanController::class, 'index'])->name('qam.param.ketentuan');
+    Route::get('/qam/param-ketentuan/data', [ParamKetentuanController::class, 'getData'])->name('qam.param_ketentuan.data');
+    Route::post('/qam/param-ketentuan/store', [ParamKetentuanController::class, 'store'])->name('qam.param_ketentuan.store');
+    Route::get('/qam/param-ketentuan/edit/{id}', [ParamKetentuanController::class, 'edit']);
+    Route::post('/qam/param-ketentuan/update/{id}', [ParamKetentuanController::class, 'update']);
+    Route::post('/qam/param-ketentuan/delete/{id}', [ParamKetentuanController::class, 'destroy']);
+    // End Parameter Ketentuan Routes
+
+    // Parameter Profil Routes
+    Route::get('/qam/param-profil', [ParamProfilController::class, 'index'])->name('qam.param.profil');
+    Route::get('/qam/param-profil/data', [ParamProfilController::class, 'getData'])->name('qam.param_profil.data');
+    Route::post('/qam/param-profil/store', [ParamProfilController::class, 'store'])->name('qam.param_profil.store');
+    Route::get('/qam/param-profil/edit/{id}', [ParamProfilController::class, 'edit']);
+    Route::post('/qam/param-profil/update/{id}', [ParamProfilController::class, 'update']);
+    Route::post('/qam/param-profil/delete/{id}', [ParamProfilController::class, 'destroy']);
+    // End Parameter Profil Routes
 });
 
 Route::middleware(['role:4'])->group(function () {

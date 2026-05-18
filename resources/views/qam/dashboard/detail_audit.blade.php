@@ -76,7 +76,7 @@
                 <div class="form-group">
                     <label>Kondisi Usaha</label>
                     <textarea name="kondisi_usaha" id="kondisi_usaha" cols="10" rows="3"
-                        class="form-control @error('kondisi_usaha') is-invalid @enderror" readonly>{{ old('kondisi_usaha', $audit->kondisi_usaha) }}</textarea>
+                        class="form-control @error('kondisi_usaha') is-invalid @enderror" readonly>{{ old('kondisi_usaha', $audit->kondisi_usaha ?? '') }}</textarea>
                     @error('kondisi_usaha')
                         <div class="invalid-feedback mt-2">
                             {{ $message }}
@@ -87,7 +87,7 @@
                 <div class="form-group">
                     <label>Kondisi Keluarga</label>
                     <textarea name="kondisi_keluarga" id="kondisi_keluarga" cols="10" rows="3"
-                        class="form-control @error('kondisi_keluarga') is-invalid @enderror" readonly>{{ old('kondisi_keluarga', $audit->kondisi_keluarga) }}</textarea>
+                        class="form-control @error('kondisi_keluarga') is-invalid @enderror" readonly>{{ old('kondisi_keluarga', $audit->kondisi_keluarga ?? '') }}</textarea>
                     @error('kondisi_keluarga')
                         <div class="invalid-feedback mt-2">
                             {{ $message }}
@@ -98,7 +98,7 @@
                 <div class="form-group">
                     <label>Kondisi Lingkungan</label>
                     <textarea name="kondisi_lingkungan" id="kondisi_lingkungan" cols="10" rows="3"
-                        class="form-control @error('kondisi_lingkungan') is-invalid @enderror" readonly>{{ old('kondisi_lingkungan', $audit->kondisi_lingkungan) }}</textarea>
+                        class="form-control @error('kondisi_lingkungan') is-invalid @enderror" readonly>{{ old('kondisi_lingkungan', $audit->kondisi_lingkungan ?? '') }}</textarea>
                     @error('kondisi_lingkungan')
                         <div class="invalid-feedback mt-2">
                             {{ $message }}
@@ -111,7 +111,7 @@
 
                     <div class="d-flex">
                         <textarea name="temuan" id="temuan" class="form-control @error('temuan') is-invalid @enderror" rows="3"
-                            readonly>{{ old('temuan', $audit->temuan) }}</textarea>
+                            readonly>{{ old('temuan', $audit->temuan ?? '') }}</textarea>
 
                         <button type="button" class="btn btn-danger btn-sm ml-2 align-self-start" data-toggle="modal"
                             data-target="#modalKetentuanTemuan">
@@ -192,14 +192,14 @@
         @include('tanggapan.modal_temuan_lain')
         @include('tanggapan.modal_ketentuan_temuan')
 
-{{--         
+        
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Form Tanggapan</h3>
             </div>
             <div class="card-body">
 
-                <form action="{{ route('tanggapan.store', $audit->id_audit) }}" method="POST">
+                <form action="#" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
@@ -270,7 +270,7 @@
                     
                 </form>
             </div>
-        </div> --}}
+        </div>
 
         @include('qam.dashboard.informasi_anggota')
 

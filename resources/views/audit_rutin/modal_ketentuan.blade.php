@@ -40,56 +40,66 @@
 
                     <!-- Konten Ketentuan -->
                     <div class="col-md-9">
+    <form id="formKetentuan">
 
-                        <form id="formKetentuan">
+        @foreach ($groupedKetentuan as $subHeading => $items)
+            <div class="ketentuan-group {{ !$loop->first ? 'd-none' : '' }}"
+                id="{{ Str::slug($subHeading) }}" 
+                data-page="1">
 
-                            @foreach ($groupedKetentuan as $subHeading => $items)
-                                <div class="ketentuan-group {{ !$loop->first ? 'd-none' : '' }}"
-                                    id="{{ Str::slug($subHeading) }}">
+                @foreach ($items as $item)
+                    <div class="form-check mb-2 ketentuan-item {{ $loop->index >= 5 ? 'd-none' : '' }}">
+                        <input class="form-check-input" type="checkbox" name="ketentuan[]"
+                            value="{{ $item->id }}" id="ketentuan{{ $item->id }}">
 
-                                    @foreach ($items as $item)
-                                        <div class="form-check mb-2 ketentuan-item">
-                                            <input class="form-check-input" type="checkbox" name="ketentuan[]"
-                                                value="{{ $item->id }}" id="ketentuan{{ $item->id }}">
+                        <label class="form-check-label" for="ketentuan{{ $item->id }}">
+                            <b>{{ $item->nomor_ketentuan }}.</b> <br>
+                            <b>{{ $item->heading }} </b>
 
-                                            <label class="form-check-label" for="ketentuan{{ $item->id }}">
-                                                <b>{{ $item->nomor_ketentuan }}.</b> <br>
-                                                <b>{{ $item->heading }} </b>
+                            @if ($item->sub_heading)
+                                <br><span class="badge badge-info">{{ $item->sub_heading }}</span>
+                            @endif
 
-                                                @if ($item->sub_heading)
-                                                    {{-- <br><small>{{ $item->sub_heading }}</small> --}}
-                                                <br><span class="badge badge-info">{{ $item->sub_heading }}</span>
-                                                @endif
+                            @if ($item->sub_sub_heading)
+                                <br><small><b>{{ $item->sub_sub_heading }}</b></small>
+                            @endif
 
-                                                @if ($item->sub_sub_heading)
-                                                    <br><small><b>{{ $item->sub_sub_heading }}</b></small>
-                                                @endif
+                            @if ($item->sub_sub_sub_heading)
+                                <br><small>{{ $item->sub_sub_sub_heading }}</small>
+                            @endif
 
-                                                @if ($item->sub_sub_sub_heading)
-                                                    <br><small>{{ $item->sub_sub_sub_heading }}</small>
-                                                @endif
-
-                                                @if ($item->sub_sub_sub_sub_heading)
-                                                    <br><small>{{ $item->sub_sub_sub_sub_heading }}</small>
-                                                @endif
-                                            </label>
-                                        </div>
-                                    @endforeach
-
-                                </div>
-                            @endforeach
-
-                            <div class="text-right mt-3">
-                                <button type="button"
-                                        class="btn btn-primary"
-                                        onclick="submitKetentuan()">
-                                    Simpan
-                                </button>
-                            </div>
-
-                        </form>
-
+                            @if ($item->sub_sub_sub_sub_heading)
+                                <br><small>{{ $item->sub_sub_sub_sub_heading }}</small>
+                            @endif
+                        </label>
                     </div>
+                @endforeach
+
+                @if(count($items) > 5)
+                    <div class="sub-pagination d-flex justify-content-end align-items-center mt-3 bg-light p-2 rounded">
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-sub-prev disabled" onclick="paginateGroup('{{ Str::slug($subHeading) }}', 'prev')">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="page-info small mx-3 font-weight-bold">
+                            1 / {{ ceil(count($items) / 5) }}
+                        </span>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-sub-next" onclick="paginateGroup('{{ Str::slug($subHeading) }}', 'next')">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                @endif
+
+            </div>
+        @endforeach
+
+        <div class="d-flex justify-content-end align-items-center mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-success" id="btnSimpanKetentuan" onclick="submitKetentuan()">
+                <i class="fas fa-save mr-1"></i> Simpan
+            </button>
+        </div>
+
+    </form>
+</div>
 
                 </div>
 

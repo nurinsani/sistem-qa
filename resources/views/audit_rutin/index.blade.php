@@ -70,5 +70,7 @@
             ]
         });
     });
+
+    
     </script>
 @endpush

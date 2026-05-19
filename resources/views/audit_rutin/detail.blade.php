@@ -582,6 +582,82 @@
             });
 
         });
+
+        function showKetentuan(slug, element) {
+    $('.ketentuan-group').addClass('d-none');
+    
+    let targetGroup = $('#' + slug);
+    targetGroup.removeClass('d-none');
+
+    // RESET: Kembalikan ke halaman 1 setiap kali pindah sub-heading sidebar
+    targetGroup.attr('data-page', 1);
+    let items = targetGroup.find('.ketentuan-item');
+    items.addClass('d-none');
+    items.slice(0, 5).removeClass('d-none'); // Tampilkan 5 data pertama saja
+    
+    // Reset teks info halaman & tombol sub-navigasi
+    let totalPages = Math.ceil(items.length / 5);
+    targetGroup.find('.page-info').text(`1 / ${totalPages}`);
+    targetGroup.find('.btn-sub-prev').addClass('disabled');
+    if (totalPages > 1) {
+        targetGroup.find('.btn-sub-next').removeClass('disabled');
+    }
+
+    // Atur class active di sidebar
+    $('#sidebarKetentuan .list-group-item').removeClass('active');
+    if (element) {
+        $(element).addClass('active');
+    } else {
+        let cleanSlug = slug.replace(/'/g, "\\'");
+        $(`#sidebarKetentuan a[onclick*="'${cleanSlug}'"]`).addClass('active');
+    }
+
+    updateNavButtons();
+}
+
+// FUNGSI BARU: Mengatur navigasi per 10 data internal grup
+function paginateGroup(groupSlug, direction) {
+    let group = $('#' + groupSlug);
+    let currentPage = parseInt(group.attr('data-page')) || 1;
+    let items = group.find('.ketentuan-item');
+    let totalPages = Math.ceil(items.length / 5);
+
+    if (direction === 'next' && currentPage < totalPages) {
+        currentPage++;
+    } else if (direction === 'prev' && currentPage > 1) {
+        currentPage--;
+    } else {
+        return; // Tidak ada perubahan halaman
+    }
+
+    // Update state halaman saat ini di elemen HTML
+    group.attr('data-page', currentPage);
+
+    // Sembunyikan semua item terlebih dahulu
+    items.addClass('d-none');
+
+    // Rumus slice data (Halaman 1: 0-5, Halaman 2: 5-10, dst)
+    let start = (currentPage - 1) * 5;
+    let end = start + 5;
+    items.slice(start, end).removeClass('d-none');
+
+    // Ubah teks keterangan page (Contoh: "2 / 4")
+    group.find('.page-info').text(`${currentPage} / ${totalPages}`);
+
+    // Aktif/Nonaktifkan tombol prev/next internal berdasarkan posisi page
+    if (currentPage === 1) {
+        group.find('.btn-sub-prev').addClass('disabled');
+    } else {
+        group.find('.btn-sub-prev').removeClass('disabled');
+    }
+
+    if (currentPage === totalPages) {
+        group.find('.btn-sub-next').addClass('disabled');
+    } else {
+        group.find('.btn-sub-next').removeClass('disabled');
+    }
+}
+
     </script>
 
 @endpush

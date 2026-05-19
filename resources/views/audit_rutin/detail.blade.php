@@ -34,16 +34,19 @@
                         <h3 class="card-title">Form Audit</h3>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('audit.rutin.tambah', $data_sampling_detail->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('audit.rutin.tambah', $data_sampling_detail->id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
 
-                            <input type="hidden" name="id_ref_sampling" value="{{ $data_sampling_detail->id_ref_sampling }}">
+                            <input type="hidden" name="id_ref_sampling"
+                                value="{{ $data_sampling_detail->id_ref_sampling }}">
                             <input type="hidden" name="cif" value="{{ $data_sampling_detail->cif }}">
 
                             <div class="form-group">
                                 <label>Tanggal Kunjungan</label>
                                 <input type="date" name="tanggal_kunjungan" id="tanggal_kunjungan"
-                                    class="form-control @error('tanggal_kunjungan') is-invalid @enderror" value="{{ old('tanggal_kunjungan') }}">
+                                    class="form-control @error('tanggal_kunjungan') is-invalid @enderror"
+                                    value="{{ old('tanggal_kunjungan') }}">
                                 @error('tanggal_kunjungan')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -127,10 +130,8 @@
                                 <div class="d-flex">
                                     <textarea name="temuan" id="temuan" class="form-control @error('temuan') is-invalid @enderror" rows="3">{{ old('temuan') }}</textarea>
 
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm ml-2 align-self-start"
-                                            data-toggle="modal" 
-                                            data-target="#modalKetentuan">
+                                    <button type="button" class="btn btn-danger btn-sm ml-2 align-self-start"
+                                        data-toggle="modal" data-target="#modalKetentuan">
                                         Ketentuan
                                     </button>
                                 </div>
@@ -143,9 +144,7 @@
                             </div>
 
                             <div class="form-group">
-                                <button type="button"
-                                    class="btn btn-primary btn-sm"
-                                    data-toggle="modal"
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
                                     data-target="#modalTemuanLain">
                                     Temuan Lain
                                 </button>
@@ -306,7 +305,8 @@
                                     <td>{{ $item->id_ref_sampling ?? '-' }}</td>
                                     <td>{{ $item->jenis_audit ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ url('/qa/audit-rutin/history/' . $item->id . '/' . $item->cif) }}" class="btn btn-info btn-sm">Detail</a>
+                                        <a href="{{ url('/qa/audit-rutin/history/' . $item->id . '/' . $item->cif) }}"
+                                            class="btn btn-info btn-sm">Detail</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -348,7 +348,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let scale = 1;
         let rotate = 0;
@@ -455,45 +455,45 @@
             let formData = new FormData(form);
 
             fetch("{{ route('audit.rutin.ketentuan.store', ['id_ref_sampling' => $data_sampling_detail->id_ref_sampling, 'cif' => $data_sampling_detail->cif]) }}", {
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
 
-                if (data.status === 'success') {
+                    if (data.status === 'success') {
 
-                    $('#modalKetentuan').modal('hide');
+                        $('#modalKetentuan').modal('hide');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: data.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Gagal',
+                            text: data.message ?? 'Terjadi kesalahan'
+                        });
+                    }
+
+                })
+                .catch(error => {
+                    console.error(error);
 
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: data.message,
-                        timer: 1500,
-                        showConfirmButton: false
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan pada server'
                     });
-
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Gagal',
-                        text: data.message ?? 'Terjadi kesalahan'
-                    });
-                }
-
-            })
-            .catch(error => {
-                console.error(error);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan pada server'
                 });
-            });
         }
 
         $('#formTemuanLain').on('submit', function(e) {
@@ -584,80 +584,78 @@
         });
 
         function showKetentuan(slug, element) {
-    $('.ketentuan-group').addClass('d-none');
-    
-    let targetGroup = $('#' + slug);
-    targetGroup.removeClass('d-none');
+            $('.ketentuan-group').addClass('d-none');
 
-    // RESET: Kembalikan ke halaman 1 setiap kali pindah sub-heading sidebar
-    targetGroup.attr('data-page', 1);
-    let items = targetGroup.find('.ketentuan-item');
-    items.addClass('d-none');
-    items.slice(0, 5).removeClass('d-none'); // Tampilkan 5 data pertama saja
-    
-    // Reset teks info halaman & tombol sub-navigasi
-    let totalPages = Math.ceil(items.length / 5);
-    targetGroup.find('.page-info').text(`1 / ${totalPages}`);
-    targetGroup.find('.btn-sub-prev').addClass('disabled');
-    if (totalPages > 1) {
-        targetGroup.find('.btn-sub-next').removeClass('disabled');
-    }
+            let targetGroup = $('#' + slug);
+            targetGroup.removeClass('d-none');
 
-    // Atur class active di sidebar
-    $('#sidebarKetentuan .list-group-item').removeClass('active');
-    if (element) {
-        $(element).addClass('active');
-    } else {
-        let cleanSlug = slug.replace(/'/g, "\\'");
-        $(`#sidebarKetentuan a[onclick*="'${cleanSlug}'"]`).addClass('active');
-    }
+            // RESET: Kembalikan ke halaman 1 setiap kali pindah sub-heading sidebar
+            targetGroup.attr('data-page', 1);
+            let items = targetGroup.find('.ketentuan-item');
+            items.addClass('d-none');
+            items.slice(0, 5).removeClass('d-none'); // Tampilkan 5 data pertama saja
 
-    updateNavButtons();
-}
+            // Reset teks info halaman & tombol sub-navigasi
+            let totalPages = Math.ceil(items.length / 5);
+            targetGroup.find('.page-info').text(`1 / ${totalPages}`);
+            targetGroup.find('.btn-sub-prev').addClass('disabled');
+            if (totalPages > 1) {
+                targetGroup.find('.btn-sub-next').removeClass('disabled');
+            }
 
-// FUNGSI BARU: Mengatur navigasi per 10 data internal grup
-function paginateGroup(groupSlug, direction) {
-    let group = $('#' + groupSlug);
-    let currentPage = parseInt(group.attr('data-page')) || 1;
-    let items = group.find('.ketentuan-item');
-    let totalPages = Math.ceil(items.length / 5);
+            // Atur class active di sidebar
+            $('#sidebarKetentuan .list-group-item').removeClass('active');
+            if (element) {
+                $(element).addClass('active');
+            } else {
+                let cleanSlug = slug.replace(/'/g, "\\'");
+                $(`#sidebarKetentuan a[onclick*="'${cleanSlug}'"]`).addClass('active');
+            }
 
-    if (direction === 'next' && currentPage < totalPages) {
-        currentPage++;
-    } else if (direction === 'prev' && currentPage > 1) {
-        currentPage--;
-    } else {
-        return; // Tidak ada perubahan halaman
-    }
+            updateNavButtons();
+        }
 
-    // Update state halaman saat ini di elemen HTML
-    group.attr('data-page', currentPage);
+        // FUNGSI BARU: Mengatur navigasi per 10 data internal grup
+        function paginateGroup(groupSlug, direction) {
+            let group = $('#' + groupSlug);
+            let currentPage = parseInt(group.attr('data-page')) || 1;
+            let items = group.find('.ketentuan-item');
+            let totalPages = Math.ceil(items.length / 5);
 
-    // Sembunyikan semua item terlebih dahulu
-    items.addClass('d-none');
+            if (direction === 'next' && currentPage < totalPages) {
+                currentPage++;
+            } else if (direction === 'prev' && currentPage > 1) {
+                currentPage--;
+            } else {
+                return; // Tidak ada perubahan halaman
+            }
 
-    // Rumus slice data (Halaman 1: 0-5, Halaman 2: 5-10, dst)
-    let start = (currentPage - 1) * 5;
-    let end = start + 5;
-    items.slice(start, end).removeClass('d-none');
+            // Update state halaman saat ini di elemen HTML
+            group.attr('data-page', currentPage);
 
-    // Ubah teks keterangan page (Contoh: "2 / 4")
-    group.find('.page-info').text(`${currentPage} / ${totalPages}`);
+            // Sembunyikan semua item terlebih dahulu
+            items.addClass('d-none');
 
-    // Aktif/Nonaktifkan tombol prev/next internal berdasarkan posisi page
-    if (currentPage === 1) {
-        group.find('.btn-sub-prev').addClass('disabled');
-    } else {
-        group.find('.btn-sub-prev').removeClass('disabled');
-    }
+            // Rumus slice data (Halaman 1: 0-5, Halaman 2: 5-10, dst)
+            let start = (currentPage - 1) * 5;
+            let end = start + 5;
+            items.slice(start, end).removeClass('d-none');
 
-    if (currentPage === totalPages) {
-        group.find('.btn-sub-next').addClass('disabled');
-    } else {
-        group.find('.btn-sub-next').removeClass('disabled');
-    }
-}
+            // Ubah teks keterangan page (Contoh: "2 / 4")
+            group.find('.page-info').text(`${currentPage} / ${totalPages}`);
 
+            // Aktif/Nonaktifkan tombol prev/next internal berdasarkan posisi page
+            if (currentPage === 1) {
+                group.find('.btn-sub-prev').addClass('disabled');
+            } else {
+                group.find('.btn-sub-prev').removeClass('disabled');
+            }
+
+            if (currentPage === totalPages) {
+                group.find('.btn-sub-next').addClass('disabled');
+            } else {
+                group.find('.btn-sub-next').removeClass('disabled');
+            }
+        }
     </script>
-
 @endpush

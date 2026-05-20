@@ -94,13 +94,11 @@
             <td colspan="2">
                 @foreach ($temuan as $item)
                     <p>
-                        <strong>
-                            Nomor : {{ $item->nomor_ketentuan ?? '-' }} <br>
-
-                        </strong>
                         <small>
                             {{ $item->heading }} <br>
-                            {{ $item->sub_sub_sub_heading }}
+                            {{ $item->sub_heading }} <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;{{ $item->sub_sub_heading }} <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $item->sub_sub_sub_heading }}
                         </small>
                     </p>
                 @endforeach
@@ -169,7 +167,7 @@
                 <br><br>
                 <img src="data:image/png;base64,{{ $qr_qa }}">
                 <br>
-                QA, QoorQA
+                QA
             </td>
 
             <td class="qr">
@@ -177,8 +175,7 @@
                 <br><br>
                 <img src="data:image/png;base64,{{ $qr_qa }}">
                 <br>
-                QR
-                MM
+                BM
             </td>
 
             <td class="qr">
@@ -186,7 +183,6 @@
                 <br><br>
                 <img src="data:image/png;base64,{{ $qr_qa }}">
                 <br>
-                QR
                 AL
             </td>
 
@@ -195,7 +191,6 @@
                 <br><br>
                 <img src="data:image/png;base64,{{ $qr_qa }}">
                 <br>
-                QR
                 AM
             </td>
 

@@ -115,12 +115,28 @@ class PengurusController extends Controller
         $bulan = $request->query('bulan');
         $year = now()->year;
 
-        $audits = Audit::with('dataSampling.ao')
-            ->whereHas('dataSampling.qa', function($query) use ($user_id) {
-                $query->where('id', $user_id);
-            })
-            ->whereMonth('created_at', $bulan)
-            ->whereYear('created_at', $year)
+        $audits = DB::table('audit')
+            ->join('data_sampling', 'audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
+            ->join('users', 'data_sampling.user_id', '=', 'users.id') 
+            ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
+            ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
+            ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
+            
+            ->where('users.id', $user_id)
+            ->whereIn('data_sampling.status', ['selesai', 'evaluasi', 'tanggapan'])
+            ->whereMonth('audit.created_at', $bulan)
+            ->whereYear('audit.created_at', $year)
+            
+            ->select(
+                'audit.*',
+                'data_sampling.nama',
+                'data_sampling.jenis_audit',
+                'data_sampling.status_sampling',
+                'data_sampling.status',
+                'branch.unit',
+                'kelompok.nama_kel',
+                'ao.nama_ao'
+            )
             ->get();
 
         $audit_proses = DB::table('data_sampling')

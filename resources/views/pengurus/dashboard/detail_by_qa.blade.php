@@ -95,7 +95,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('qam.dashboard.detailAudit', ['id' => $item->id, 'cif' => $item->cif]) }}"
+                                                <a href="{{ route('pengurus.dashboard.detailAudit', ['id' => $item->id, 'cif' => $item->cif]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </a>

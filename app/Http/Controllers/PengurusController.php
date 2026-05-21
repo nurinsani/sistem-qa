@@ -115,7 +115,7 @@ class PengurusController extends Controller
         $bulan = $request->query('bulan');
         $year = now()->year;
 
-        $audits = Audit::with('dataSampling.ao') // Load data sampling dan relasi di dalamnya (misal: ao)
+        $audits = Audit::with('dataSampling.ao')
             ->whereHas('dataSampling.qa', function($query) use ($user_id) {
                 $query->where('id', $user_id);
             })
@@ -130,11 +130,10 @@ class PengurusController extends Controller
             ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
             
             ->where('users.id', $user_id)
-            ->whereIn('data_sampling.status', ['proses', 'pending'])
+            ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
             ->whereMonth('data_sampling.created_at', $bulan)
             ->whereYear('data_sampling.created_at', $year)
             
-            // Pilih kolom yang dibutuhkan saja agar performa ringan
             ->select(
                 'data_sampling.*',
                 'branch.unit',

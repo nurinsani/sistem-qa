@@ -115,7 +115,7 @@ class PengurusController extends Controller
         $bulan = $request->query('bulan');
         $year = now()->year;
 
-$audits = DB::table('audit')
+        $audits = DB::table('audit')
             ->join('data_sampling', 'audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
             ->join('users', 'data_sampling.user_id', '=', 'users.id') 
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
@@ -127,7 +127,6 @@ $audits = DB::table('audit')
             ->whereMonth('audit.created_at', $bulan)
             ->whereYear('audit.created_at', $year)
             
-            // Pilih kolom yang dibutuhkan saja agar performa ringan
             ->select(
                 'audit.*',
                 'data_sampling.nama',
@@ -147,11 +146,10 @@ $audits = DB::table('audit')
             ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
             
             ->where('users.id', $user_id)
-            ->whereIn('data_sampling.status', ['proses', 'pending'])
+            ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
             ->whereMonth('data_sampling.created_at', $bulan)
             ->whereYear('data_sampling.created_at', $year)
             
-            // Pilih kolom yang dibutuhkan saja agar performa ringan
             ->select(
                 'data_sampling.*',
                 'branch.unit',

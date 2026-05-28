@@ -117,7 +117,7 @@ class AuditKhususController extends Controller
         // Base URL file
         $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
 
-        $ketentuans = ParamKetentuan::orderBy('nomor_ketentuan')->get();
+        $ketentuans = ParamKetentuan::orderBy('sub_heading', 'asc')->get();
         $groupedKetentuan = $ketentuans->groupBy('sub_heading');
         
         $params = ParamProfil::orderBy('kategori_param')

@@ -38,21 +38,21 @@
                         <td>:</td>
                         <td>{{ $data_api['tgl_join'] ?? '-' }}</td>
                     </tr>
-                    <tr>
-                        <td>NIK</td>
-                        <td>:</td>
-                        <td>{{ $data_api['ktp'] ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Nama</td>
-                        <td>:</td>
-                        <td>{{ $data_api['nama'] ?? '-' }}</td>
-                    </tr>
+                        <tr>
+                            <td>NIK</td>
+                            <td>:</td>
+                            <td>{{ $data_api['ktp'] ?? ($data_sampling_detail->cif ?? '-') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Nama</td>
+                            <td>:</td>
+                            <td>{{ $data_api['nama'] ?? ($data_sampling_detail->nama ?? '-') }}</td>
+                        </tr>
                     <tr>
                         <td>Alamat</td>
                         <td>:</td>
                         <td>
-                            {{ $data_api['alamat'] ?? '' }}
+                            {{ $data_api['alamat'] ?? '-' }}
                             {{ $data_api['rt'] ?? '' }}
                             {{ $data_api['desa'] ?? '' }}
                             {{ $data_api['kecamatan'] ?? '' }}

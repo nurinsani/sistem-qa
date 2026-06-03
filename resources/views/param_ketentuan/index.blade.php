@@ -5,6 +5,9 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">{{ $title }}</h1>
+                <small>
+                    Pengaturan tata cara pemberian pembiayaan, ketentuan-ketentuan yang terdapat pada Pembiayaan.
+                </small>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -33,12 +36,12 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>No. Ketentuan</th>
-                                    <th>Heading</th>
-                                    <th>Sub Heading</th>
-                                    <th>Sub Sub Heading</th>
-                                    <th>Sub Sub Sub Heading</th>
-                                    <th>Sub Sub Sub Sub Heading</th>
-                                    <th>Sub Sub Sub Sub Sub Heading</th>
+                                    <th>Judul Utama</th>
+                                    <th>Sub Judul</th>
+                                    <th>Kriteria</th>
+                                    <th>Detail Aturan</th>
+                                    <th>Sub Detail Aturan</th>
+                                    <th>Sub Sub Detail Aturan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>

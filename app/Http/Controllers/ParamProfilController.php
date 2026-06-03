@@ -25,7 +25,7 @@ class ParamProfilController extends Controller
         ->orderBy('order')
         ->get();
 
-        $title = 'Parameter Profil';
+        $title = 'Parameter Profil (Dasar Jobdesk)';
 
         return view('param_profil.index', compact('menus', 'title'));
     }

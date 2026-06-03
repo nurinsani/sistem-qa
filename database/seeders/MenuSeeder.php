@@ -172,12 +172,21 @@ class MenuSeeder extends Seeder
             'role_id' => 3,
             'order' => 7,
         ]);
-                Menu::create([
+
+        Menu::create([
             'name' => 'Param Profil',
             'icon' => 'fas fa-user-cog nav-icon',
             'url' => '/qam/param-profil',
             'role_id' => 3,
             'order' => 8,
+        ]);
+
+        Menu::create([
+            'name' => 'Reset Password',
+            'icon' => 'fas fa-key nav-icon',
+            'url' => '/qam/reset-password',
+            'role_id' => 3,
+            'order' => 9,
         ]);
 
     }

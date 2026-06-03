@@ -20,13 +20,20 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Level</label>
-                                <input type="text" name="level" id="level" class="form-control">
+                                <select name="level" id="level" class="form-control">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Kategori Param</label>
-                                <input type="text" name="kategori_param" id="kategori_param" class="form-control">
+                                <select name="kategori_param" id="kategori_param" class="form-control">
+                                    <option value="evaluasi">Evaluasi</option>
+                                    <option value="observasi">Observasi</option>
+                                </select>
                             </div>
                         </div>
                     </div>

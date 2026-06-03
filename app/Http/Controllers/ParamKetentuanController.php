@@ -26,7 +26,7 @@ class ParamKetentuanController extends Controller
         ->orderBy('order')
         ->get();
 
-        $title = 'Parameter Ketentuan';
+        $title = 'Parameter Ketentuan (Kebijakan Pembiayaan Kelompok)';
 
         $param_profil = ParamProfil::get();
 

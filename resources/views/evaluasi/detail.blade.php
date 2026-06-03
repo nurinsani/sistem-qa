@@ -117,6 +117,17 @@
                         <div class="col-md-6">
 
                             <div class="form-group">
+                                <label>Tanggapan AL</label>
+                                <textarea name="tanggapan_al" id="tanggapan_al" cols="10" rows="3"
+                                    class="form-control @error('tanggapan_al') is-invalid @enderror">{{ old('tanggapan_al', $tanggapan->tanggapan_al ?? '') }}</textarea>
+                                @error('tanggapan_al')
+                                    <div class="invalid-feedback mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
                                 <label>Tindak Lanjut</label>
                                 <textarea name="tindak_lanjut" id="tindak_lanjut" cols="10" rows="3"
                                     class="form-control @error('tindak_lanjut') is-invalid @enderror">{{ old('tindak_lanjut', $tanggapan->tindak_lanjut ?? '') }}</textarea>
@@ -145,7 +156,7 @@
             </div>
         </div>
 
-        @include('tanggapan.informasi_anggota')
+        @include('evaluasi.informasi_anggota')
 
         <div class="card">
             <div class="card-header">

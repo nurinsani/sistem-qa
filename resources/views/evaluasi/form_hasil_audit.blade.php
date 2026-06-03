@@ -124,6 +124,12 @@
         <a href="{{ route('evaluasi.edit', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-primary">
             Edit
         </a>
+        <form action="{{ route('evaluasi.auditUlang', $audit->cif) }}" method="POST" style="display: inline;">
+            @csrf
+            <button type="submit" class="btn btn-warning" onclick="return confirm('Apakah Anda yakin ingin melakukan audit ulang?')">
+                Audit Ulang
+            </button>
+        </form>
         <form action="{{ route('evaluasi.lanjut', $audit->id_audit) }}" method="POST" style="display: inline;">
             @csrf
             @method('PATCH')

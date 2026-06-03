@@ -20,6 +20,7 @@ use App\Http\Controllers\ParamProfilController;
 use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
 use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
 use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
+use App\Http\Controllers\ResetPasswordController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -100,7 +101,11 @@ Route::middleware(['role:1'])->group(function () {
     Route::post('/qa/evaluasi/{id}', [EvaluasiController::class, 'store'])->name('evaluasi.store');
     Route::put('/qa/evaluasi/{id}', [EvaluasiController::class, 'update'])->name('evaluasi.update');
     Route::patch('/qa/evaluasi/lanjut/{id}', [EvaluasiController::class, 'updateStatusLanjut'])->name('evaluasi.lanjut');
+    Route::post('/qa/evaluasi/audit-ulang/{cif}', [EvaluasiController::class, 'auditUlang'])->name('evaluasi.auditUlang');
     // End Evaluasi Routes
+
+    Route::get('/sampling/cetak-mutasi/{cif}', [RencanaAuditController::class, 'cetakMutasi'])
+    ->name('sampling.cetak.mutasi');
 
 });
 
@@ -180,6 +185,11 @@ Route::middleware(['role:3'])->group(function () {
     Route::post('/qam/param-profil/update/{id}', [ParamProfilController::class, 'update']);
     Route::post('/qam/param-profil/delete/{id}', [ParamProfilController::class, 'destroy']);
     // End Parameter Profil Routes
+
+    // Menampilkan daftar user
+    Route::get('qam/reset-password', [ResetPasswordController::class, 'index'])->name('qam.reset.password');
+    // Memproses reset password oleh admin
+    Route::post('qam/reset-password/{id}', [ResetPasswordController::class, 'resetPassword'])->name('qam.reset.password.process');
 });
 
 Route::middleware(['role:4'])->group(function () {

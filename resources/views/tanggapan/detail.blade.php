@@ -117,6 +117,17 @@
                         <div class="col-md-6">
 
                             <div class="form-group">
+                                <label>Tanggapan AL</label>
+                                <textarea name="tanggapan_al" id="tanggapan_al" cols="10" rows="3"
+                                    class="form-control @error('tanggapan_al') is-invalid @enderror"></textarea>
+                                @error('tanggapan_al')
+                                    <div class="invalid-feedback mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
                                 <label>Tindak Lanjut</label>
                                 <textarea name="tindak_lanjut" id="tindak_lanjut" cols="10" rows="3"
                                     class="form-control @error('tindak_lanjut') is-invalid @enderror"></textarea>

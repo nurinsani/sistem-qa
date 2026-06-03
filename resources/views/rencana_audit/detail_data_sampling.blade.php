@@ -308,6 +308,12 @@
                     </a>
                 @endif
 
+                <a href="{{ route('sampling.cetak.mutasi', ['cif' => $data_sampling->cif]) }}" 
+                    class="btn btn-primary btn-block mt-2" 
+                    target="_blank">
+                    <i class="fa fa-print"></i> Cetak Mutasi PDF
+                </a>
+
             </div>
         </div>
 

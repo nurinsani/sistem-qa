@@ -174,7 +174,7 @@
                             <tr>
                                 <td>Pembiayaan Ke</td>
                                 <td>:</td>
-                                <td>{{ $dataCif['suffix'] ?? '-' }}</td>
+                                <td>{{ $dataCif['run_tenor'] ?? '-' }}</td>
                             </tr>
                             <tr>
                                 <td>Simpanan Wadiah</td>
@@ -272,7 +272,7 @@
                     data-bs-toggle="modal" data-bs-target="#akadModal" data-pdf="">
                     📄 Lihat Dokumen Akad
                 </a>
-                <a href="{{ route('mutasi_anggota', request('cif')) }}" class="btn btn-primary" data-bs-toggle="modal"
+                <a href="{{ route('mutasi_anggota_print', request('cif')) }}" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#akadModal" data-pdf="">
                     📄 Lihat Mutasi Anggota
                 </a>

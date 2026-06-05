@@ -28,17 +28,49 @@
 
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+
+<style>
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        line-height: 38px !important;
+        padding-left: 12px !important;
+    }
+    .select2-container--default .select2-selection--single {
+    padding-left: 0 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-left: 12px !important;
+}
+.select2-container .select2-selection--single {
+    height: 38px !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    line-height: 38px !important;
+    padding-left: 12px !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__arrow {
+    height: 38px !important;
+}
+
+</style>
     <div class="row justify-content-center mt-4">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title mb-3">Cari Anggota</h5>
-                    <form>
-                        <div class="input-group">
-                            <select id="search" class="form-control">
-                                <option value=""></option>
-                            </select>
-                    </form>
+                  <form>
+    <div class="input-group">
+        <select id="search" class="form-control">
+            <option value=""></option> 
+        </select>
+    </div>
+</form>
 
                 </div>
             </div>
@@ -48,6 +80,8 @@
 
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+    
 
 
 <script>
@@ -84,6 +118,7 @@ $(document).ready(function() {
             }
         }
     });
+
 
     $('#search').on('select2:select', function (e) {
     let cif = e.params.data.id;

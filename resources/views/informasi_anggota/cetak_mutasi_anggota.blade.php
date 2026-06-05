@@ -42,11 +42,11 @@
         }
     </style>
 </head>
-<body onload="window.print()">
+<body>
     
     {{-- HEADER --}}
     <div class="header">
-        <img src="{{ asset('images/logoni.jpeg') }}" alt="Logo">
+        <img src="{{ public_path('images/logoni.jpeg') }}" alt="Logo">
         <h1>Koperasi Simpan Pinjam Syariah Nur Insani</h1>
         <p>Melayani Dengan Hati</p>
         <div class="title">Daftar Mutasi Simpanan Anggota</div>
@@ -100,7 +100,6 @@
         </tbody>
     </table>
      <div class="no-print container my-4">
-        <button onclick="window.print()" class="btn btn-success btn-sm mb-3">🖨️ Cetak</button>
     </div>
 </body>
 </html>

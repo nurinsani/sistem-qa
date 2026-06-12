@@ -273,7 +273,7 @@
                     📄 Lihat Dokumen Akad
                 </a>
                 <a href="{{ route('mutasi_anggota_print', request('cif')) }}" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#akadModal" data-pdf="">
+                    data-bs-target="#akadModal" data-pdf="" target="_blank">
                     📄 Lihat Mutasi Anggota
                 </a>
             </div>

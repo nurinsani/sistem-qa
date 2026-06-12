@@ -115,7 +115,7 @@ class AuditKhususController extends Controller
         $dokumen_api = $dokumen_raw['data'][0] ?? [];
 
         // Base URL file
-        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
         $ketentuans = ParamKetentuan::orderBy('sub_heading', 'asc')->get();
         $groupedKetentuan = $ketentuans->groupBy('sub_heading');

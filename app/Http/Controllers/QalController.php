@@ -113,18 +113,17 @@ class QalController extends Controller
         $year = now()->year;
 
         $audits = DB::table('audit')
-            ->join('data_sampling', 'audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
+            ->join('data_sampling', 'audit.cif', '=', 'data_sampling.cif')
             ->join('users', 'data_sampling.user_id', '=', 'users.id') 
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
             ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
             
             ->where('users.id', $user_id)
-            ->whereIn('data_sampling.status', ['selesai', 'evaluasi', 'tanggapan'])
+            ->where('data_sampling.status', 'selesai')
             ->whereMonth('audit.created_at', $bulan)
             ->whereYear('audit.created_at', $year)
             
-            // Pilih kolom yang dibutuhkan saja agar performa ringan
             ->select(
                 'audit.*',
                 'data_sampling.nama',
@@ -144,11 +143,10 @@ class QalController extends Controller
             ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
             
             ->where('users.id', $user_id)
-            ->whereIn('data_sampling.status', ['proses', 'pending'])
+            ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
             ->whereMonth('data_sampling.created_at', $bulan)
             ->whereYear('data_sampling.created_at', $year)
             
-            // Pilih kolom yang dibutuhkan saja agar performa ringan
             ->select(
                 'data_sampling.*',
                 'branch.unit',
@@ -272,8 +270,6 @@ class QalController extends Controller
                 'fraud_alerts.flag_reason as flag_reason',
             )
             ->first();
-
-        // dd($data_sampling);
 
         return view('qal.dashboard.detail_audit', compact(
             'menus',

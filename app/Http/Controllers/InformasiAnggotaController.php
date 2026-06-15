@@ -124,7 +124,7 @@ class InformasiAnggotaController extends Controller
 
         // ambil data
         $dataDokumen = $dataDokumenRaw['data'][0] ?? [];
-        $linkRmc = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $linkRmc = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
         //dd($dataDokumen);
 

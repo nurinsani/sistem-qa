@@ -139,7 +139,7 @@ class TanggapanController extends Controller
         $dokumen_api = $dokumen_raw['data'][0] ?? [];
 
         // Base URL file
-        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
             ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
@@ -263,7 +263,7 @@ class TanggapanController extends Controller
         $dokumen_api = $dokumen_raw['data'][0] ?? [];
 
         // Base URL file
-        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
         return view('tanggapan.edit', compact(
             'menus',

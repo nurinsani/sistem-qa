@@ -29,32 +29,32 @@
                                     required>
                             </div>
                             <div class="form-group">
-                                <label>Heading</label>
-                                <input type="text" name="heading" id="heading" class="form-control">
+                                <label>Judul Utama</label>
+                                <input type="text" name="heading" id="heading" class="form-control" placeholder="Contoh: KEBIJAKAN PEMBIAYAAN" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Sub Heading</label>
-                                <input type="text" name="sub_heading" id="sub_heading" class="form-control">
+                                <label>Sub Judul</label>
+                                <input type="text" name="sub_heading" id="sub_heading" class="form-control" placeholder="Contoh: Peryaratan Umum" required>
                             </div>
                             <div class="form-group">
-                                <label>Sub Sub Heading (Kriteria)</label>
-                                <input type="text" name="sub_sub_heading" id="sub_sub_heading" class="form-control">
+                                <label>Kriteria</label>
+                                <input type="text" name="sub_sub_heading" id="sub_sub_heading" class="form-control" placeholder="Contoh: Warga Negara Indonesia" required>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label>Sub Sub Sub Heading (Detail Aturan)</label>
-                                <textarea name="sub_sub_sub_heading" id="sub_sub_sub_heading" class="form-control" rows="3"></textarea>
+                                <label>Detail Aturan</label>
+                                <textarea name="sub_sub_sub_heading" id="sub_sub_sub_heading" class="form-control" rows="3" placeholder="" required></textarea>
                             </div>
                             <div class="form-group">
-                                <label>Sub Sub Sub Sub Heading</label>
-                                <textarea name="sub_sub_sub_sub_heading" id="sub_sub_sub_sub_heading" class="form-control" rows="3"></textarea>
+                                <label>Sub Detail Aturan</label>
+                                <textarea name="sub_sub_sub_sub_heading" id="sub_sub_sub_sub_heading" class="form-control" rows="3" required></textarea>
                             </div>
                             <div class="form-group">
-                                <label>Sub Sub Sub Sub Sub Heading</label>
-                                <textarea name="sub_sub_sub_sub_sub_heading" id="sub_sub_sub_sub_sub_heading" class="form-control" rows="3"></textarea>
+                                <label>Sub Sub Detail Aturan</label>
+                                <textarea name="sub_sub_sub_sub_sub_heading" id="sub_sub_sub_sub_sub_heading" class="form-control" rows="3" required></textarea>
                             </div>
                         </div>
                     </div>

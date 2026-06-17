@@ -139,7 +139,17 @@ class TanggapanController extends Controller
         $dokumen_api = $dokumen_raw['data'][0] ?? [];
 
         // Base URL file
-        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
+
+        $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+            ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+            ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif')
+            ->where('data_sampling.cif', $cif)
+            ->select(
+                'data_sampling.*',
+                'fraud_alerts.flag_reason as flag_reason',
+            )
+            ->first();
 
         return view('tanggapan.detail', compact(
             'menus',
@@ -150,7 +160,8 @@ class TanggapanController extends Controller
             'baseFile',
             'temuanLain',
             'temuan',
-            'tanggapan'
+            'tanggapan',
+            'data_sampling'
         ));
     }
 
@@ -252,7 +263,7 @@ class TanggapanController extends Controller
         $dokumen_api = $dokumen_raw['data'][0] ?? [];
 
         // Base URL file
-        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
         return view('tanggapan.edit', compact(
             'menus',
@@ -273,6 +284,7 @@ class TanggapanController extends Controller
             'tanggapan_ao'   => 'nullable|string',
             'tanggapan_mm'   => 'nullable|string',
             'tanggapan_bm'   => 'nullable|string',
+            'tanggapan_al'   => 'nullable|string',
             'tindak_lanjut'  => 'nullable|string',
             'due_date'       => 'nullable|date',
         ]);
@@ -289,6 +301,10 @@ class TanggapanController extends Controller
 
         if ($request->filled('tanggapan_bm')) {
             $data['tanggapan_bm'] = $request->tanggapan_bm;
+        }
+
+        if ($request->filled('tanggapan_al')) {
+            $data['tanggapan_al'] = $request->tanggapan_al;
         }
 
         if ($request->filled('tindak_lanjut')) {

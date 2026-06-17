@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InformasiAnggotaController extends Controller
 {
@@ -123,103 +124,13 @@ class InformasiAnggotaController extends Controller
 
         // ambil data
         $dataDokumen = $dataDokumenRaw['data'][0] ?? [];
-        $linkRmc = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $linkRmc = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
         //dd($dataDokumen);
 
         return view('informasi_anggota.informasi_anggota_detail', compact('title', 'menus', 'dataCif', 'dataDokumen', 'linkRmc'));
     }
-    public function mutasi_anggota($cif)
-    {
-        $roleId = Auth::user()->role_id ?? null;
-
-        $menus = Menu::whereNull('parent_id')
-            ->where(function ($query) use ($roleId) {
-                $query->where('role_id', $roleId)
-                    ->orWhereNull('role_id');
-            })
-            ->with(['children' => function ($query) use ($roleId) {
-                $query->where('role_id', $roleId)
-                    ->orWhereNull('role_id');
-            }])
-            ->orderBy('order')
-            ->get();
-
-        $title = 'QA System';
-
-        // API Mutasi
-        $urlMutasi = "http://mobcoll.nurinsani.co.id/apimobcol/data.php?function=get_saldo_mutasi&cif=" . $cif;
-
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $urlMutasi,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 10,
-        ]);
-
-        $responseMutasi = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            throw new \Exception('API Mutasi gagal terkoneksi');
-        }
-
-        curl_close($ch);
-
-        $dataMutasiRaw = json_decode($responseMutasi, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('Response API Mutasi bukan JSON valid');
-        }
-
-        $mutasiData = $dataMutasiRaw['data'] ?? [];
-
-        $perPage = 25;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-
-        $currentItems = array_slice($mutasiData, ($currentPage - 1) * $perPage, $perPage);
-
-        $mutasi = new LengthAwarePaginator(
-            $currentItems,
-            count($mutasiData), // ✅ pakai data asli
-            $perPage,
-            $currentPage,
-            [
-                'path' => request()->url(),
-                'query' => request()->query()
-            ]
-        );
-
-        //API Cif
-        $url = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
-
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 10,
-        ]);
-
-        $responseCif = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            throw new \Exception('API Cif gagal terkoneksi');
-        }
-
-        curl_close($ch);
-
-        $dataCifRaw = json_decode($responseCif, true);
-        $dataCif = $dataCifRaw['data'][0] ?? [];
-
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('Response API bukan JSON valid');
-        }
-
-        return view(
-            'informasi_anggota.mutasi_anggota',
-            compact('title', 'menus', 'dataCif', 'mutasi')
-        );
-    }
+    
 
     public function printMutasi($cif)
     {
@@ -236,8 +147,10 @@ class InformasiAnggotaController extends Controller
         $responseCif = file_get_contents($urlCifMutasi);
         $dataCifRaw = json_decode($responseCif, true);
         $dataCif = $dataCifRaw['data'][0] ?? [];
+        
+        $pdf = Pdf::loadView('informasi_anggota.cetak_mutasi_anggota', compact('mutasi','dataCif'));
 
-        return view('informasi_anggota.cetak_mutasi_anggota', compact('mutasi', 'dataCif'));
+        return $pdf->stream('Mutasi_Anggota'. $cif . '.pdf');
     }
 
     public function search(Request $request)

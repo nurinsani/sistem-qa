@@ -9,6 +9,7 @@ use App\Models\Menu;
 use App\Models\ParamKetentuan;
 use App\Models\ParamProfil;
 use App\Models\Tanggapan;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -41,7 +42,10 @@ class EvaluasiController extends Controller
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
             ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
             ->where('data_sampling.status', 'evaluasi')
-            ->select('data_sampling.*', 'audit.id as id_audit')
+            ->select(
+                'data_sampling.*',
+                'audit.id as id_audit',
+                )
             ->get();
 
         return response()->json(['data' => $data_sampling]);
@@ -139,7 +143,17 @@ class EvaluasiController extends Controller
         $dokumen_api = $dokumen_raw['data'][0] ?? [];
 
         // Base URL file
-        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
+        
+        $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
+            ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+            ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif')
+            ->where('data_sampling.cif', $cif)
+            ->select(
+                'data_sampling.*',
+                'fraud_alerts.flag_reason as flag_reason',
+            )
+            ->first();
 
         return view('evaluasi.detail', compact(
             'menus',
@@ -150,7 +164,8 @@ class EvaluasiController extends Controller
             'baseFile',
             'temuanLain',
             'temuan',
-            'tanggapan'
+            'tanggapan',
+            'data_sampling'
         ));
     }
 
@@ -257,7 +272,7 @@ class EvaluasiController extends Controller
         $dokumen_api = $dokumen_raw['data'][0] ?? [];
 
         // Base URL file
-        $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+        $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
         return view('evaluasi.edit', compact(
             'menus',
@@ -278,6 +293,7 @@ class EvaluasiController extends Controller
             'tanggapan_ao'   => 'nullable|string',
             'tanggapan_mm'   => 'nullable|string',
             'tanggapan_bm'   => 'nullable|string',
+            'tanggapan_al'   => 'nullable|string',
             'tindak_lanjut'  => 'nullable|string',
             'due_date'       => 'nullable|date',
         ]);
@@ -294,6 +310,10 @@ class EvaluasiController extends Controller
 
         if ($request->filled('tanggapan_bm')) {
             $data['tanggapan_bm'] = $request->tanggapan_bm;
+        }
+
+        if ($request->filled('tanggapan_al')) {
+            $data['tanggapan_al'] = $request->tanggapan_al;
         }
 
         if ($request->filled('tindak_lanjut')) {
@@ -354,17 +374,45 @@ class EvaluasiController extends Controller
 
     public function updateStatusLanjut(Request $request, $id)
     {
+        
         // $id adalah ID Audit
         $audit = Audit::findOrFail($id);
-
+        
         // Update status di tabel Data Sampling
         // Kita gunakan CIF dan ID Ref Sampling agar akurat
         DB::table('data_sampling')
-            ->where('id_ref_sampling', $audit->id_ref_sampling)
-            ->where('cif', $request->cif)
-            ->update(['status' => 'selesai']);
-
+        ->where('id_ref_sampling', $audit->id_ref_sampling)
+        ->where('cif', $request->cif)
+        ->update(['status' => 'selesai']);
+        
         return redirect()->route('evaluasi.index')->with('success', 'Status berhasil diperbarui.');
+        
+        }
+        
+        public function auditUlang($cif)
+        {
+            $tanggal = Carbon::parse(now());
+            $tahun   = $tanggal->format('Y');
+            $bulan   = $tanggal->format('m');
+            
+            $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
 
-    }
+            $auditLama = DataSampling::where('cif', $cif)->firstOrFail();
+
+            $auditLama->update(['status' => 'selesai']);
+
+            $auditBaru = $auditLama->replicate(); 
+            
+            $auditBaru->status = 'proses';
+            $auditBaru->id_ref_sampling = $idRefSampling;
+            $auditBaru->created_at = now();
+            
+            $auditBaru->save();
+
+            // dd($auditBaru);
+
+            return redirect()->back()->with([
+                'success' => 'Audit ulang berhasil dibuat dengan ID Ref Sampling: ' . $idRefSampling,
+            ]);
+        }
 }

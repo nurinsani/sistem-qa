@@ -117,6 +117,17 @@
                         <div class="col-md-6">
 
                             <div class="form-group">
+                                <label>Tanggapan AL</label>
+                                <textarea name="tanggapan_al" id="tanggapan_al" cols="10" rows="3"
+                                    class="form-control @error('tanggapan_al') is-invalid @enderror"></textarea>
+                                @error('tanggapan_al')
+                                    <div class="invalid-feedback mt-2">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
                                 <label>Tindak Lanjut</label>
                                 <textarea name="tindak_lanjut" id="tindak_lanjut" cols="10" rows="3"
                                     class="form-control @error('tindak_lanjut') is-invalid @enderror"></textarea>
@@ -256,12 +267,20 @@
                         class="btn btn-primary btn-block mb-2">
                         📄 Form Anggota
                     </a>
+                @else
+                    <a href="#" class="btn btn-secondary btn-block mb-2 disabled">
+                        <i class="fas fa-file-pdf"></i> Form Anggota Tidak Tersedia
+                    </a>
                 @endif
 
                 @if (!empty($dokumen_api['murabahah']))
                     <a href="{{ $baseFile . $dokumen_api['murabahah'] }}" target="_blank"
                         class="btn btn-success btn-block mb-2">
                         📄 Akad Murabahah
+                    </a>
+                @else
+                    <a href="#" class="btn btn-secondary btn-block mb-2 disabled">
+                        <i class="fas fa-file-pdf"></i> Akad Murabahah Tidak Tersedia
                     </a>
                 @endif
 
@@ -270,7 +289,17 @@
                         class="btn btn-warning btn-block">
                         📄 Akad Wakalah
                     </a>
+                @else
+                    <a href="#" class="btn btn-secondary btn-block mb-2 disabled">
+                        <i class="fas fa-file-pdf"></i> Akad Wakalah Tidak Tersedia
+                    </a>
                 @endif
+
+                <a href="{{ route('sampling.cetak.mutasi', ['cif' => $data_sampling->cif]) }}" 
+                    class="btn btn-primary btn-block mt-2" 
+                    target="_blank">
+                    <i class="fa fa-print"></i> Cetak Mutasi PDF
+                </a>
 
             </div>
         </div>

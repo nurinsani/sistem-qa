@@ -122,6 +122,10 @@
                     class="btn btn-primary btn-block mb-2">
                     <i class="fas fa-file-pdf"></i> Form Anggota
                 </a>
+            @else
+                <a href="#" class="btn btn-secondary btn-block mb-2 disabled">
+                    <i class="fas fa-file-pdf"></i> Form Anggota Tidak Tersedia
+                </a>
             @endif
 
             @if (!empty($dokumen_api['murabahah']))
@@ -129,14 +133,28 @@
                     class="btn btn-success btn-block mb-2">
                     <i class="fas fa-file-pdf"></i> Akad Murabahah
                 </a>
+            @else
+                <a href="#" class="btn btn-secondary btn-block mb-2 disabled">
+                    <i class="fas fa-file-pdf"></i> Akad Murabahah Tidak Tersedia
+                </a>
             @endif
 
             @if (!empty($dokumen_api['wakalah']))
                 <a href="{{ $baseFile . $dokumen_api['wakalah'] }}" target="_blank" class="btn btn-warning btn-block">
                     <i class="fas fa-file-pdf"></i> Akad Wakalah
                 </a>
+            @else
+                <a href="#" class="btn btn-secondary btn-block mb-2 disabled">
+                    <i class="fas fa-file-pdf"></i> Akad Wakalah Tidak Tersedia
+                </a>
             @endif
 
+            <a href="{{ route('sampling.cetak.mutasi', ['cif' => $data_sampling->cif]) }}" 
+                class="btn btn-primary btn-block mt-2" 
+                target="_blank">
+                <i class="fa fa-print"></i> Cetak Mutasi PDF
+            </a>
+            
         </div>
     </div>
 </div>

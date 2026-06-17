@@ -8,10 +8,12 @@ use App\Models\DataSampling;
 use App\Models\Kelompok;
 use App\Models\Menu;
 use App\Models\RencanaAudit;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Yajra\DataTables\Facades\DataTables;
 
 class RencanaAuditController extends Controller
@@ -477,7 +479,7 @@ class RencanaAuditController extends Controller
             $dokumen = $dokumen_raw['data'][0] ?? [];
 
             // Base URL file
-            $baseFile = 'http://rmc.nurinsani.co.id:9373/berkas/';
+            $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
 
             // dd($data_api, $dokumen);
 
@@ -526,5 +528,20 @@ class RencanaAuditController extends Controller
 
             return back()->with('error', 'Gagal memulai audit: ' . $e->getMessage());
         }
+    }
+
+    public function cetakMutasi($cif)
+    {
+        $urlMutasi = "http://mobcoll.nurinsani.co.id/apimobcol/data.php?function=get_saldo_mutasi&cif=" . $cif;
+        $response = Http::get($urlMutasi);
+        $mutasi = json_decode($response->body())->data ?? [];
+
+        $urlSaldo = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
+        $responseSaldo = Http::get($urlSaldo);
+        $saldo = json_decode($responseSaldo->body())->data[0] ?? [];
+
+        $pdf = Pdf::loadView('mutasi_anggota.index', compact('mutasi', 'saldo'));
+        
+        return $pdf->stream('Mutasi_' . $cif . '.pdf');
     }
 }

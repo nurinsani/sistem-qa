@@ -45,7 +45,7 @@
                                     <td>{{ $sampling->qa->name ?? '-' }}</td>
                                     <td>{{ $sampling->branch->area ?? '-' }}</td>
                                     <td>
-                                        Ditugaskan oleh {{ $sampling->user->name ?? 'Tidak diketahui' }}
+                                        Ditugaskan oleh {{ $sampling->ketApprove->name ?? '' }}
                                     </td>
                                     <td>
                                         <span class="badge badge-info">{{ $sampling->jenis_audit ?? '-' }}</span>
@@ -66,20 +66,20 @@
                                             ];
                                         @endphp
                                         <span class="badge {{ $statusClass[$sampling->approval] ?? 'badge-secondary' }}">
-                                            {{ $statusLabel[$sampling->approval] ?? ucfirst($sampling->approval) }}
+                                            {{ $statusLabel[$sampling->approval] ?? ucfirst($sampling->approval) }} Oleh {{ $sampling->byApprove->name ?? '' }}
                                         </span>
                                     </td>
                                     <td>
                                         @if($sampling->approval == '2220' || $sampling->approval == '3330')
                                             <form action="{{ route('qam.approval.update', $sampling->id) }}" method="POST" style="display:inline;">
                                                 @csrf
-                                                <input type="hidden" name="status" value="approved">
+                                                <input type="hidden" name="approval" value="approved">
                                                 <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Yakin ingin menyetujui?')">Approve</button>
                                             </form>
                                             
                                             <form action="{{ route('qam.approval.update', $sampling->id) }}" method="POST" style="display:inline;">
                                                 @csrf
-                                                <input type="hidden" name="status" value="rejected">
+                                                <input type="hidden" name="approval" value="rejected">
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menolak?')">Reject</button>
                                             </form>
                                         @else

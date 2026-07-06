@@ -19,6 +19,7 @@ use App\Http\Controllers\ParamKetentuanController;
 use App\Http\Controllers\ParamProfilController;
 use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
 use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
+use App\Http\Controllers\Qam\QamApprovalController;
 use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
 use App\Http\Controllers\ResetPasswordController;
 
@@ -190,6 +191,11 @@ Route::middleware(['role:3'])->group(function () {
     Route::get('qam/reset-password', [ResetPasswordController::class, 'index'])->name('qam.reset.password');
     // Memproses reset password oleh admin
     Route::post('qam/reset-password/{id}', [ResetPasswordController::class, 'resetPassword'])->name('qam.reset.password.process');
+
+    Route::get('/qam/approval', [QamApprovalController::class, 'index'])->name('qam.approval.index');
+    Route::post('/qam/approval/{id}', [QamApprovalController::class, 'updateStatus'])->name('qam.approval.update');
+
+
 });
 
 Route::middleware(['role:4'])->group(function () {

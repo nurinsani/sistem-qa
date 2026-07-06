@@ -66,7 +66,7 @@
 
                             <div class="form-group">
                                 <label>Nama QA <span class="text-danger">*</span></label>
-                                <select name="user_id" id="user_id" class="form-control" required>
+                                <select name="user_id" id="user_id" class="form-control select2-user-qa" required style="width: 100%;">
                                     <option value="">-- Pilih QA --</option>
                                     @foreach ($qa as $qaUser)
                                         <option value="{{ $qaUser->id }}">{{ $qaUser->name }}</option>

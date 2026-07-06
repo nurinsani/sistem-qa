@@ -88,6 +88,17 @@
                 allowClear: true
             });
         });
+
+        // Initialize Select2 untuk Nama QA
+        $('#modalAuditKhusus').on('shown.bs.modal', function () {
+            $('#user_id', this).select2({
+                theme: 'bootstrap4',
+                dropdownParent: $('#modalAuditKhusus'),
+                placeholder: '-- Pilih QA --',
+                allowClear: true,
+                width: '100%' // Penting untuk memastikan lebar select2 sesuai container
+            });
+        });
         
         $('#modalAuditKhusus').on('shown.bs.modal', function () {
             $('#kode_kel').select2({

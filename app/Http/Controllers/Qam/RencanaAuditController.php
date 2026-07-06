@@ -39,29 +39,29 @@ class RencanaAuditController extends Controller
         $branch = collect(); 
         $kelompok = collect();
         
-        $dataQa = DB::table('masterqa')
-            ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_region')
-            ->where('code_qa', Auth::user()->code_qa)
-            ->first(); // Gunakan first agar langsung jadi objek
+        // $dataQa = DB::table('masterqa')
+        //     ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_region')
+        //     ->where('code_qa', Auth::user()->code_qa)
+        //     ->first(); // Gunakan first agar langsung jadi objek
 
 
-        if ($dataQa) {
-            $kodeBranch = $dataQa->kode_branch;
-            $kodeArea   = $dataQa->code_region;
+        // if ($dataQa) {
+        //     $kodeBranch = $dataQa->kode_branch;
+        //     $kodeArea   = $dataQa->code_region;
 
-            // Untuk dropdown unit manual atau data lainnya
-            $branch = Branch::where('code_region', $kodeArea)->get();
-            $kelompok = Kelompok::where('code_unit', $kodeArea)->get();
-        }
+        //     // Untuk dropdown unit manual atau data lainnya
+        //     $branch = Branch::where('code_region', $kodeArea)->get();
+        //     $kelompok = Kelompok::where('code_unit', $kodeArea)->get();
+        // }
             
-            $userLogin = auth()->user(); 
+        //     $userLogin = auth()->user(); 
         
-        $myCodeQa = $userLogin->code_qa;
+        // $myCodeQa = $userLogin->code_qa;
 
         $qa = DB::table('users')
             ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
-            ->where('masterqa.atasan', $myCodeQa)
             ->select('users.id', 'users.name')
+            ->whereNotIn('users.code_qa', ['2220', '3330'])
             ->get();
 
 

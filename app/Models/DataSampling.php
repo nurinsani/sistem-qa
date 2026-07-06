@@ -39,4 +39,9 @@ class DataSampling extends Model
     {
         return $this->hasOne(Audit::class, 'cif', 'cif');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'approval', 'code_qa'); 
+    }
 }

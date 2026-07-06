@@ -189,5 +189,13 @@ class MenuSeeder extends Seeder
             'order' => 9,
         ]);
 
+        Menu::create([
+            'name' => 'Approval',
+            'icon' => 'fas fa-check-circle nav-icon',
+            'url' => '/qam/approval',
+            'role_id' => 3,
+            'order' => 3,
+        ]);
+
     }
 }

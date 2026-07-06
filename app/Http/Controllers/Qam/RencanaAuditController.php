@@ -210,10 +210,15 @@ class RencanaAuditController extends Controller
         // Jika manual, gunakan NIK sebagai pengganti kode kelompok untuk ID Ref
         $suffix = $isManual ? $validated['nik'] : $validated['code_kel'];
         $idRefSampling = $tahun . $bulan . $suffix . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
-
+        
+        $userQA = DB::table('users')
+        ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
+        ->where('users.id', $validated['user_id'])
+        ->select('users.*', 'masterqa.atasan')
+        ->first();
 
         try {
-            DB::transaction(function () use ($validated, $idRefSampling, $isManual, $request) {
+            DB::transaction(function () use ($validated, $idRefSampling, $isManual, $request, $userQA) {
                 
                 $unit = null;
                 $itemsToInsert = [];
@@ -249,10 +254,13 @@ class RencanaAuditController extends Controller
                                 'updated_at'      => now(),
                                 'status_sampling' => 'KH01',
                                 'status'          => 'proses',
+                                'approval'        => $userQA->atasan,
+                                'keterangan'      => Auth::user()->code_qa,
                             ];
                         }
                     }
                 } else {
+                    // TODO: Jika input manual, tentukan unit berdasarkan user yang login atau default ke '001' (PR)
                     $unit = auth()->user()->unit ?? '001';
                     
                     $itemsToInsert[] = [
@@ -268,6 +276,8 @@ class RencanaAuditController extends Controller
                         'updated_at'      => now(),
                         'status_sampling' => 'KH01',
                         'status'          => 'proses',
+                        'approval'        => $userQA->atasan,
+                        'keterangan'      => Auth::user()->code_qa,
                     ];
                 }
 

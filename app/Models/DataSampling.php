@@ -42,6 +42,16 @@ class DataSampling extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'approval', 'code_qa'); 
+        return $this->belongsTo(User::class, 'approval', 'code_qa');
+    }
+
+    public function byApprove()
+    {
+        return $this->belongsTo(User::class, 'by', 'code_qa');
+    }
+
+    public function ketApprove()
+    {
+        return $this->belongsTo(User::class, 'keterangan', 'code_qa');
     }
 }

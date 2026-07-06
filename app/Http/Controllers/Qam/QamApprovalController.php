@@ -7,6 +7,7 @@ use App\Models\DataSampling;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class QamApprovalController extends Controller
 {
@@ -28,18 +29,37 @@ class QamApprovalController extends Controller
 
         $title = 'Approval';
 
-         $dataSamplings = DataSampling::where('approval', 2220)
+        if (Auth::user()->code_qa == '2220') {
+            $dataSamplings = DataSampling::where(function ($query) {
+                $query->where('approval', '3330')
+                    ->orWhere('approval', 'approved');
+            })
             ->with(['branch', 'kelompok', 'ao'])
             ->get();
+        } else {
+            $dataSamplings = DataSampling::where(function ($query) {
+                $query->where('approval', '3330')
+                    ->orWhere('approval', 'approved');
+            })
+            ->with(['branch', 'kelompok', 'ao'])
+            ->get();
+        }
 
+            // dd($dataSamplings);
         return view('qam.approval.index', compact('title', 'menus', 'dataSamplings'));
     }
 
     public function updateStatus(Request $request, $id)
     {
+        // Validasi input
+        $request->validate([
+            'approval' => 'required'
+        ]);
 
         // Cari data berdasarkan ID
         $sampling = DataSampling::findOrFail($id);
+        
+        $sampling->by = auth()->user()->code_qa;
         
         // Update status
         $sampling->approval = $request->approval;

@@ -31,14 +31,16 @@ class QamApprovalController extends Controller
 
         if (Auth::user()->code_qa == '2220') {
             $dataSamplings = DataSampling::where(function ($query) {
-                $query->where('approval', '3330')
+                $query->where('keterangan', '3330')
+                    ->orWhere('approval', 'rejected')
                     ->orWhere('approval', 'approved');
             })
             ->with(['branch', 'kelompok', 'ao'])
             ->get();
-        } else {
+        } elseif (Auth::user()->code_qa == '3330') {
             $dataSamplings = DataSampling::where(function ($query) {
-                $query->where('approval', '3330')
+                $query->where('keterangan', '2220')
+                    ->orWhere('approval', 'rejected')
                     ->orWhere('approval', 'approved');
             })
             ->with(['branch', 'kelompok', 'ao'])

@@ -43,7 +43,7 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $sampling->qa->name ?? '-' }}</td>
-                                    <td>{{ $sampling->branch->area ?? '-' }}</td>
+                                    <td>{{ $sampling->branch->unit ?? '-' }}</td>
                                     <td>
                                         Ditugaskan oleh {{ $sampling->ketApprove->name ?? '' }}
                                     </td>

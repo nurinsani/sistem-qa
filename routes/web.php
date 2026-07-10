@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanPengurusController;
 use App\Http\Controllers\ParamKetentuanController;
 use App\Http\Controllers\ParamProfilController;
+use App\Http\Controllers\Qal\AuditKhususController as QalAuditKhususController;
+use App\Http\Controllers\Qal\AuditRutinController as QalAuditRutinController;
 use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
 use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
 use App\Http\Controllers\Qam\QamApprovalController;
@@ -126,6 +128,34 @@ Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/kelompok/search', [QalRencanaAuditController::class, 'search'])->name('qal.kelompok.search');
     Route::get('/qal/kelompok/get-cif', [QalRencanaAuditController::class, 'getCif'])->name('qal.kelompok.get-cif');
     // End Rencana Audit Routes
+
+        // Audit Rutin Routes
+    Route::get('/qal/audit-rutin', [QalAuditRutinController::class, 'index'])->name('qal.audit.rutin.index');
+    Route::get('/qal/audit-rutin/data', [QalAuditRutinController::class, 'getData'])->name('qal.audit.rutin.data');
+    Route::get('/qal/audit-rutin/detail/{id}/{cif}', [QalAuditRutinController::class, 'detail'])->name('qal.audit.rutin.detail');
+    Route::post('/qal/audit-rutin/store/{id}', [QalAuditRutinController::class, 'store'])->name('qal.audit.rutin.tambah');
+    Route::post('/qal/audit-rutin/ketentuan/{id_ref_sampling}/{cif}', [QalAuditRutinController::class, 'storeKetentuan'])
+        ->name('qal.audit.rutin.ketentuan.store');
+    Route::post('/qal/audit-rutin/temuan/store/{id_ref_sampling}/{cif}', [QalAuditRutinController::class, 'storeTemuanLain'])
+        ->name('qal.audit.rutin.temuan-lain.store');
+    Route::get('/qal/param-ketentuan/{id}', [QalAuditRutinController::class, 'getByParam'])
+        ->name('qal.param.ketentuan.get');
+    Route::get('/qal/audit-rutin/history/{id}/{cif}', [QalAuditRutinController::class, 'detail_history'])->name('qal.audit.rutin.history');
+    
+    // End Audit Rutin Routes
+
+        // Audit Khusus Routes
+    Route::get('/qal/audit-khusus', [QalAuditKhususController::class, 'index'])->name('qal.audit.khusus.index');
+    Route::get('/qal/audit-khusus/data', [QalAuditKhususController::class, 'getData'])->name('qal.audit.khusus.data');
+    Route::get('/qal/audit-khusus/detail/{id}/{cif}', [QalAuditKhususController::class, 'detail'])->name('qal.audit.khusus.detail');
+    Route::post('/qal/audit-khusus/store/{id}', [QalAuditKhususController::class, 'store'])->name('qal.audit.khusus.tambah');
+    Route::post('/qal/audit-khusus/ketentuan/{id_ref_sampling}/{cif}', [QalAuditKhususController::class, 'storeKetentuan'])
+        ->name('qal.audit.khusus.ketentuan.store');
+    Route::post('/qal/audit-khusus/temuan/store/{id_ref_sampling}/{cif}', [QalAuditKhususController::class, 'storeTemuanLain'])
+        ->name('qal.audit.khusus.temuan-lain.store');
+    Route::get('/qal/param-ketentuan/{id}', [QalAuditKhususController::class, 'getByParam'])
+        ->name('qal.param.ketentuan.get');
+    // End Audit Khusus Routes
 
     // Laporan Routes
     Route::get('/qal/laporan', [LaporanController::class, 'index'])->name('qal.laporan.index');

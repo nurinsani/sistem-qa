@@ -64,7 +64,6 @@ class RencanaAuditController extends Controller
             ->select('users.id', 'users.name')
             ->get();
 
-
         return view('qal.rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok', 'qa'));
     }
 

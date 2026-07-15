@@ -76,7 +76,7 @@
                 <div class="form-group">
                     <label>Kondisi Usaha</label>
                     <textarea name="kondisi_usaha" id="kondisi_usaha" cols="10" rows="3"
-                        class="form-control @error('kondisi_usaha') is-invalid @enderror" readonly>{{ old('kondisi_usaha', $audit->kondisi_usaha) }}</textarea>
+                        class="form-control @error('kondisi_usaha') is-invalid @enderror" readonly>{{ old('kondisi_usaha', $audit->kondisi_usaha ?? '') }}</textarea>
                     @error('kondisi_usaha')
                         <div class="invalid-feedback mt-2">
                             {{ $message }}

@@ -92,7 +92,7 @@
 
             <div class="table-responsive">
 
-                <table class="table table-bordered table-striped table-sm">
+                <table id="tableLaporan" class="table table-bordered table-striped table-sm">
 
                     <thead class="text-center">
 
@@ -176,3 +176,28 @@
 
 </div>
 @endsection
+
+@push('scripts')
+
+<script>
+    $(document).ready(function() {
+        $('#tableLaporan').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ data",
+                "paginate": {
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            }
+        });
+    });
+</script>
+
+@endpush

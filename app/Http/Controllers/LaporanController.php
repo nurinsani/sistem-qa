@@ -37,8 +37,25 @@ class LaporanController extends Controller
 
         $title = 'Laporan Audit';
 
-        $query = DataSampling::with(['branch','kelompok','ao'])
-            ->where('status','selesai');
+        // 1. Ambil daftar 'kode_unit' (code_area) yang dipegang user
+        $userCodeQa = auth()->user()->code_qa;
+        $unitsUser = DB::table('masterqa')
+            ->where('code_qa', $userCodeQa)
+            ->pluck('kode_unit'); // Hasilnya [1101, 1102, dst]
+
+        // 2. Gunakan query yang clean
+        $query = DataSampling::with(['branch', 'kelompok', 'ao'])
+            // Join ke branch untuk memfilter berdasarkan code_area
+            ->join('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
+            // Filter berdasarkan area yang dimiliki user
+            ->whereIn('branch.code_area', $unitsUser)
+            // Filter status
+            ->where('data_sampling.status', 'selesai')
+            // Pastikan select spesifik agar kolom tidak bentrok (karena join)
+            ->select('data_sampling.*'); 
+
+        // Eksekusi
+        $data = $query->get();
 
         if ($request->filled('tgl_awal')) {
             $query->whereDate('created_at','>=',$request->tgl_awal);

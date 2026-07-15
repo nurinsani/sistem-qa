@@ -167,7 +167,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('qal.dashboard.detailAudit', ['id' => $item->id, 'cif' => $item->cif]) }}"
+                                                <a href="{{ route('qal.dashboard.detailAudit', ['id' => $item->data_sampling_id, 'cif' => $item->cif]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </a>

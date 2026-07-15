@@ -82,11 +82,25 @@ class QalController extends Controller
 
         $namaBulan = \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->translatedFormat('F');
 
+    $userLogin = auth()->user(); 
+    $myCodeQa = $userLogin->code_qa;
+
+    // Ambil semua QA yang berada di bawah atasan
+    $qaBawahan = DB::table('users')
+        ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
+        ->where('masterqa.atasan', $myCodeQa)
+        ->pluck('users.id'); // Ambil hanya ID user
+
+    // Filter data sampling berdasarkan user_id yang ada di $qaBawahan
     $auditsGrouped = DataSampling::with('qa')
         ->whereMonth('created_at', $bulan)
         ->whereYear('created_at', $tahun)
+        ->whereIn('user_id', $qaBawahan) // Tambahkan filter ini
         ->get()
         ->groupBy('user_id');
+    
+
+        // dd($auditsGrouped);
 
         return view('qal.dashboard.detail', compact('title', 'menus', 'auditsGrouped', 'bulan', 'tahun', 'namaBulan'));
     }
@@ -136,7 +150,7 @@ class QalController extends Controller
             )
             ->get();
         
-        $audit_proses = DB::table('data_sampling')
+            $audit_proses = DB::table('data_sampling')
             ->join('users', 'data_sampling.user_id', '=', 'users.id') 
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
@@ -151,7 +165,8 @@ class QalController extends Controller
                 'data_sampling.*',
                 'branch.unit',
                 'kelompok.nama_kel',
-                'ao.nama_ao'
+                'ao.nama_ao',
+                'data_sampling.id as data_sampling_id'
             )
             ->get();
 

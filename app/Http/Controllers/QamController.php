@@ -135,8 +135,9 @@ class QamController extends Controller
                 'ao.nama_ao'
             )
             ->get();
-        
-        $audit_proses = DB::table('data_sampling')
+
+        $audit_proses = DB::table('audit')
+            ->join('data_sampling', 'audit.cif', '=', 'data_sampling.cif')
             ->join('users', 'data_sampling.user_id', '=', 'users.id') 
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
@@ -144,11 +145,15 @@ class QamController extends Controller
             
             ->where('users.id', $user_id)
             ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
-            ->whereMonth('data_sampling.created_at', $bulan)
-            ->whereYear('data_sampling.created_at', $year)
+            ->whereMonth('audit.created_at', $bulan)
+            ->whereYear('audit.created_at', $year)
             
             ->select(
-                'data_sampling.*',
+                'audit.*',
+                'data_sampling.nama',
+                'data_sampling.jenis_audit',
+                'data_sampling.status_sampling',
+                'data_sampling.status',
                 'branch.unit',
                 'kelompok.nama_kel',
                 'ao.nama_ao'

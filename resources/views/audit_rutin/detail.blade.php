@@ -562,11 +562,19 @@
                                     </h6>
 
                                     <p class="font-weight-bold mb-1">
-                                        ${item.nomor_ketentuan ?? ''}
+                                        ${item.sub_heading ?? ''}
+                                    </p>
+
+                                    <p>
+                                        ${item.sub_sub_heading ?? ''}
                                     </p>
 
                                     <p>
                                         ${item.sub_sub_sub_heading ?? ''}
+                                    </p>
+
+                                    <p>
+                                        ${item.sub_sub_sub_sub_heading ?? ''}
                                     </p>
 
                                 </div>

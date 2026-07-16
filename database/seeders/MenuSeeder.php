@@ -189,12 +189,29 @@ class MenuSeeder extends Seeder
             'order' => 9,
         ]);
 
+        
         Menu::create([
             'name' => 'Approval',
             'icon' => 'fas fa-check-circle nav-icon',
             'url' => '/qam/approval',
             'role_id' => 3,
             'order' => 3,
+        ]);
+
+        Menu::create([
+            'name' => 'Reset Password',
+            'icon' => 'fas fa-key nav-icon',
+            'url' => '/qa/reset-password',
+            'role_id' => 1,
+            'order' => 9,
+        ]);
+
+        Menu::create([
+            'name' => 'Reset Password',
+            'icon' => 'fas fa-key nav-icon',
+            'url' => '/qal/reset-password',
+            'role_id' => 2,
+            'order' => 9,
         ]);
 
     }

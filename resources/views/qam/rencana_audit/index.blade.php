@@ -290,34 +290,34 @@
     });
 
         $(document).ready(function() {
-    $('input[name="input_method"]').on('change', function() {
-        let method = $(this).val();
+                $('input[name="input_method"]').on('change', function() {
+                    let method = $(this).val();
 
-        if (method === 'manual') {
-            // Sembunyikan Kelompok & CIF
-            $('#section-kelompok').hide();
-            $('#section-cif').hide();
-            // Tampilkan Manual
-            $('#section-manual').fadeIn();
+                    if (method === 'manual') {
+                        $('#section-kelompok').hide();
+                        $('#section-cif').hide();
+                        $('#section-manual').fadeIn();
 
-            // Atur attribute required
-            $('#kode_kel').attr('required', false);
-            $('#nik').attr('required', true);
-            $('#nama_manual').attr('required', true);
-        } else {
-            // Tampilkan Kelompok & CIF
-            $('#section-kelompok').fadeIn();
-            $('#section-cif').fadeIn();
-            // Sembunyikan Manual
-            $('#section-manual').hide();
+                        // Atur attribute required
+                        $('#kode_kel').attr('required', false);
+                        // Tambahkan ini:
+                        $('select[name="unit"]').attr('required', true); 
+                        $('#nik').attr('required', true);
+                        $('#nama_manual').attr('required', true);
+                    } else {
+                        $('#section-kelompok').fadeIn();
+                        $('#section-cif').fadeIn();
+                        $('#section-manual').hide();
 
-            // Atur attribute required
-            $('#kode_kel').attr('required', true);
-            $('#nik').attr('required', false);
-            $('#nama_manual').attr('required', false);
-        }
-    });
-});
+                        // Atur attribute required
+                        $('#kode_kel').attr('required', true);
+                        // Tambahkan ini:
+                        $('select[name="unit"]').attr('required', false);
+                        $('#nik').attr('required', false);
+                        $('#nama_manual').attr('required', false);
+                    }
+                });
+            });
         
     });
 </script>

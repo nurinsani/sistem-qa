@@ -34,16 +34,19 @@
                         <h3 class="card-title">Form Audit</h3>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('audit.khusus.tambah', $data_sampling_detail->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('audit.khusus.tambah', $data_sampling_detail->id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
 
-                            <input type="hidden" name="id_ref_sampling" value="{{ $data_sampling_detail->id_ref_sampling }}">
+                            <input type="hidden" name="id_ref_sampling"
+                                value="{{ $data_sampling_detail->id_ref_sampling }}">
                             <input type="hidden" name="cif" value="{{ $data_sampling_detail->cif }}">
 
                             <div class="form-group">
                                 <label>Tanggal Kunjungan</label>
                                 <input type="date" name="tanggal_kunjungan" id="tanggal_kunjungan"
-                                    class="form-control @error('tanggal_kunjungan') is-invalid @enderror" value="{{ old('tanggal_kunjungan') }}">
+                                    class="form-control @error('tanggal_kunjungan') is-invalid @enderror"
+                                    value="{{ old('tanggal_kunjungan') }}">
                                 @error('tanggal_kunjungan')
                                     <div class="invalid-feedback mt-2">
                                         {{ $message }}
@@ -126,10 +129,8 @@
                                 <div class="d-flex">
                                     <textarea name="temuan" id="temuan" class="form-control @error('temuan') is-invalid @enderror" rows="3">{{ old('temuan') }}</textarea>
 
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm ml-2 align-self-start"
-                                            data-toggle="modal" 
-                                            data-target="#modalKetentuan">
+                                    <button type="button" class="btn btn-danger btn-sm ml-2 align-self-start"
+                                        data-toggle="modal" data-target="#modalKetentuan">
                                         Ketentuan
                                     </button>
                                 </div>
@@ -142,9 +143,7 @@
                             </div>
 
                             <div class="form-group">
-                                <button type="button"
-                                    class="btn btn-primary btn-sm"
-                                    data-toggle="modal"
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
                                     data-target="#modalTemuanLain">
                                     Temuan Lain
                                 </button>
@@ -312,7 +311,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let scale = 1;
         let rotate = 0;
@@ -612,6 +611,60 @@
                 group.find('.btn-sub-next').removeClass('disabled');
             }
         }
-    </script>
 
+        function submitKetentuan() {
+
+            let form = document.querySelector('#formKetentuan');
+            let idRef = document.querySelector('input[name="id_ref_sampling"]').value;
+            let cif = document.querySelector('input[name="cif"]').value;
+
+            if (!form) {
+                alert('Form tidak ditemukan');
+                return;
+            }
+
+            let formData = new FormData(form);
+
+            fetch("{{ route('audit.rutin.ketentuan.store', ['id_ref_sampling' => $data_sampling_detail->id_ref_sampling, 'cif' => $data_sampling_detail->cif]) }}", {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.status === 'success') {
+
+                        $('#modalKetentuan').modal('hide');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: data.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Gagal',
+                            text: data.message ?? 'Terjadi kesalahan'
+                        });
+                    }
+
+                })
+                .catch(error => {
+                    console.error(error);
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan pada server'
+                    });
+                });
+        }
+    </script>
 @endpush

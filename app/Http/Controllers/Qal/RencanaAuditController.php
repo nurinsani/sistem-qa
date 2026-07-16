@@ -35,24 +35,15 @@ class RencanaAuditController extends Controller
 
         $title = 'Rencana Audit';
 
-        // Inisialisasi variabel dengan Collection kosong agar compact() tidak error
-        $branch = collect(); 
-        $kelompok = collect();
-        
-        $dataQa = DB::table('masterqa')
-            ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_region')
+        $masterQa = DB::table('masterqa')
+            ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_area')
             ->where('code_qa', Auth::user()->code_qa)
-            ->first(); // Gunakan first agar langsung jadi objek
+            ->first();
 
+        $ambilArea = $masterQa ? $masterQa->kode_unit : null;
 
-        if ($dataQa) {
-            $kodeBranch = $dataQa->kode_branch;
-            $kodeArea   = $dataQa->code_region;
-
-            // Untuk dropdown unit manual atau data lainnya
-            $branch = Branch::where('code_region', $kodeArea)->get();
-            $kelompok = Kelompok::where('code_unit', $kodeArea)->get();
-        }
+        $branch = Branch::where('code_area', $ambilArea)->get();
+        $kelompok = Kelompok::where('code_unit', $masterQa->kode_branch)->get();
             
         $userLogin = auth()->user(); 
         
@@ -63,7 +54,6 @@ class RencanaAuditController extends Controller
             ->where('masterqa.atasan', $myCodeQa)
             ->select('users.id', 'users.name')
             ->get();
-
 
         return view('qal.rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok', 'qa'));
     }
@@ -200,6 +190,7 @@ class RencanaAuditController extends Controller
         if ($isManual) {
             $rules['nik']          = 'required|string';
             $rules['nama_manual']  = 'required|string';
+            $rules['unit']         = 'required|string';
         } else {
             $rules['code_kel']     = 'required';
             $rules['nama_kelompok']= 'required';
@@ -268,10 +259,9 @@ class RencanaAuditController extends Controller
                         }
                     }
                 } else {
-                    $unit = auth()->user()->unit ?? '001';
                     
                     $itemsToInsert[] = [
-                        'unit'            => $unit,
+                        'unit'            => $validated['unit'],
                         'cif'             => $validated['nik'],
                         'id_ref_sampling' => $idRefSampling,
                         'nama'            => $validated['nama_manual'],
@@ -287,7 +277,7 @@ class RencanaAuditController extends Controller
                 }
                 // Simpan ke Rencana Audit
                 RencanaAudit::create([
-                    'unit'            => $unit,
+                    'unit'            => $validated['unit'],
                     'id_ref_sampling' => $idRefSampling,
                     'tanggal_awal'    => $validated['tanggal_awal'],
                     'tanggal_akhir'   => $validated['tanggal_akhir'],

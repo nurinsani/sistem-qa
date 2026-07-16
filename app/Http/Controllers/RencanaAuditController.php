@@ -276,6 +276,7 @@ class RencanaAuditController extends Controller
         ];
 
         if ($isManual) {
+            $rules['unit']          = 'required|string';
             $rules['nik']          = 'required|string';
             $rules['nama_manual']  = 'required|string';
         } else {
@@ -345,10 +346,9 @@ class RencanaAuditController extends Controller
                         }
                     }
                 } else {
-                    $unit = Auth::user()->unit ?? '001';
                     
                     $itemsToInsert[] = [
-                        'unit'            => $unit,
+                        'unit'            => $validated['unit'],
                         'cif'             => $validated['nik'],
                         'id_ref_sampling' => $idRefSampling,
                         'nama'            => $validated['nama_manual'],
@@ -364,7 +364,7 @@ class RencanaAuditController extends Controller
                 }
                 // Simpan ke Rencana Audit
                 RencanaAudit::create([
-                    'unit'            => $unit,
+                    'unit'            => $validated['unit'],
                     'id_ref_sampling' => $idRefSampling,
                     'tanggal_awal'    => $validated['tanggal_awal'],
                     'tanggal_akhir'   => $validated['tanggal_akhir'],

@@ -35,28 +35,23 @@ class RencanaAuditController extends Controller
 
         $title = 'Rencana Audit';
 
-        // Inisialisasi variabel dengan Collection kosong agar compact() tidak error
-        $branch = collect(); 
-        $kelompok = collect();
-        
-        // $dataQa = DB::table('masterqa')
-        //     ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_region')
-        //     ->where('code_qa', Auth::user()->code_qa)
-        //     ->first(); // Gunakan first agar langsung jadi objek
+        // 1. Ambil data masterqa untuk user yang login
+        $masterQa = DB::table('masterqa')
+            ->where('code_qa', Auth::user()->code_qa)
+            ->first();
 
+        $kodeRegion = $masterQa ? $masterQa->kode_unit : null;
 
-        // if ($dataQa) {
-        //     $kodeBranch = $dataQa->kode_branch;
-        //     $kodeArea   = $dataQa->code_region;
+        // 2. Tentukan daftar region yang ingin ditampilkan
+        $targetRegions = [$kodeRegion]; // Masukkan region utama user
 
-        //     // Untuk dropdown unit manual atau data lainnya
-        //     $branch = Branch::where('code_region', $kodeArea)->get();
-        //     $kelompok = Kelompok::where('code_unit', $kodeArea)->get();
-        // }
-            
-        //     $userLogin = auth()->user(); 
-        
-        // $myCodeQa = $userLogin->code_qa;
+        // Jika user adalah pemilik region 3333, tambahkan 1111 ke dalam daftar
+        if ($kodeRegion == '3333') {
+            $targetRegions[] = '1111';
+        }
+
+        // 3. Gunakan whereIn untuk mengambil semua branch dari region yang diizinkan
+        $branch = Branch::whereIn('code_region', $targetRegions)->get();
 
         $qa = DB::table('users')
             ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
@@ -65,7 +60,7 @@ class RencanaAuditController extends Controller
             ->get();
 
 
-        return view('qam.rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok', 'qa'));
+        return view('qam.rencana_audit.index', compact('menus', 'title', 'branch', 'qa'));
     }
 
     public function data(Request $request)
@@ -183,6 +178,7 @@ class RencanaAuditController extends Controller
         ];
 
         if ($isManual) {
+            $rules['unit']          = 'required|string';
             $rules['nik']          = 'required|string';
             $rules['nama_manual']  = 'required|string';
         } else {
@@ -260,11 +256,9 @@ class RencanaAuditController extends Controller
                         }
                     }
                 } else {
-                    // TODO: Jika input manual, tentukan unit berdasarkan user yang login atau default ke '001' (PR)
-                    $unit = auth()->user()->unit ?? '001';
                     
                     $itemsToInsert[] = [
-                        'unit'            => $unit,
+                        'unit'            => $validated['unit'],
                         'cif'             => $validated['nik'],
                         'id_ref_sampling' => $idRefSampling,
                         'nama'            => $validated['nama_manual'],
@@ -282,7 +276,7 @@ class RencanaAuditController extends Controller
                 }
 
                 RencanaAudit::create([
-                    'unit'            => $unit,
+                    'unit'            => $validated['unit'],
                     'id_ref_sampling' => $idRefSampling,
                     'tanggal_awal'    => $validated['tanggal_awal'],
                     'tanggal_akhir'   => $validated['tanggal_akhir'],

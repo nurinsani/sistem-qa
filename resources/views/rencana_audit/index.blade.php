@@ -376,30 +376,27 @@
                             let method = $(this).val();
 
                             if (method === 'manual') {
-                                // Sembunyikan Kelompok & CIF
                                 $('#section-kelompok').hide();
                                 $('#section-cif').hide();
-                                // Tampilkan Manual
                                 $('#section-manual').fadeIn();
 
                                 // Atur attribute required
                                 $('#kode_kel').attr('required', false);
+                                $('select[name="unit"]').attr('required', true); 
                                 $('#nik').attr('required', true);
                                 $('#nama_manual').attr('required', true);
                             } else {
-                                // Tampilkan Kelompok & CIF
                                 $('#section-kelompok').fadeIn();
                                 $('#section-cif').fadeIn();
-                                // Sembunyikan Manual
                                 $('#section-manual').hide();
 
                                 // Atur attribute required
                                 $('#kode_kel').attr('required', true);
+                                $('select[name="unit"]').attr('required', false);
                                 $('#nik').attr('required', false);
                                 $('#nama_manual').attr('required', false);
                             }
                         });
-
                     });
 
                     function updateSelectedCount() {
@@ -408,12 +405,12 @@
                     }
                 });
 
-    $(document).ready(function() {
-        $('.select22').select2({
-            theme: 'bootstrap4', // atau 'bootstrap5' tergantung versi yang Anda gunakan
-            placeholder: "-- Pilih AP --",
-            width: '100%'
-        });
-    });
+                $(document).ready(function() {
+                    $('.select22').select2({
+                        theme: 'bootstrap4', // atau 'bootstrap5' tergantung versi yang Anda gunakan
+                        placeholder: "-- Pilih AP --",
+                        width: '100%'
+                    });
+                });
     </script>
 @endpush

@@ -46,7 +46,7 @@
                             <div id="section-manual" style="display: none;">
                                 <div class="form-group">
                                     <label>Unit <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="unit" required style="width: 100%;">
+                                    <select class="form-control" name="unit" style="width: 100%;">
                                         <option value="" hidden>-- Pilih Unit --</option>
                                         @foreach ($branch as $item)
                                             <option value="{{ $item->kode_branch }}">{{ $item->unit }}</option>

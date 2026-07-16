@@ -46,10 +46,10 @@
                                 @foreach ($data_sampling as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->branch->unit }}</td>
-                                        <td>{{ $item->cif }}</td>
-                                        <td>{{ $item->id_ref_sampling }}</td>
-                                        <td>{{ $item->nama }}</td>
+                                        <td>{{ $item->branch->unit ?? '-' }}</td>
+                                        <td>{{ $item->cif ?? '-' }}</td>
+                                        <td>{{ $item->id_ref_sampling ?? '-' }}</td>
+                                        <td>{{ $item->nama ?? '-' }}</td>
                                         <td>{{ $item->kelompok->nama_kel ?? '-' }}</td>
                                         <td>{{ $item->ao->nama_ao ?? '-' }}</td>
                                         <td>
@@ -62,6 +62,7 @@
                                             @else
                                                 <span class="badge badge-danger">HIGH</span>
                                             @endif
+                                        </td>
                                         <td>
                                             <a href="{{ route('qam.rencana.audit.detail_sampling', ['ref_sampling' => $item->id_ref_sampling, 'cif' => $item->cif]) }}" class="btn btn-info btn-sm">
                                                 Detail

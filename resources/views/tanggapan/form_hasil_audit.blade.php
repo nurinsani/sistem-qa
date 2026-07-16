@@ -121,7 +121,7 @@
     </div>
 
     <div class="card-footer text-right">
-        <a href="{{ route('tanggapan.edit', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-primary">
+        <a href="{{ route('qal.tanggapan.edit', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-primary">
             Edit
         </a>
     </div>

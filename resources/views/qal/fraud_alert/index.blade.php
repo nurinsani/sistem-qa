@@ -65,7 +65,7 @@
 
             <div class="table-responsive">
 
-                <table class="table table-bordered table-striped table-sm">
+                <table id="tableFraudAlert" class="table table-bordered table-striped table-sm">
 
                     <thead class="text-center">
                     <tr>
@@ -83,7 +83,7 @@
                 @forelse ($data as $row)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $row->tgl_tagih }}</td>
+                    <td width="80">{{ $row->tgl_tagih }}</td>
                     <td class="text-right">{{ number_format($row->total_os ?? 0) }}</td>
                     <td class="text-center">{{ $row->jumlah_noa }}</td>
                     <td>{{ $row->flag_reason }}</td>
@@ -115,3 +115,28 @@
 
 </div>
 @endsection
+
+@push('scripts')
+
+<script>
+    $(document).ready(function() {
+        $('#tableFraudAlert').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ data",
+                "paginate": {
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            }
+        });
+    });
+</script>
+
+@endpush

@@ -64,21 +64,36 @@ class RencanaAuditController extends Controller
             ->select('users.id', 'users.name')
             ->get();
 
+
         return view('qal.rencana_audit.index', compact('menus', 'title', 'branch', 'kelompok', 'qa'));
     }
 
     public function data(Request $request)
     {
         if ($request->ajax()) {
-            $query = RencanaAudit::with('branch');
+
+            $userCodeQa = auth()->user()->code_qa;
+
+            // 1. Ambil daftar 'kode_unit' yang dimiliki user dari tabel masterqa
+            $unitsUser = DB::table('masterqa')
+                ->where('code_qa', $userCodeQa)
+                ->pluck('kode_unit');
+
+            // 2. Query RencanaAudit dengan memfilter berdasarkan unit tersebut
+            // join ke tabel 'branch' untuk memastikan data yang diambil 
+            // adalah yang masuk dalam area/unit yang dimiliki user
+            $query = RencanaAudit::query()
+                ->join('branch', 'rencana_audit.unit', '=', 'branch.kode_branch')
+                ->whereIn('branch.code_area', $unitsUser) // Filter berdasarkan area yang dimiliki user
+                ->select('rencana_audit.*', 'branch.area', 'branch.unit as nama_unit');
 
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('area', function ($row) {
-                    return $row->branch->area ?? '-';
+                    return $row->area ?? '-';
                 })
                 ->addColumn('unit', function ($row) {
-                    return $row->branch->unit ?? '-';
+                    return $row->nama_unit ?? '-';
                 })
                 ->addColumn('status', function($row) {
                     $status = $row->status ?? 'selesai';

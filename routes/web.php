@@ -24,6 +24,7 @@ use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
 use App\Http\Controllers\Qam\QamApprovalController;
 use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\UbahSandiController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -244,4 +245,12 @@ Route::middleware(['role:4'])->group(function () {
     Route::get('/pengurus/fraud-alert', [\App\Http\Controllers\Pengurus\FraudAlertController::class, 'index'])->name('pengurus.fraud.alerts');
     Route::get('/pengurus/fraud-alert/export', [\App\Http\Controllers\Pengurus\FraudAlertController::class, 'export'])
         ->name('pengurus.fraud.alerts.export');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/qa/reset-password', [UbahSandiController::class, 'show'])->name('password.edit');
+    Route::put('/qa/reset-password', [UbahSandiController::class, 'update'])->name('password.update');
+
+    Route::get('/qal/reset-password', [UbahSandiController::class, 'show'])->name('password.edit');
+    Route::put('/qal/reset-password', [UbahSandiController::class, 'update'])->name('password.update');
 });

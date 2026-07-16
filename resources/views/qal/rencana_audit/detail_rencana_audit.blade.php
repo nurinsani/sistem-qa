@@ -46,11 +46,11 @@
                                 @foreach ($data_sampling as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->branch->unit }}</td>
-                                        <td>{{ $item->cif }}</td>
-                                        <td>{{ $item->id_ref_sampling }}</td>
-                                        <td>{{ $item->nama }}</td>
-                                        <td>{{ $item->kelompok->nama_kel }}</td>
+                                        <td>{{ $item->branch->unit ?? '-' }}</td>
+                                        <td>{{ $item->cif ?? '-' }}</td>
+                                        <td>{{ $item->id_ref_sampling ?? '-' }}</td>
+                                        <td>{{ $item->nama ?? '-' }}</td>
+                                        <td>{{ $item->kelompok->nama_kel ?? '-' }}</td>
                                         <td>{{ $item->ao->nama_ao ?? '-' }}</td>
                                         <td>
                                             @if ($item->status_sampling === 'LOW')
@@ -63,13 +63,14 @@
                                                 <span class="badge badge-danger">HIGH</span>
                                             @endif
                                         <td>
-                                            <a href="{{ route('qal.rencana.audit.detail_sampling', ['ref_sampling' => $item->id_ref_sampling, 'cif' => $item->cif]) }}" class="btn btn-info btn-sm">
+                                            <a href="{{ route('qal.rencana.audit.detail_sampling', ['ref_sampling' => $item->id_ref_sampling, 'cif' => $item->cif]) }}"
+                                                class="btn btn-info btn-sm">
                                                 Detail
                                             </a>
                                         </td>
                                     </tr>
                                 @endforeach
-                                
+
                             </tbody>
                         </table>
                     </div>
@@ -77,5 +78,4 @@
             </div>
         </div>
     </div>
-
 @endsection

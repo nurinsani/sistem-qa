@@ -39,7 +39,7 @@ class QalTanggapanController extends Controller
     {
 
 $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
-    ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+    ->leftJoin('audit', 'data_sampling.id_ref_sampling', '=', 'audit.id_ref_sampling')
     ->where('data_sampling.status', 'tanggapan')
     // Menambahkan filter berdasarkan user_id yang sedang login
     ->where('data_sampling.user_id', auth()->id()) 
@@ -326,7 +326,6 @@ $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
 
         // Pastikan $audit->id_ref_sampling dikonversi ke string agar MySQL tidak melakukan kalkulasi math
 DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
-    ->where('cif', (string) $audit->cif)
     ->update([
         'status' => 'evaluasi',
     ]);

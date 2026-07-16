@@ -60,14 +60,14 @@
 
     <div class="container-fluid">
 
-        <a href="{{ route('evaluasi.index') }}" class="btn btn-primary mb-3">
+        <a href="{{ route('qal.evaluasi.index') }}" class="btn btn-primary mb-3">
             ← Kembali
         </a>
 
-        @include('evaluasi.form_hasil_audit')
-        @include('evaluasi.modal_foto_hasil_audit')
-        @include('evaluasi.modal_temuan_lain')
-        @include('evaluasi.modal_ketentuan_temuan')
+        @include('qal.evaluasi.form_hasil_audit')
+        @include('qal.evaluasi.modal_foto_hasil_audit')
+        @include('qal.evaluasi.modal_temuan_lain')
+        @include('qal.evaluasi.modal_ketentuan_temuan')
 
         <div class="card">
             <div class="card-header">
@@ -75,7 +75,7 @@
             </div>
             <div class="card-body">
 
-                <form action="{{ route('tanggapan.store', $audit->id_audit) }}" method="POST">
+                <form action="{{ route('qal.tanggapan.store', $audit->id_audit) }}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
@@ -156,7 +156,7 @@
             </div>
         </div>
 
-        @include('evaluasi.informasi_anggota')
+        @include('qal.evaluasi.informasi_anggota')
 
         <div class="card">
             <div class="card-header">

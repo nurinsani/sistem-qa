@@ -20,6 +20,8 @@ use App\Http\Controllers\ParamProfilController;
 use App\Http\Controllers\Qal\AuditKhususController as QalAuditKhususController;
 use App\Http\Controllers\Qal\AuditRutinController as QalAuditRutinController;
 use App\Http\Controllers\Qal\RencanaAuditController as QalRencanaAuditController;
+use App\Http\Controllers\QalEvaluasiController;
+use App\Http\Controllers\QalTanggapanController;
 use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
 use App\Http\Controllers\Qam\QamApprovalController;
 use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
@@ -253,4 +255,23 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/qal/reset-password', [UbahSandiController::class, 'show'])->name('password.edit');
     Route::put('/qal/reset-password', [UbahSandiController::class, 'update'])->name('password.update');
+
+    // Tanggapan Routes
+    Route::get('/qal/tanggapan', [QalTanggapanController::class, 'index'])->name('qal.tanggapan.index');
+    Route::get('/qal/tanggapan/data', [QalTanggapanController::class, 'getData'])->name('qal.tanggapan.data');
+    Route::get('/qal/tanggapan/detail/{id}/{cif}', [QalTanggapanController::class, 'detail'])->name('qal.tanggapan.detail');
+    Route::get('/qal/tanggapan/edit/{id}/{cif}', [QalTanggapanController::class, 'edit'])->name('qal.tanggapan.edit');
+    Route::post('/qal/tanggapan/{id}', [QalTanggapanController::class, 'store'])->name('qal.tanggapan.store');
+    Route::put('/qal/tanggapan/{id}', [QalTanggapanController::class, 'update'])->name('qal.tanggapan.update');
+    // End Tanggapan Routes
+
+    // Evaluasi Routes
+    Route::get('/qal/evaluasi', [QalEvaluasiController::class, 'index'])->name('qal.evaluasi.index');
+    Route::get('/qal/evaluasi/data', [QalEvaluasiController::class, 'getData'])->name('qal.evaluasi.data');
+    Route::get('/qal/evaluasi/detail/{id}/{cif}', [QalEvaluasiController::class, 'detail'])->name('qal.evaluasi.detail');
+    Route::get('/qal/evaluasi/edit/{id}/{cif}', [QalEvaluasiController::class, 'edit'])->name('qal.evaluasi.edit');
+    Route::post('/qal/evaluasi/{id}', [QalEvaluasiController::class, 'store'])->name('qal.evaluasi.store');
+    Route::put('/qal/evaluasi/{id}', [QalEvaluasiController::class, 'update'])->name('qal.evaluasi.update');
+    Route::patch('/qal/evaluasi/lanjut/{id}', [QalEvaluasiController::class, 'updateStatusLanjut'])->name('qal.evaluasi.lanjut');
+    Route::post('/qal/evaluasi/audit-ulang/{cif}', [QalEvaluasiController::class, 'auditUlang'])->name('qal.evaluasi.auditUlang');
 });

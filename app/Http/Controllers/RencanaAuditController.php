@@ -364,7 +364,7 @@ class RencanaAuditController extends Controller
                 }
                 // Simpan ke Rencana Audit
                 RencanaAudit::create([
-                    'unit'            => $validated['unit'],
+                    'unit'            => $unit,
                     'id_ref_sampling' => $idRefSampling,
                     'tanggal_awal'    => $validated['tanggal_awal'],
                     'tanggal_akhir'   => $validated['tanggal_akhir'],

@@ -119,9 +119,12 @@ class RencanaAuditController extends Controller
         if ($request->ajax()) {
             
             $query = RencanaAudit::query()
-                ->join('data_sampling', 'rencana_audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
-                ->where('data_sampling.user_id', auth()->id())
-                ->select('rencana_audit.*'); // Pastikan mengambil kolom dari tabel utama saja
+                ->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                        ->from('data_sampling')
+                        ->whereColumn('data_sampling.id_ref_sampling', 'rencana_audit.id_ref_sampling')
+                        ->where('data_sampling.user_id', auth()->id());
+                });// Pastikan mengambil kolom dari tabel utama saja
 
             return DataTables::of($query)
                 ->addIndexColumn()

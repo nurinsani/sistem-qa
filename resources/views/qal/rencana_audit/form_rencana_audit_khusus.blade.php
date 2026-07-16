@@ -44,15 +44,15 @@
 
                             <!-- Section Manual (Akan di-show jika manual) -->
                             <div id="section-manual" style="display: none;">
-                                {{-- <div class="form-group">
-                                    <label>AP</label>
-                                    <select class="form-control select2" name="unit" required style="width: 100%;">
-                                        <option value="">-- Pilih AP --</option>
+                                <div class="form-group">
+                                    <label>Unit <span class="text-danger">*</span></label>
+                                    <select class="form-control" name="unit" required style="width: 100%;">
+                                        <option value="" hidden>-- Pilih Unit --</option>
                                         @foreach ($branch as $item)
                                             <option value="{{ $item->kode_branch }}">{{ $item->unit }}</option>
                                         @endforeach
                                     </select>
-                                </div> --}}
+                                </div>
                                 
                                 <div class="form-group">
                                     <label>NIK <span class="text-danger">*</span></label>

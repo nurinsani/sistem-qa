@@ -407,5 +407,13 @@
                         $('#selected-count').text(count);
                     }
                 });
+
+    $(document).ready(function() {
+        $('.select22').select2({
+            theme: 'bootstrap4', // atau 'bootstrap5' tergantung versi yang Anda gunakan
+            placeholder: "-- Pilih AP --",
+            width: '100%'
+        });
+    });
     </script>
 @endpush

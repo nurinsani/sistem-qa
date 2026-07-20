@@ -283,39 +283,29 @@ $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
     public function store(Request $request, $id)
     {
         $request->validate([
-            'tanggapan_ao'   => 'nullable|string',
-            'tanggapan_mm'   => 'nullable|string',
-            'tanggapan_bm'   => 'nullable|string',
-            'tanggapan_al'   => 'nullable|string',
-            'tindak_lanjut'  => 'nullable|string',
-            'due_date'       => 'nullable|date',
+            'tanggapan_ao'   => 'required|string',
+            'tanggapan_mm'   => 'required|string',
+            'tanggapan_bm'   => 'required|string',
+            'tanggapan_al'   => 'required|string',
+            'tindak_lanjut'  => 'required|string',
+            'due_date'       => 'required|date',
+        ], [
+            'tanggapan_ao.required'   => 'Tanggapan AO wajib diisi.',
+            'tanggapan_mm.required'   => 'Tanggapan MM wajib diisi.',
+            'tanggapan_bm.required'   => 'Tanggapan BM wajib diisi.',
+            'tanggapan_al.required'   => 'Tanggapan AL wajib diisi.',
+            'tindak_lanjut.required'  => 'Tindak lanjut wajib diisi.',
+            'due_date.required'       => 'Tanggal penyelesaian wajib diisi.',
         ]);
 
-        $data = [];
-
-        if ($request->filled('tanggapan_ao')) {
-            $data['tanggapan_ao'] = $request->tanggapan_ao;
-        }
-
-        if ($request->filled('tanggapan_mm')) {
-            $data['tanggapan_mm'] = $request->tanggapan_mm;
-        }
-
-        if ($request->filled('tanggapan_bm')) {
-            $data['tanggapan_bm'] = $request->tanggapan_bm;
-        }
-
-        if ($request->filled('tanggapan_al')) {
-            $data['tanggapan_al'] = $request->tanggapan_al;
-        }
-
-        if ($request->filled('tindak_lanjut')) {
-            $data['tindak_lanjut'] = $request->tindak_lanjut;
-        }
-
-        if ($request->filled('due_date')) {
-            $data['due_date'] = $request->due_date;
-        }
+        $data = [
+            'tanggapan_ao'   => $request->tanggapan_ao,
+            'tanggapan_mm'   => $request->tanggapan_mm,
+            'tanggapan_bm'   => $request->tanggapan_bm,
+            'tanggapan_al'   => $request->tanggapan_al,
+            'tindak_lanjut'  => $request->tindak_lanjut,
+            'due_date'       => $request->due_date,
+        ];
 
         Tanggapan::updateOrCreate(
             ['id_audit' => $id],
@@ -324,11 +314,10 @@ $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
 
         $audit = Audit::findOrFail($id);
 
-        // Pastikan $audit->id_ref_sampling dikonversi ke string agar MySQL tidak melakukan kalkulasi math
-DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
-    ->update([
-        'status' => 'evaluasi',
-    ]);
+        DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
+            ->update([
+                'status' => 'evaluasi',
+            ]);
 
         return redirect()->route('qal.tanggapan.index')->with('success', 'Tanggapan berhasil disimpan');
     }

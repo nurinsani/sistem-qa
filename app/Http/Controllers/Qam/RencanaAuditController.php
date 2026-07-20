@@ -66,7 +66,18 @@ class RencanaAuditController extends Controller
     public function data(Request $request)
     {
         if ($request->ajax()) {
-            $query = RencanaAudit::with('branch');
+            $userCodeQa = auth()->user()->code_qa;
+
+            // 1. Ambil daftar 'code_region' yang dimiliki user dari tabel masterqa
+            $regionsUser = DB::table('masterqa')
+                ->where('code_qa', $userCodeQa)
+                ->pluck('kode_unit'); // Sesuaikan dengan nama kolom region di masterqa
+
+            // 2. Query RencanaAudit difilter berdasarkan code_region pada tabel branch
+            $query = RencanaAudit::query()
+                ->join('branch', 'rencana_audit.unit', '=', 'branch.kode_branch')
+                ->whereIn('branch.code_region', $regionsUser) // Filter berdasarkan region user
+                ->select('rencana_audit.*', 'branch.area', 'branch.unit as nama_unit');
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -256,7 +267,9 @@ class RencanaAuditController extends Controller
                         }
                     }
                 } else {
-                    
+                    // ✅ PERBAIKAN: Ambil nilai unit dari input yang divalidasi ketika mode manual
+                    $unit = $validated['unit']; 
+
                     $itemsToInsert[] = [
                         'unit'            => $validated['unit'],
                         'cif'             => $validated['nik'],

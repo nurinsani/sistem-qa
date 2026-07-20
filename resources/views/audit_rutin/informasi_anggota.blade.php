@@ -97,6 +97,12 @@
                         </tr>
 
                         <tr>
+                            <td>Tunggakan</td>
+                            <td>:</td>
+                            <td>{{ number_format($data_api['tunggakan'] ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+
+                        <tr>
                             <td>Flag Reason</td>
                             <td>:</td>
                             <td>{{ $data_sampling->flag_reason }}</td>

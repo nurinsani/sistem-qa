@@ -1,4 +1,4 @@
-<form action="{{ route('tanggapan.update', $audit->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('qal.tanggapan.update', $audit->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -95,7 +95,7 @@
             </div>
         </div>
         <div class="card-footer text-right">
-            <a href="{{ route('tanggapan.detail', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-secondary">
+            <a href="{{ route('qal.tanggapan.detail', ['id' => $audit->id_audit, 'cif' => $audit->cif]) }}" class="btn btn-secondary">
                 Kembali
             </a>
             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>

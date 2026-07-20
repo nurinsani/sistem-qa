@@ -201,6 +201,11 @@
                                 <td>:</td>
                                 <td>{{ $dataCif['rata_omzet'] ?? '-' }}</td>
                             </tr>
+                              <tr>
+                                <td>Tunggakan</td>
+                                <td>:</td>
+                                <td>{{ number_format($dataCif['tunggakan']) ?? '-' }}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -214,6 +219,7 @@
                 <h5 class="mb-4">Dokumen Lain</h5>
 
                 <div class="row g-4">
+
 
                     <!-- KTP -->
                     <div class="col-md-3">

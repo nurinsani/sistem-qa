@@ -13,7 +13,8 @@ class InformasiAnggotaController extends Controller
 {
     public function index(Request $request)
     {
-        $roleId = Auth::user()->role_id;
+
+    $roleId = Auth::user()->role_id;
 
         $menus = Menu::whereNull('parent_id')
             ->where(function ($query) use ($roleId) {
@@ -158,11 +159,13 @@ class InformasiAnggotaController extends Controller
         $q = $request->q;
 
         $data = DB::table('data_loan_mob as a')
-            ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
-            ->where('a.cust_short_name', 'like', "%$q%")
-            ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
-            ->limit(10)
-            ->get();
+    ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
+    ->where(function ($query) use ($q) {
+        $query->where('a.cif', 'like', "%{$q}%")
+              ->orWhere('a.cust_short_name', 'like', "%{$q}%");
+    })
+    ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
+    ->get();
 
         return response()->json($data);
     }

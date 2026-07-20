@@ -66,7 +66,7 @@
                     <h5 class="card-title mb-3">Cari Anggota</h5>
                   <form>
     <div class="input-group">
-        <select id="search" class="form-control">
+        <select id="search" class="form-control" name="cif">
             <option value=""></option> 
         </select>
     </div>
@@ -112,6 +112,7 @@ $(document).ready(function() {
                         return {
                             id: item.cif,
                             text: item.cif + ' - ' + item.cust_short_name + ' - ' + item.nama_kel
+                        
                         };
                     })
                 };
@@ -119,7 +120,7 @@ $(document).ready(function() {
         }
     });
 
-
+    
     $('#search').on('select2:select', function (e) {
     let cif = e.params.data.id;
     window.location.href = "{{ url('informasi_anggota_detail') }}/" + cif;

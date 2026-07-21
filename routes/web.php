@@ -274,4 +274,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/qal/evaluasi/{id}', [QalEvaluasiController::class, 'update'])->name('qal.evaluasi.update');
     Route::patch('/qal/evaluasi/lanjut/{id}', [QalEvaluasiController::class, 'updateStatusLanjut'])->name('qal.evaluasi.lanjut');
     Route::post('/qal/evaluasi/audit-ulang/{cif}', [QalEvaluasiController::class, 'auditUlang'])->name('qal.evaluasi.auditUlang');
+
+        // informasi anggota
+    Route::get('/informasi_anggota', [InformasiAnggotaController::class, 'index'])->name('informasi_anggota');
+    Route::get('/informasi_anggota_detail/{cif}', [InformasiAnggotaController::class, 'informasi_anggota'])->name('informasi_anggota_detail');
+    Route::get('/search_anggota', [InformasiAnggotaController::class, 'search'])
+    ->name('search_anggota');
+    Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
+        ->name('mutasi_anggota_print');
+    //end informasi anggota
 });

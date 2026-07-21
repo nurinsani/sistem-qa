@@ -64,10 +64,10 @@
             ← Kembali
         </a>
 
-        @include('evaluasi.form_hasil_audit_edit')
-        @include('evaluasi.modal_foto_hasil_audit')
-        @include('evaluasi.modal_temuan_lain')
-        @include('evaluasi.modal_ketentuan_temuan')
+        @include('qal.evaluasi.form_hasil_audit_edit')
+        @include('qal.evaluasi.modal_foto_hasil_audit')
+        @include('qal.evaluasi.modal_temuan_lain')
+        @include('qal.evaluasi.modal_ketentuan_temuan')
 
                 <div class="card">
             <div class="card-header">
@@ -148,7 +148,7 @@
             </div>
         </div>
 
-        @include('tanggapan.informasi_anggota')
+        @include('qal.tanggapan.informasi_anggota')
 
         <div class="card">
             <div class="card-header">

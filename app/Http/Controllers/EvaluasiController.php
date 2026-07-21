@@ -42,6 +42,7 @@ class EvaluasiController extends Controller
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
             ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
             ->where('data_sampling.status', 'evaluasi')
+            ->where('data_sampling.user_id', auth()->id()) // Tambahan filter user login
             ->select(
                 'data_sampling.*',
                 'audit.id as id_audit',

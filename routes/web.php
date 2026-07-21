@@ -253,8 +253,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/qa/reset-password', [UbahSandiController::class, 'show'])->name('password.edit');
     Route::put('/qa/reset-password', [UbahSandiController::class, 'update'])->name('password.update');
 
-    Route::get('/qal/reset-password', [UbahSandiController::class, 'show'])->name('password.edit');
-    Route::put('/qal/reset-password', [UbahSandiController::class, 'update'])->name('password.update');
+    Route::get('/qal/reset-password', [UbahSandiController::class, 'show'])->name('qal.password.edit');
+    Route::put('/qal/reset-password', [UbahSandiController::class, 'update'])->name('qal.password.update');
 
     // Tanggapan Routes
     Route::get('/qal/tanggapan', [QalTanggapanController::class, 'index'])->name('qal.tanggapan.index');

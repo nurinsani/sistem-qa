@@ -147,15 +147,15 @@ class RencanaAuditController extends Controller
                 ]);
             }
             
-            $cifList = DB::table('data_loan_mob')
+            $cifList = DB::table('anggota')
                 ->where('code_kel', $kodeKel)
-                ->leftJoin('ao', 'data_loan_mob.cao', '=', 'ao.cao')
-                ->select('cif', 'Cust_Short_name')
+                ->leftJoin('ao', 'anggota.CAO', '=', 'ao.cao')
+                ->select('cif', 'CUST_SHORT_NAME')
                 ->get()
                 ->map(function($item) {
                     return [
                         'cif' => $item->cif,
-                        'Cust_Short_name' => $item->Cust_Short_name ?? 'N/A'
+                        'Cust_Short_name' => $item->CUST_SHORT_NAME ?? 'N/A'
                     ];
                 });
             

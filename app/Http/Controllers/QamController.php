@@ -113,7 +113,10 @@ class QamController extends Controller
         $year = now()->year;
 
         $audits = DB::table('audit')
-            ->join('data_sampling', 'audit.cif', '=', 'data_sampling.cif')
+            ->join('data_sampling', function($join) {
+                $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
+                    ->on('audit.cif', '=', 'data_sampling.cif');
+            })
             ->join('users', 'data_sampling.user_id', '=', 'users.id') 
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
@@ -135,9 +138,12 @@ class QamController extends Controller
                 'ao.nama_ao'
             )
             ->get();
-
+    
         $audit_proses = DB::table('audit')
-            ->join('data_sampling', 'audit.cif', '=', 'data_sampling.cif')
+            ->join('data_sampling', function($join) {
+                $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
+                    ->on('audit.cif', '=', 'data_sampling.cif');
+            })
             ->join('users', 'data_sampling.user_id', '=', 'users.id') 
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')

@@ -199,8 +199,8 @@
                                     '<p class="text-muted text-center mb-0"><i class="fa fa-info-circle"></i> Tidak ada data CIF</p>';
                             }
 
-                            $('#list-cif').html(html);
-                            updateSelectedCount();
+                            // $('#list-cif').html(html);
+                            // updateSelectedCount();
                         } else {
                             $('#list-cif').html(
                                 '<p class="text-danger text-center mb-0"><i class="fa fa-exclamation-circle"></i> ' +
@@ -215,10 +215,10 @@
                 });
             });
 
-            // Event handler untuk checkbox CIF (menggunakan event delegation)
-            $(document).on('change', '.cif-checkbox', function() {
-                updateSelectedCount();
-            });
+            // // Event handler untuk checkbox CIF (menggunakan event delegation)
+            // $(document).on('change', '.cif-checkbox', function() {
+            //     updateSelectedCount();
+            // });
 
             // Form Submit Audit Khusus
             $('#formAuditKhusus').on('submit', function(e) {

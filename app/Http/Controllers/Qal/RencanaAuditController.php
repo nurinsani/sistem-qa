@@ -229,19 +229,21 @@ class RencanaAuditController extends Controller
 
                 if (!$isManual) {
                     $firstCif = $validated['cif'][0];
-                    $unitData = DB::table('data_loan_mob')
+                    // Ubah dari data_loan_mob ke anggota
+                    $unitData = DB::table('anggota')
                         ->where('cif', $firstCif)
-                        ->where('code_kel', $validated['code_kel'])
+                        ->where('CODE_KEL', $validated['code_kel']) // Sesuaikan dengan nama kolom di tabel anggota
                         ->first();
 
                     if (!$unitData) throw new \Exception('Data CIF tidak ditemukan di database');
                     $unit = $unitData->unit;
 
                     foreach ($validated['cif'] as $cif) {
-                        $dataCif = DB::table('data_loan_mob')
+                        // Ubah dari data_loan_mob ke anggota
+                        $dataCif = DB::table('anggota')
                             ->where('cif', $cif)
-                            ->where('code_kel', $validated['code_kel'])
-                            ->select('unit', 'cif', 'Cust_short_name as nama', 'code_kel', 'cao')
+                            ->where('CODE_KEL', $validated['code_kel'])
+                            ->select('UNIT as unit', 'cif', 'CUST_SHORT_NAME as nama', 'CODE_KEL as code_kel', 'CAO as cao')
                             ->first();
 
                         if ($dataCif) {

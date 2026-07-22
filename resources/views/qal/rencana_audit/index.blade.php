@@ -199,7 +199,7 @@
                                     '<p class="text-muted text-center mb-0"><i class="fa fa-info-circle"></i> Tidak ada data CIF</p>';
                             }
 
-                            // $('#list-cif').html(html);
+                            $('#list-cif').html(html);
                             // updateSelectedCount();
                         } else {
                             $('#list-cif').html(

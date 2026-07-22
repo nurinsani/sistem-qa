@@ -128,28 +128,30 @@ class RencanaAuditController extends Controller
         return response()->json($result);
     }
 
-
     public function getCif(Request $request)
     {
         try {
             $kodeKel = $request->kode_kel;
             
+            // 1. Ambil data kelompok terlebih dahulu
             $kelompok = Kelompok::where('code_kel', $kodeKel)->first();
-
-            $namaAo = DB::table('ao')
-            ->where('cao', $kelompok->cao)
-            ->value('nama_ao');
             
+            // 2. Validasi jika kelompok tidak ditemukan (letakkan di atas sebelum diakses)
             if (!$kelompok) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Kelompok tidak ditemukan'
-                ]);
+                ], 404);
             }
             
+            // 3. Ambil nama AO berdasarkan cao kelompok
+            $namaAo = DB::table('ao')
+                ->where('cao', $kelompok->cao)
+                ->value('nama_ao');
+            
+            // 4. Ambil list CIF berdasarkan CODE_KEL (sesuaikan dengan huruf besar/kecil di DB)
             $cifList = DB::table('anggota')
-                ->where('code_kel', $kodeKel)
-                ->leftJoin('ao', 'anggota.CAO', '=', 'ao.cao')
+                ->where('CODE_KEL', $kodeKel) // Sesuaikan dengan screenshot DB: CODE_KEL
                 ->select('cif', 'CUST_SHORT_NAME')
                 ->get()
                 ->map(function($item) {
@@ -160,6 +162,7 @@ class RencanaAuditController extends Controller
                 });
             
             return response()->json([
+                // Ubah format response agar sesuai dengan yang biasa ditangkap dropdown frontend (biasanya langsung array atau properti data)
                 'success' => true,
                 'data' => [
                     'nama_ao' => $namaAo ?? '-',

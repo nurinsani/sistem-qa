@@ -38,15 +38,14 @@ class EvaluasiController extends Controller
 
     public function getData()
     {
-
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
-            ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+            ->leftJoin('audit', function($join) {
+                $join->on('data_sampling.id_ref_sampling', '=', 'audit.id_ref_sampling')
+                    ->on('data_sampling.cif', '=', 'audit.cif'); // Tambahkan kondisi ini agar join berdasarkan CIF yang sama
+            })
             ->where('data_sampling.status', 'evaluasi')
-            ->where('data_sampling.user_id', auth()->id()) // Tambahan filter user login
-            ->select(
-                'data_sampling.*',
-                'audit.id as id_audit',
-                )
+            ->where('data_sampling.user_id', auth()->id())
+            ->select('data_sampling.*', 'audit.id as id_audit')
             ->get();
 
         return response()->json(['data' => $data_sampling]);

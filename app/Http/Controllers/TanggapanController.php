@@ -316,6 +316,7 @@ class TanggapanController extends Controller
         $audit = Audit::findOrFail($id);
 
         DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
+            ->where('cif', (string) $audit->cif)
             ->update([
                 'status' => 'evaluasi',
             ]);

@@ -54,4 +54,5 @@ class DataSampling extends Model
     {
         return $this->belongsTo(User::class, 'keterangan', 'code_qa');
     }
+    
 }

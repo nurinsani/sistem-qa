@@ -127,60 +127,58 @@ class QalController extends Controller
         $year = now()->year;
 
         $audits = DB::table('audit')
-        // PERBAIKAN: Join menggunakan id_ref DAN cif agar akurat
-        ->join('data_sampling', function($join) {
-            $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
-                 ->on('audit.cif', '=', 'data_sampling.cif');
-        })
-        ->join('users', 'data_sampling.user_id', '=', 'users.id') 
-        ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
-        ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
-        ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
-        
-        ->where('users.id', $user_id)
-        ->where('data_sampling.status', 'selesai')
-        ->whereMonth('audit.created_at', $bulan)
-        ->whereYear('audit.created_at', $year)
-        
-        ->select(
-            'audit.*',
-            'data_sampling.nama',
-            'data_sampling.jenis_audit',
-            'data_sampling.status_sampling',
-            'data_sampling.status',
-            'branch.unit',
-            'kelompok.nama_kel',
-            'ao.nama_ao'
-        )
-        ->get();
+            ->join('data_sampling', function($join) {
+                $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
+                    ->on('audit.cif', '=', 'data_sampling.cif');
+            })
+            ->join('users', 'data_sampling.user_id', '=', 'users.id') 
+            ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
+            ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
+            ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
+            
+            ->where('users.id', $user_id)
+            ->where('data_sampling.status', 'selesai')
+            ->whereMonth('audit.created_at', $bulan)
+            ->whereYear('audit.created_at', $year)
+            
+            ->select(
+                'audit.*',
+                'data_sampling.nama',
+                'data_sampling.jenis_audit',
+                'data_sampling.status_sampling',
+                'data_sampling.status',
+                'branch.unit',
+                'kelompok.nama_kel',
+                'ao.nama_ao'
+            )
+            ->get();
     
-    $audit_proses = DB::table('audit')
-        // PERBAIKAN: Lakukan hal yang sama untuk data proses
-        ->join('data_sampling', function($join) {
-            $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
-                 ->on('audit.cif', '=', 'data_sampling.cif');
-        })
-        ->join('users', 'data_sampling.user_id', '=', 'users.id') 
-        ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
-        ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
-        ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
-        
-        ->where('users.id', $user_id)
-        ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
-        ->whereMonth('audit.created_at', $bulan)
-        ->whereYear('audit.created_at', $year)
-        
-        ->select(
-            'audit.*',
-            'data_sampling.nama',
-            'data_sampling.jenis_audit',
-            'data_sampling.status_sampling',
-            'data_sampling.status',
-            'branch.unit',
-            'kelompok.nama_kel',
-            'ao.nama_ao'
-        )
-        ->get();
+        $audit_proses = DB::table('audit')
+            ->join('data_sampling', function($join) {
+                $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
+                    ->on('audit.cif', '=', 'data_sampling.cif');
+            })
+            ->join('users', 'data_sampling.user_id', '=', 'users.id') 
+            ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
+            ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
+            ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
+            
+            ->where('users.id', $user_id)
+            ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
+            ->whereMonth('audit.created_at', $bulan)
+            ->whereYear('audit.created_at', $year)
+            
+            ->select(
+                'audit.*',
+                'data_sampling.nama',
+                'data_sampling.jenis_audit',
+                'data_sampling.status_sampling',
+                'data_sampling.status',
+                'branch.unit',
+                'kelompok.nama_kel',
+                'ao.nama_ao'
+            )
+            ->get();
         
         return view('qal.dashboard.detail_by_qa', [
             'audits' => $audits,

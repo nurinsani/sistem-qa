@@ -236,7 +236,7 @@ class RencanaAuditController extends Controller
                         ->first();
 
                     if (!$unitData) throw new \Exception('Data CIF tidak ditemukan di database');
-                    $unit = $unitData->unit;
+                    $unit = $unitData->UNIT;
 
                     foreach ($validated['cif'] as $cif) {
                         // Ubah dari data_loan_mob ke anggota

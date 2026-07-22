@@ -279,57 +279,7 @@ class RencanaAuditController extends Controller
                         'status'          => 'proses',
                     ];
                 }
-                if (!$isManual) {
-                    $firstCif = $validated['cif'][0];
-                    $unitData = DB::table('data_loan_mob')
-                        ->where('cif', $firstCif)
-                        ->where('code_kel', $validated['code_kel'])
-                        ->first();
-
-                    if (!$unitData) throw new \Exception('Data CIF tidak ditemukan di database');
-                    $unit = $unitData->unit;
-
-                    foreach ($validated['cif'] as $cif) {
-                        $dataCif = DB::table('data_loan_mob')
-                            ->where('cif', $cif)
-                            ->where('code_kel', $validated['code_kel'])
-                            ->select('unit', 'cif', 'Cust_short_name as nama', 'code_kel', 'cao')
-                            ->first();
-
-                        if ($dataCif) {
-                            $itemsToInsert[] = [
-                                'unit'            => $dataCif->unit,
-                                'cif'             => $dataCif->cif,
-                                'id_ref_sampling' => $idRefSampling,
-                                'nama'            => $dataCif->nama,
-                                'kode_kel'        => $dataCif->code_kel,
-                                'cao'             => $dataCif->cao,
-                                'jenis_audit'     => 'audit_khusus',
-                                'user_id'         => $validated['user_id'],
-                                'created_at'      => now(),
-                                'updated_at'      => now(),
-                                'status_sampling' => 'KH01',
-                                'status'          => 'proses',
-                            ];
-                        }
-                    }
-                } else {
-                    
-                    $itemsToInsert[] = [
-                        'unit'            => $validated['unit'],
-                        'cif'             => $validated['nik'],
-                        'id_ref_sampling' => $idRefSampling,
-                        'nama'            => $validated['nama_manual'],
-                        'kode_kel'        => '-',
-                        'cao'             => '-',
-                        'jenis_audit'     => 'audit_khusus',
-                        'user_id'         => $validated['user_id'],
-                        'created_at'      => now(),
-                        'updated_at'      => now(),
-                        'status_sampling' => 'KH01',
-                        'status'          => 'proses',
-                    ];
-                }
+                
                 // Simpan ke Rencana Audit
                 RencanaAudit::create([
                     'unit'            => $unit,

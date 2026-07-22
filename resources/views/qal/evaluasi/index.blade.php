@@ -53,11 +53,11 @@
             ajax: '{{ route("qal.evaluasi.data") }}',
             columns: [
                 { data: null, render: (data, type, row, meta) => meta.row + 1 },
-                { data: 'branch.unit' },
+                { data: 'branch.unit', defaultContent: '-' },
                 { data: 'cif' },
                 { data: 'id_ref_sampling' },
                 { data: 'nama' },
-                { data: 'kelompok.nama_kel' },
+                { data: 'kelompok.nama_kel', defaultContent: '-' },
                 { data: 'ao.nama_ao', defaultContent: '-' },
                 { data: 'status_sampling', render: function(data){
                     if(data === 'Low') return '<span class="badge badge-success">LOW</span>';

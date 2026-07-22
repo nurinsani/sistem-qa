@@ -315,10 +315,11 @@ class TanggapanController extends Controller
 
         $audit = Audit::findOrFail($id);
 
-        DataSampling::where('id_ref_sampling', (string) $audit->id_ref_sampling)
-            ->update([
-                'status' => 'evaluasi',
-            ]);
+        DataSampling::where('id_ref_sampling', $audit->id_ref_sampling)
+        ->where('cif', $audit->cif)
+        ->update([
+            'status' => 'evaluasi',
+        ]);
 
         return redirect()->route('qal.tanggapan.index')->with('success', 'Tanggapan berhasil disimpan');
     }

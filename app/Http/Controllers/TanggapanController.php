@@ -38,9 +38,12 @@ class TanggapanController extends Controller
     public function getData()
     {
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
-            ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
+            ->leftJoin('audit', function($join) {
+                $join->on('data_sampling.id_ref_sampling', '=', 'audit.id_ref_sampling')
+                    ->on('data_sampling.cif', '=', 'audit.cif'); // Tambahkan kondisi ini agar join berdasarkan CIF yang sama
+            })
             ->where('data_sampling.status', 'tanggapan')
-            ->where('data_sampling.user_id', auth()->id()) // Tambahan filter user login
+            ->where('data_sampling.user_id', auth()->id())
             ->select('data_sampling.*', 'audit.id as id_audit')
             ->get();
 
@@ -322,49 +325,31 @@ class TanggapanController extends Controller
 
     public function update(Request $request, $id)
     {
-        // 1. Ambil data audit_detail berdasarkan id_audit
+        
+        $audit = DB::table('audit')->where('id', $id)->first();
         $auditDetail = DB::table('audit_detail')->where('id_audit', $id)->first();
 
-        if (!$auditDetail) {
-            return redirect()->back()->with('error', 'Data Audit Detail tidak ditemukan.');
+        if (!$audit) {
+            return redirect()->back()->with('error', 'Data Audit tidak ditemukan.');
         }
 
-        // 2. Siapkan array data yang akan di-update
-        $updateData = [
-            'kondisi_usaha'      => $request->kondisi_usaha,
-            'kondisi_keluarga'   => $request->kondisi_keluarga,
-            'kondisi_lingkungan' => $request->kondisi_lingkungan,
-            'temuan'             => $request->temuan,
-            'updated_at'         => now(),
-        ];
-
-        // 3. Mapping nama input form ke masing-masing folder direktori
-        $folderMapping = [
-            'foto_wawancara_anggota' => 'uploads/foto_anggota',
-            'foto_wawancara_ketua'   => 'uploads/foto_ketua',
-            'foto_usaha'             => 'uploads/foto_usaha',
-        ];
-
-        // 4. Proses Upload Foto Berdasarkan Direktori
-        foreach ($folderMapping as $inputName => $folderPath) {
-            if ($request->hasFile($inputName)) {
-                // Hapus foto lama jika ada di folder
-                if (!empty($auditDetail->$inputName) && file_exists(public_path($auditDetail->$inputName))) {
-                    @unlink(public_path($auditDetail->$inputName));
-                }
-
-                // Upload foto baru ke folder yang sesuai
-                $file = $request->file($inputName);
-                $nama_file = time() . '_' . $inputName . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path($folderPath), $nama_file);
-                
-                // Simpan path lengkap ke database (contoh: uploads/foto_anggota/namafile.jpg)
-                $updateData[$inputName] = $folderPath . '/' . $nama_file;
+        $fotos = ['foto_wawancara_anggota', 'foto_wawancara_ketua', 'foto_usaha'];
+        foreach ($fotos as $foto) {
+            if ($request->hasFile($foto)) {
+                $file = $request->file($foto);
+                $nama_file = time() . '_' . $foto . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/audit'), $nama_file);
+                $dataAudit[$foto] = 'uploads/audit/' . $nama_file;
             }
         }
 
-        // 5. Lakukan update ke database pada tabel audit_detail
-        DB::table('audit_detail')->where('id_audit', $id)->update($updateData);
+        DB::table('audit_detail')->where('id_audit', $id)->update([
+            'kondisi_usaha'     => $request->kondisi_usaha,
+            'kondisi_keluarga'  => $request->kondisi_keluarga,
+            'kondisi_lingkungan'=> $request->kondisi_lingkungan,
+            'temuan' => $request->temuan,
+            'updated_at'          => now(),
+        ]);
 
         return redirect()->back()->with('success', 'Data Audit berhasil diperbarui');
     }

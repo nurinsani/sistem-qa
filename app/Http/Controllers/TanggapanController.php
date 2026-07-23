@@ -326,31 +326,49 @@ class TanggapanController extends Controller
 
     public function update(Request $request, $id)
     {
-        
-        $audit = DB::table('audit')->where('id', $id)->first();
+        // 1. Ambil data audit_detail berdasarkan id_audit
         $auditDetail = DB::table('audit_detail')->where('id_audit', $id)->first();
 
-        if (!$audit) {
-            return redirect()->back()->with('error', 'Data Audit tidak ditemukan.');
+        if (!$auditDetail) {
+            return redirect()->back()->with('error', 'Data Audit Detail tidak ditemukan.');
         }
 
-        $fotos = ['foto_wawancara_anggota', 'foto_wawancara_ketua', 'foto_usaha'];
-        foreach ($fotos as $foto) {
-            if ($request->hasFile($foto)) {
-                $file = $request->file($foto);
-                $nama_file = time() . '_' . $foto . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/audit'), $nama_file);
-                $dataAudit[$foto] = 'uploads/audit/' . $nama_file;
+        // 2. Siapkan array data yang akan di-update
+        $updateData = [
+            'kondisi_usaha'      => $request->kondisi_usaha,
+            'kondisi_keluarga'   => $request->kondisi_keluarga,
+            'kondisi_lingkungan' => $request->kondisi_lingkungan,
+            'temuan'             => $request->temuan,
+            'updated_at'         => now(),
+        ];
+
+        // 3. Mapping nama input form ke masing-masing folder direktori
+        $folderMapping = [
+            'foto_wawancara_anggota' => 'uploads/foto_anggota',
+            'foto_wawancara_ketua'   => 'uploads/foto_ketua',
+            'foto_usaha'             => 'uploads/foto_usaha',
+        ];
+
+        // 4. Proses Upload Foto Berdasarkan Direktori
+        foreach ($folderMapping as $inputName => $folderPath) {
+            if ($request->hasFile($inputName)) {
+                // Hapus foto lama jika ada di folder
+                if (!empty($auditDetail->$inputName) && file_exists(public_path($auditDetail->$inputName))) {
+                    @unlink(public_path($auditDetail->$inputName));
+                }
+
+                // Upload foto baru ke folder yang sesuai
+                $file = $request->file($inputName);
+                $nama_file = time() . '_' . $inputName . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path($folderPath), $nama_file);
+                
+                // Simpan path lengkap ke database (contoh: uploads/foto_anggota/namafile.jpg)
+                $updateData[$inputName] = $folderPath . '/' . $nama_file;
             }
         }
 
-        DB::table('audit_detail')->where('id_audit', $id)->update([
-            'kondisi_usaha'     => $request->kondisi_usaha,
-            'kondisi_keluarga'  => $request->kondisi_keluarga,
-            'kondisi_lingkungan'=> $request->kondisi_lingkungan,
-            'temuan' => $request->temuan,
-            'updated_at'          => now(),
-        ]);
+        // 5. Lakukan update ke database pada tabel audit_detail
+        DB::table('audit_detail')->where('id_audit', $id)->update($updateData);
 
         return redirect()->back()->with('success', 'Data Audit berhasil diperbarui');
     }

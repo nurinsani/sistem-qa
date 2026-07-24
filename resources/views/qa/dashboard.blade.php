@@ -18,7 +18,35 @@
 
 @section('content')
 
-    @include('dashboard.index')
+    <style>
+        .gradient-box {
+            color: #fff;
+        }
+    </style>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            @foreach ($dataBulanan as $item)
+                <div class="col-lg-3 col-6">
+                    <div class="small-box gradient-box"
+                        data-current="{{ $item['selesai'] }}"
+                        data-total="{{ $item['total'] }}">
+
+                        <div class="inner">
+                            <h3>{{ $item['selesai'] }}/{{ $item['total'] }}</h3>
+                            <p>{{ $item['bulan'] }}</p>
+                        </div>
+
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
 
 @endsection
 

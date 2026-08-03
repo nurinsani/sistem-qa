@@ -29,10 +29,29 @@
         .qr {
             text-align: center;
         }
+
+        /* Pengaturan untuk halaman baru */
+        .page-break {
+            page-break-before: always;
+            margin-top: 20px;
+        }
+
+        .photo-container {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .photo-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px; /* Batasi tinggi gambar agar rapi */
+            object-fit: contain;
+        }
     </style>
 </head>
 
 <body>
+    <!-- ================= HAMAN 1: LAPORAN UTAMA ================= -->
     <table style="border:none; margin-bottom:5px;">
         <tr style="border:none;">
 
@@ -41,23 +60,12 @@
             </td>
 
             <td style="border:none; text-align:center;">
-
-                {{-- <h2 style="margin:0; color:green;">
-                    KSPPS NUR INSANI
-                </h2>
-
-                <small>
-                    Melayani dengan hati
-                </small> --}}
-
                 <br>
-
                 <p>
                     Ruko Bintaro Sektor IX Blok G No. 6 Jl. Bintaro Utama Sektor IX
                     Kel. Pondok Pucung Kec. Pondok Aren
                     Tangerang Selatan Banten – (021) – 745 5352
                 </p>
-
             </td>
 
             <td style="border:none; width:15%; text-align:right;">
@@ -70,7 +78,6 @@
     <hr>
 
     <table>
-
         <tr>
             <td colspan="2">Kantor Cabang : {{ $data->unit }}</td>
             <td>Area Pemasaran : {{ $data->area ?? '-' }}</td>
@@ -84,7 +91,6 @@
         </tr>
 
         <tr>
-
             <td>
                 @foreach ($temuan as $item)
                     Nomor : {{ $item->nomor_ketentuan ?? '-' }} <br>
@@ -107,36 +113,30 @@
             <td>
                 {{ $data->temuan ?? '-' }}
             </td>
-
         </tr>
 
         <tr>
-            <th>Tanggapan MM, AL, BM</th>
+            <th>Tanggapan AO, MM, BM, AL</th>
             <th>Paraf AO</th>
             <th>Tindak Lanjut</th>
             <th>Batas Waktu</th>
         </tr>
 
         <tr>
-
             <td>
-                [tanggapan ao] <br>
-                <small>
-                    {{ $data->tanggapan_ao ?? '-' }}
-                </small>
+                Tanggapan AO: <br>
+                <small>{{ $data->tanggapan_ao ?? '-' }}</small>
                 <br><br>
-                [tanggapan mm] <br>
-                <small>
-                    {{ $data->tanggapan_mm ?? '-' }}
-                </small>
+                Tanggapan MM: <br>
+                <small>{{ $data->tanggapan_mm ?? '-' }}</small>
                 <br><br>
-                [tanggapan bm] <br>
-                <small>
-                    {{ $data->tanggapan_bm ?? '-' }}
-                </small>
+                Tanggapan BM: <br>
+                <small>{{ $data->tanggapan_bm ?? '-' }}</small>
+                <br><br>
+                Tanggapan AL: <br>
+                <small>{{ $data->tanggapan_al ?? '-' }}</small>
             </td>
 
-                <!-- Paraf AO -->
             <td class="qr" style="text-align:center; width:20%;">
                 <br><br>
                 <img src="data:image/png;base64,{{ $qr_ao }}">
@@ -151,17 +151,13 @@
             <td>
                 {{ $data->due_date ?? '-' }}
             </td>
-
         </tr>
-
     </table>
 
     <br>
 
     <table>
-
         <tr>
-
             <td class="qr">
                 Dibuat Oleh
                 <br><br>
@@ -193,7 +189,84 @@
                 <br>
                 AM
             </td>
+        </tr>
+    </table>
 
+    <div class="page-break"></div>
+
+    <table style="border:none; margin-bottom:10px;">
+        <tr>
+            <td style="border:none; font-weight:bold; font-size: 14px;">
+                HASIL OBSERVASI
+            </td>
+            <td style="border:none; text-align:right;">
+                Cabang: {{ $data->unit }} | Tgl Kunjungan: {{ $data->tanggal_kunjungan }}
+            </td>
+        </tr>
+    </table>
+
+    <!-- Bagian Teks Observasi -->
+    <table>
+        <tr>
+            <th style="width: 33%;">Kondisi Usaha</th>
+            <th style="width: 33%;">Kondisi Keluarga</th>
+            <th style="width: 33%;">Kondisi Lingkungan</th>
+        </tr>
+        <tr>
+            <td>
+                <small>{{ $data->kondisi_usaha ?? '-' }}</small>
+            </td>
+            <td>
+                <small>{{ $data->kondisi_keluarga ?? '-' }}</small>
+            </td>
+            <td>
+                <small>{{ $data->kondisi_lingkungan ?? '-' }}</small>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <table style="border:none; margin-bottom:10px;">
+        <tr>
+            <td style="border:none; font-weight:bold; font-size: 14px;">
+                LAMPIRAN: FOTO-FOTO HASIL AUDIT
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th style="width: 50%; text-align: center;">Foto Wawancara Anggota</th>
+            <th style="width: 50%; text-align: center;">Foto Wawancara Ketua Kelompok</th>
+            <th style="width: 50%; text-align: center;">Foto Usaha</th>
+        </tr>
+        <tr>
+            <td class="photo-container">
+
+                @if(!empty($data->foto_wawancara_anggota))
+                    <img src="{{ public_path($data->foto_wawancara_anggota) }}" alt="Foto Wawancara Anggota">
+                    <p><small>Keterangan: {{ $data->keterangan_foto_wawancara_anggota ?? 'Foto Wawancara Anggota' }}</small></p>
+                @else
+                    <br><br><p style="color: #777;">Tidak ada foto</p><br><br>
+                @endif
+            </td>
+            <td class="photo-container">
+                @if(!empty($data->foto_wawancara_ketua))
+                    <img src="{{ public_path($data->foto_wawancara_ketua) }}" alt="Foto Wawancara Ketua Kelompok">
+                    <p><small>Keterangan: {{ $data->keterangan_foto_wawancara_ketua ?? 'Foto Wawancara Ketua Kelompok' }}</small></p>
+                @else
+                    <br><br><p style="color: #777;">Tidak ada foto</p><br><br>
+                @endif
+            </td>
+            <td class="photo-container">
+                @if(!empty($data->foto_usaha))
+                    <img src="{{ public_path($data->foto_usaha) }}" alt="Foto Usaha">
+                    <p><small>Keterangan: {{ $data->keterangan_foto_usaha ?? 'Foto Usaha' }}</small></p>
+                @else
+                    <br><br><p style="color: #777;">Tidak ada foto</p><br><br>
+                @endif
+            </td>
         </tr>
 
     </table>

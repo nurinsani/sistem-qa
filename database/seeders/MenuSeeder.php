@@ -87,7 +87,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Laporan',
             'icon' => 'fas fa-file-alt nav-icon',
-            'url' => '/qal/laporan',
+            'url' => '/laporan',
             'role_id' => 2,
             'order' => 5,
         ]);
@@ -95,7 +95,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Laporan',
             'icon' => 'fas fa-file-alt nav-icon',
-            'url' => '/qam/laporan',
+            'url' => '/laporan',
             'role_id' => 3,
             'order' => 5,
         ]);
@@ -103,7 +103,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name' => 'Laporan',
             'icon' => 'fas fa-file-alt nav-icon',
-            'url' => '/pengurus/laporan',
+            'url' => '/laporan',
             'role_id' => 4,
             'order' => 2,
         ]);
@@ -189,7 +189,7 @@ class MenuSeeder extends Seeder
             'order' => 9,
         ]);
 
-        
+
         Menu::create([
             'name' => 'Approval',
             'icon' => 'fas fa-check-circle nav-icon',
@@ -213,6 +213,5 @@ class MenuSeeder extends Seeder
             'role_id' => 2,
             'order' => 9,
         ]);
-
     }
 }

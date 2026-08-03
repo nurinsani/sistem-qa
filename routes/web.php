@@ -44,7 +44,7 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/informasi_anggota_detail/{cif}', [InformasiAnggotaController::class, 'informasi_anggota'])->name('informasi_anggota_detail');
     //Route::get('/mutasi_anggota/{cif}', [InformasiAnggotaController::class, 'mutasi_anggota'])->name('mutasi_anggota');
     Route::get('/search_anggota', [InformasiAnggotaController::class, 'search'])
-    ->name('search_anggota');
+        ->name('search_anggota');
     Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
         ->name('mutasi_anggota_print');
     //end informasi anggota
@@ -74,7 +74,7 @@ Route::middleware(['role:1'])->group(function () {
     Route::get('/param-ketentuan/{id}', [AuditRutinController::class, 'getByParam'])
         ->name('param.ketentuan.get');
     Route::get('/qa/audit-rutin/history/{id}/{cif}', [AuditRutinController::class, 'detail_history'])->name('audit.rutin.history');
-    
+
     // End Audit Rutin Routes
 
     // Audit Khusus Routes
@@ -111,8 +111,7 @@ Route::middleware(['role:1'])->group(function () {
     // End Evaluasi Routes
 
     Route::get('/sampling/cetak-mutasi/{cif}', [RencanaAuditController::class, 'cetakMutasi'])
-    ->name('sampling.cetak.mutasi');
-
+        ->name('sampling.cetak.mutasi');
 });
 
 Route::middleware(['role:2'])->group(function () {
@@ -132,7 +131,7 @@ Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/kelompok/get-cif', [QalRencanaAuditController::class, 'getCif'])->name('qal.kelompok.get-cif');
     // End Rencana Audit Routes
 
-        // Audit Rutin Routes
+    // Audit Rutin Routes
     Route::get('/qal/audit-rutin', [QalAuditRutinController::class, 'index'])->name('qal.audit.rutin.index');
     Route::get('/qal/audit-rutin/data', [QalAuditRutinController::class, 'getData'])->name('qal.audit.rutin.data');
     Route::get('/qal/audit-rutin/detail/{id}/{cif}', [QalAuditRutinController::class, 'detail'])->name('qal.audit.rutin.detail');
@@ -144,10 +143,10 @@ Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/param-ketentuan/{id}', [QalAuditRutinController::class, 'getByParam'])
         ->name('qal.param.ketentuan.get');
     Route::get('/qal/audit-rutin/history/{id}/{cif}', [QalAuditRutinController::class, 'detail_history'])->name('qal.audit.rutin.history');
-    
+
     // End Audit Rutin Routes
 
-        // Audit Khusus Routes
+    // Audit Khusus Routes
     Route::get('/qal/audit-khusus', [QalAuditKhususController::class, 'index'])->name('qal.audit.khusus.index');
     Route::get('/qal/audit-khusus/data', [QalAuditKhususController::class, 'getData'])->name('qal.audit.khusus.data');
     Route::get('/qal/audit-khusus/detail/{id}/{cif}', [QalAuditKhususController::class, 'detail'])->name('qal.audit.khusus.detail');
@@ -164,6 +163,7 @@ Route::middleware(['role:2'])->group(function () {
     Route::get('/qal/laporan', [LaporanController::class, 'index'])->name('qal.laporan.index');
     Route::get('/qal/laporan/pdf/{id}', [LaporanController::class, 'pdf'])->name('qal.laporan.pdf');
     Route::get('/qal/laporan/export-excel', [LaporanController::class, 'export_excel'])->name('qal.laporan.export_excel');
+    Route::get('/qal/laporan-audit/rekap', [LaporanController::class, 'cetakRekapPdf'])->name('audit.rekap.pdf');
     // End Laporan Routes
 
     // Fraud Alert Routes
@@ -194,6 +194,7 @@ Route::middleware(['role:3'])->group(function () {
     Route::get('/qam/laporan', [QamLaporanController::class, 'index'])->name('qam.laporan.index');
     Route::get('/qam/laporan/pdf/{id}', [QamLaporanController::class, 'pdf'])->name('qam.laporan.pdf');
     Route::get('/qam/laporan/export-excel', [QamLaporanController::class, 'export_excel'])->name('qam.laporan.export_excel');
+    Route::get('/qal/laporan-audit/rekap', [LaporanController::class, 'cetakRekapPdf'])->name('audit.rekap.pdf');
     // End Laporan Routes
 
     // Fraud Alert Routes
@@ -227,8 +228,6 @@ Route::middleware(['role:3'])->group(function () {
 
     Route::get('/qam/approval', [QamApprovalController::class, 'index'])->name('qam.approval.index');
     Route::post('/qam/approval/{id}', [QamApprovalController::class, 'updateStatus'])->name('qam.approval.update');
-
-
 });
 
 Route::middleware(['role:4'])->group(function () {
@@ -243,7 +242,7 @@ Route::middleware(['role:4'])->group(function () {
     Route::get('/pengurus/laporan/export-excel', [LaporanPengurusController::class, 'export_excel'])->name('pengurus.laporan.export_excel');
     // End Laporan Routes
 
-        // Fraud Alert Routes
+    // Fraud Alert Routes
     Route::get('/pengurus/fraud-alert', [\App\Http\Controllers\Pengurus\FraudAlertController::class, 'index'])->name('pengurus.fraud.alerts');
     Route::get('/pengurus/fraud-alert/export', [\App\Http\Controllers\Pengurus\FraudAlertController::class, 'export'])
         ->name('pengurus.fraud.alerts.export');
@@ -275,11 +274,11 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/qal/evaluasi/lanjut/{id}', [QalEvaluasiController::class, 'updateStatusLanjut'])->name('qal.evaluasi.lanjut');
     Route::post('/qal/evaluasi/audit-ulang/{cif}', [QalEvaluasiController::class, 'auditUlang'])->name('qal.evaluasi.auditUlang');
 
-        // informasi anggota
+    // informasi anggota
     Route::get('/informasi_anggota', [InformasiAnggotaController::class, 'index'])->name('informasi_anggota');
     Route::get('/informasi_anggota_detail/{cif}', [InformasiAnggotaController::class, 'informasi_anggota'])->name('informasi_anggota_detail');
     Route::get('/search_anggota', [InformasiAnggotaController::class, 'search'])
-    ->name('search_anggota');
+        ->name('search_anggota');
     Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
         ->name('mutasi_anggota_print');
     //end informasi anggota

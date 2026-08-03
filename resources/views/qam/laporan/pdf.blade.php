@@ -42,14 +42,6 @@
 
             <td style="border:none; text-align:center;">
 
-                {{-- <h2 style="margin:0; color:green;">
-                    KSPPS NUR INSANI
-                </h2>
-
-                <small>
-                    Melayani dengan hati
-                </small> --}}
-
                 <br>
 
                 <p>
@@ -120,17 +112,17 @@
         <tr>
 
             <td>
-                [tanggapan ao] <br>
+                Tanggapan AO: <br>
                 <small>
                     {{ $data->tanggapan_ao ?? '-' }}
                 </small>
                 <br><br>
-                [tanggapan mm] <br>
+                Tanggapan MM: <br>
                 <small>
                     {{ $data->tanggapan_mm ?? '-' }}
                 </small>
                 <br><br>
-                [tanggapan bm] <br>
+                Tanggapan BM: <br>
                 <small>
                     {{ $data->tanggapan_bm ?? '-' }}
                 </small>

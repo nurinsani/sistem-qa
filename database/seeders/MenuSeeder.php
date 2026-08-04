@@ -213,5 +213,13 @@ class MenuSeeder extends Seeder
             'role_id' => 2,
             'order' => 9,
         ]);
+
+        Menu::create([
+            'name' => 'Data Tunggakan',
+            'icon' => 'fas fa-file-invoice-dollar nav-icon',
+            'url' => '/tunggakan',
+            'role_id' => null,
+            'order' => 8,
+        ]);
     }
 }

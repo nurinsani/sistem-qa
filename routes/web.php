@@ -26,6 +26,7 @@ use App\Http\Controllers\Qam\LaporanController as QamLaporanController;
 use App\Http\Controllers\Qam\QamApprovalController;
 use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TunggakanController;
 use App\Http\Controllers\UbahSandiController;
 
 Route::get('/', function () {
@@ -282,4 +283,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mutasi_anggota/print/{cif}', [InformasiAnggotaController::class, 'printMutasi'])
         ->name('mutasi_anggota_print');
     //end informasi anggota
+
+    // Menu Tunggakan
+    Route::get('/tunggakan', [TunggakanController::class, 'index'])->name('tunggakan');
+    Route::get('/tunggakan/data', [TunggakanController::class, 'getData'])->name('tunggakan.data');
 });

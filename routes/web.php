@@ -241,6 +241,7 @@ Route::middleware(['role:4', 'password.expiry'])->group(function () {
     Route::get('/pengurus/laporan', [LaporanPengurusController::class, 'index'])->name('pengurus.laporan.index');
     Route::get('/pengurus/laporan/pdf/{id}', [LaporanPengurusController::class, 'pdf'])->name('pengurus.laporan.pdf');
     Route::get('/pengurus/laporan/export-excel', [LaporanPengurusController::class, 'export_excel'])->name('pengurus.laporan.export_excel');
+    Route::get('/pengurus/laporan-audit/rekap', [LaporanPengurusController::class, 'cetakRekapPdf'])->name('pengurus.audit.rekap.pdf');
     // End Laporan Routes
 
     // Fraud Alert Routes

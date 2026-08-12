@@ -79,15 +79,15 @@
                         <!-- Tanggal Awal Rekap -->
                         <div class="col-md-3">
                             <label>Tanggal Awal Rekap</label>
-                            <input type="date" name="rekap_tgl_awal" value="{{ request('rekap_tgl_awal') }}" class="form-control"
-                                required>
+                            <input type="date" name="rekap_tgl_awal" value="{{ request('rekap_tgl_awal') }}"
+                                class="form-control" required>
                         </div>
 
                         <!-- Tanggal Akhir Rekap -->
                         <div class="col-md-3">
                             <label>Tanggal Akhir Rekap</label>
-                            <input type="date" name="rekap_tgl_akhir" value="{{ request('rekap_tgl_akhir') }}" class="form-control"
-                                required>
+                            <input type="date" name="rekap_tgl_akhir" value="{{ request('rekap_tgl_akhir') }}"
+                                class="form-control" required>
                         </div>
 
                         <!-- Tombol Submit -->
@@ -110,7 +110,8 @@
                         <h5 class="m-0">
                             <i class="fas fa-users text-primary mr-1"></i> Rekap User Sampling
                             @if (request()->filled('rekap_tgl_awal') && request()->filled('rekap_tgl_akhir'))
-                                ({{ \Carbon\Carbon::parse(request('rekap_tgl_awal'))->format('d-m-Y') }} s/d {{ \Carbon\Carbon::parse(request('rekap_tgl_akhir'))->format('d-m-Y') }})
+                                ({{ \Carbon\Carbon::parse(request('rekap_tgl_awal'))->format('d-m-Y') }} s/d
+                                {{ \Carbon\Carbon::parse(request('rekap_tgl_akhir'))->format('d-m-Y') }})
                             @elseif (request()->filled('periode'))
                                 ({{ request('periode') }} Hari Terakhir)
                             @endif
@@ -146,16 +147,20 @@
                                         <td>{{ $rekap->nama_user ?? 'User ID: ' . ($rekap->user_id ?? '-') }}</td>
                                         <td>{{ $rekap->nama_atasan ?? '-' }}</td>
                                         <td class="text-center">
-                                            <span class="badge badge-primary px-2 py-1">{{ $rekap->total_proses ?? 0 }}</span>
+                                            <span
+                                                class="badge badge-primary px-2 py-1">{{ $rekap->total_proses ?? 0 }}</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge badge-warning px-2 py-1">{{ $rekap->total_tanggapan ?? 0 }}</span>
+                                            <span
+                                                class="badge badge-warning px-2 py-1">{{ $rekap->total_tanggapan ?? 0 }}</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge badge-info px-2 py-1">{{ $rekap->total_evaluasi ?? 0 }}</span>
+                                            <span
+                                                class="badge badge-info px-2 py-1">{{ $rekap->total_evaluasi ?? 0 }}</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge badge-success px-2 py-1">{{ $rekap->total_selesai ?? 0 }}</span>
+                                            <span
+                                                class="badge badge-success px-2 py-1">{{ $rekap->total_selesai ?? 0 }}</span>
                                         </td>
                                         <td class="text-center">
                                             <span class="badge badge-dark px-2 py-1" style="font-size: 13px;">
@@ -196,7 +201,9 @@
                 <h3 class="card-title">
                     Data Audit
                     @if (request()->filled('rekap_tgl_awal') && request()->filled('rekap_tgl_akhir'))
-                        <small class="text-muted">(Rekap: {{ \Carbon\Carbon::parse(request('rekap_tgl_awal'))->format('d-m-Y') }} s/d {{ \Carbon\Carbon::parse(request('rekap_tgl_akhir'))->format('d-m-Y') }}
+                        <small class="text-muted">(Rekap:
+                            {{ \Carbon\Carbon::parse(request('rekap_tgl_awal'))->format('d-m-Y') }} s/d
+                            {{ \Carbon\Carbon::parse(request('rekap_tgl_akhir'))->format('d-m-Y') }}
                             @if (request()->filled('user_id') && ($selectedUser = $rekapData->firstWhere('user_id', request('user_id'))))
                                 - Petugas: <strong>{{ $selectedUser->nama_user }}</strong>
                             @endif
@@ -210,14 +217,16 @@
                             )
                         </small>
                     @elseif(request()->filled('tgl_awal'))
-                        <small class="text-muted">({{ \Carbon\Carbon::parse(request('tgl_awal'))->format('d-m-Y') }} s/d {{ \Carbon\Carbon::parse(request('tgl_akhir'))->format('d-m-Y') }})</small>
+                        <small class="text-muted">({{ \Carbon\Carbon::parse(request('tgl_awal'))->format('d-m-Y') }} s/d
+                            {{ \Carbon\Carbon::parse(request('tgl_akhir'))->format('d-m-Y') }})</small>
                     @endif
                 </h3>
 
                 <div class="card-tools">
 
                     @if ($data->count() > 0)
-                        <a href="{{ route('qam.laporan.export_excel', request()->all()) }}" class="btn btn-success btn-sm">
+                        <a href="{{ route('qam.laporan.export_excel', request()->all()) }}"
+                            class="btn btn-success btn-sm">
                             <i class="fas fa-file-excel"></i> Export Excel
                         </a>
                     @endif
@@ -262,7 +271,7 @@
                                     <td>{{ $item->cif }}</td>
                                     <td>{{ $item->id_ref_sampling }}</td>
                                     <td>{{ $item->nama }}</td>
-                                    <td>{{ $item->nama_petugas ?? $item->qa->name ?? '-' }}</td>
+                                    <td>{{ $item->nama_petugas ?? ($item->qa->name ?? '-') }}</td>
                                     <td>{{ $item->kelompok->nama_kel ?? '-' }}</td>
                                     <td>{{ $item->ao->nama_ao ?? '-' }}</td>
                                     <td class="text-center">

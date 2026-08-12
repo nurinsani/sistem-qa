@@ -335,7 +335,20 @@ class RencanaAuditController extends Controller
 
             $title = 'Detail Rencana Audit';
 
-            $data_sampling = DataSampling::where('id_ref_sampling', $ref_sampling)->get();
+            $data_sampling = DB::table('data_sampling')
+                ->leftJoin('users', 'data_sampling.user_id', '=', 'users.id')
+                ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
+                ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
+                ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
+                ->where('data_sampling.id_ref_sampling', $ref_sampling)
+                ->select(
+                    'data_sampling.*',
+                    'users.name as petugas',
+                    'branch.unit as nama_unit',
+                    'kelompok.nama_kel',
+                    'ao.nama_ao'
+                )
+                ->get();
             
             return view('qam.rencana_audit.detail_rencana_audit', compact('data_sampling', 'title', 'menus'));
         } catch (\Exception $e) {

@@ -38,6 +38,7 @@ class ResetPasswordController extends Controller
 
         $user = User::findOrFail($id);
         $user->password = Hash::make($request->new_password);
+        $user->password_changed_at = now();
         $user->save();
 
         return back()->with('success', "Password untuk {$user->name} berhasil direset.");

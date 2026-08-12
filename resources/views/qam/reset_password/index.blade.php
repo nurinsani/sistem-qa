@@ -27,6 +27,7 @@
                                 <tr>
                                     <th>Nama</th>
                                     <th>Email</th>
+                                    <th>Terakhir Ganti Password</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -35,6 +36,7 @@
                                 <tr>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
+                                    <td>{{ $user->password_changed_at ? $user->password_changed_at->format('d-m-Y H:i') : '-' }}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#resetModal{{$user->id}}">
                                             Reset Password

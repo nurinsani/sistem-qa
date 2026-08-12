@@ -23,19 +23,8 @@ class LaporanAuditExport implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        $userCodeQa = Auth::user()->code_qa;
-
-        $bawahanDirect = DB::table('masterqa')
-            ->where('atasan', $userCodeQa)
-            ->pluck('code_qa');
-
-        $unitsUser = DB::table('masterqa')
-            ->where('code_qa', $userCodeQa)
-            ->orWhere('atasan', $userCodeQa)
-            ->orWhereIn('atasan', $bawahanDirect)
-            ->pluck('kode_unit')
-            ->unique()
-            ->toArray();
+        $userCodeQa = Auth::user()->code_qa ?? null;
+        $roleId = Auth::user()->role_id ?? null;
 
         $query = DB::table('data_sampling')
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
@@ -44,8 +33,25 @@ class LaporanAuditExport implements FromCollection, WithHeadings
             ->leftJoin('users', 'data_sampling.user_id', '=', 'users.id')
             ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
             ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
-            ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif')
-            ->whereIn('branch.code_area', $unitsUser);
+            ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif');
+
+        if ($userCodeQa && $roleId != 4) {
+            $bawahanDirect = DB::table('masterqa')
+                ->where('atasan', $userCodeQa)
+                ->pluck('code_qa');
+
+            $unitsUser = DB::table('masterqa')
+                ->where('code_qa', $userCodeQa)
+                ->orWhere('atasan', $userCodeQa)
+                ->orWhereIn('atasan', $bawahanDirect)
+                ->pluck('kode_unit')
+                ->unique()
+                ->toArray();
+
+            if (!empty($unitsUser)) {
+                $query->whereIn('branch.code_area', $unitsUser);
+            }
+        }
 
         $request = $this->request;
 

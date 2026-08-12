@@ -53,9 +53,12 @@ class LaporanController extends Controller
         $baseQuery = DataSampling::with(['branch', 'kelompok', 'ao', 'qa'])
             ->join('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('users', 'data_sampling.user_id', '=', 'users.id')
-            ->whereIn('branch.code_area', $unitsUser)
             ->where('data_sampling.status', 'selesai')
             ->select('data_sampling.*', 'users.name as nama_petugas');
+
+        if (!empty($unitsUser)) {
+            $baseQuery->whereIn('branch.code_area', $unitsUser);
+        }
 
         $rekapData = collect();
         $selectedUserId = $request->get('user_id');
@@ -91,8 +94,11 @@ class LaporanController extends Controller
                 ->leftJoin('users', 'data_sampling.user_id', '=', 'users.id')
                 ->leftJoin('masterqa as user_mq', 'users.code_qa', '=', 'user_mq.code_qa')
                 ->leftJoin('masterqa as atasan_mq', 'user_mq.atasan', '=', 'atasan_mq.code_qa')
-                ->whereIn('branch.code_area', $unitsUser)
                 ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi', 'selesai']);
+
+            if (!empty($unitsUser)) {
+                $rekapQuery->whereIn('branch.code_area', $unitsUser);
+            }
 
             if ($tanggalMulai && $tanggalSelesai) {
                 $rekapQuery->whereBetween('data_sampling.updated_at', [$tanggalMulai, $tanggalSelesai]);
@@ -119,9 +125,12 @@ class LaporanController extends Controller
             $dataQuery = DataSampling::with(['branch', 'kelompok', 'ao', 'qa'])
                 ->join('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
                 ->leftJoin('users', 'data_sampling.user_id', '=', 'users.id')
-                ->whereIn('branch.code_area', $unitsUser)
                 ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi', 'selesai'])
                 ->select('data_sampling.*', 'users.name as nama_petugas');
+
+            if (!empty($unitsUser)) {
+                $dataQuery->whereIn('branch.code_area', $unitsUser);
+            }
             if ($tanggalMulai && $tanggalSelesai) {
                 $dataQuery->whereBetween('data_sampling.updated_at', [$tanggalMulai, $tanggalSelesai]);
             } elseif ($tanggalMulai) {

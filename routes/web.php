@@ -37,7 +37,7 @@ Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::middleware(['role:1'])->group(function () {
+Route::middleware(['role:1', 'password.expiry'])->group(function () {
     Route::get('/qa/dashboard', [QaController::class, 'index']);
 
     // informasi anggota
@@ -115,7 +115,7 @@ Route::middleware(['role:1'])->group(function () {
         ->name('sampling.cetak.mutasi');
 });
 
-Route::middleware(['role:2'])->group(function () {
+Route::middleware(['role:2', 'password.expiry'])->group(function () {
     Route::get('/qal/dashboard', [QalController::class, 'index']);
     Route::get('/qal/dashboard/detail', [QalController::class, 'detail'])->name('qal.dashboard.detail');
     Route::get('/qal/dashboard/detail/{user_id}', [QalController::class, 'detailByQa'])->name('qal.dashboard.detailByQa');
@@ -174,7 +174,7 @@ Route::middleware(['role:2'])->group(function () {
     // End Fraud Alert Routes
 });
 
-Route::middleware(['role:3'])->group(function () {
+Route::middleware(['role:3', 'password.expiry'])->group(function () {
     Route::get('/qam/dashboard', [QamController::class, 'index']);
     Route::get('/qam/dashboard/detail', [QamController::class, 'detail'])->name('qam.dashboard.detail');
     Route::get('/qam/dashboard/detail/{user_id}', [QamController::class, 'detailByQa'])->name('qam.dashboard.detailByQa');
@@ -231,7 +231,7 @@ Route::middleware(['role:3'])->group(function () {
     Route::post('/qam/approval/{id}', [QamApprovalController::class, 'updateStatus'])->name('qam.approval.update');
 });
 
-Route::middleware(['role:4'])->group(function () {
+Route::middleware(['role:4', 'password.expiry'])->group(function () {
     Route::get('/pengurus/dashboard', [PengurusController::class, 'index']);
     Route::get('/pengurus/dashboard/detail', [PengurusController::class, 'detail'])->name('pengurus.dashboard.detail');
     Route::get('/pengurus/dashboard/detail/{user_id}', [PengurusController::class, 'detailByQa'])->name('pengurus.dashboard.detailByQa');
@@ -249,7 +249,7 @@ Route::middleware(['role:4'])->group(function () {
         ->name('pengurus.fraud.alerts.export');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'password.expiry'])->group(function () {
     Route::get('/qa/reset-password', [UbahSandiController::class, 'show'])->name('password.edit');
     Route::put('/qa/reset-password', [UbahSandiController::class, 'update'])->name('password.update');
 

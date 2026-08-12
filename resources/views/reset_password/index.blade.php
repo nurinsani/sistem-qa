@@ -22,6 +22,15 @@
                         </div>
                     @endif
 
+                    {{-- Pesan Peringatan --}}
+                    @if (session('warning'))
+                        <div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h5><i class="icon fas fa-exclamation-triangle"></i> Perhatian!</h5>
+                            {{ session('warning') }}
+                        </div>
+                    @endif
+
                     {{-- Password Lama --}}
                     <div class="form-group">
                         <label>Password Lama</label>

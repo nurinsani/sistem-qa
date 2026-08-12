@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'password_changed_at',
     ];
 
     /**
@@ -42,7 +43,20 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'password_changed_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user password has expired (older than specified days, default 30).
+     */
+    public function isPasswordExpired(int $days = 30): bool
+    {
+        if (!$this->password_changed_at) {
+            return true;
+        }
+
+        return $this->password_changed_at->addDays($days)->isPast();
     }
 }

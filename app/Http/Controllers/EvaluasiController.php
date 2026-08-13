@@ -394,8 +394,18 @@ class EvaluasiController extends Controller
             $tanggal = Carbon::parse(now());
             $tahun   = $tanggal->format('Y');
             $bulan   = $tanggal->format('m');
-            
-            $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
+            $prefix  = $tahun . $bulan;
+            $lastRef = DB::table('rencana_audit')
+                ->where('id_ref_sampling', 'regexp', '^' . $prefix . '[0-9]{4,}$')
+                ->orderBy('id_ref_sampling', 'desc')
+                ->value('id_ref_sampling');
+
+            $nextNum = $lastRef ? ((int) substr($lastRef, strlen($prefix)) + 1) : 1;
+
+            do {
+                $idRefSampling = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+                $nextNum++;
+            } while (DB::table('rencana_audit')->where('id_ref_sampling', $idRefSampling)->exists() || DB::table('data_sampling')->where('id_ref_sampling', $idRefSampling)->exists());
 
             $auditLama = DataSampling::where('cif', $cif)->firstOrFail();
 

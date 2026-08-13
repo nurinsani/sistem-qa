@@ -39,7 +39,7 @@ class QalEvaluasiController extends Controller
     public function getData()
     {
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
-            ->leftJoin('audit', function($join) {
+            ->leftJoin('audit', function ($join) {
                 $join->on('data_sampling.id_ref_sampling', '=', 'audit.id_ref_sampling')
                     ->on('data_sampling.cif', '=', 'audit.cif'); // Tambahkan kondisi ini agar join berdasarkan CIF yang sama
             })
@@ -74,7 +74,7 @@ class QalEvaluasiController extends Controller
             ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
             ->where('audit.id', $id)
             ->first();
-        
+
         $temuanLain = DB::table('temuan_lain')
             ->leftJoin('param_profil', 'param_profil.id', '=', 'temuan_lain.id_param_profil')
             ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan_lain.id_ketentuan')
@@ -145,7 +145,7 @@ class QalEvaluasiController extends Controller
 
         // Base URL file
         $baseFile = 'http://rmc.nurinsani.co.id:8474/berkas/';
-        
+
         $data_sampling = DataSampling::with(['branch', 'kelompok', 'ao'])
             ->leftJoin('audit', 'data_sampling.cif', '=', 'audit.cif')
             ->leftJoin('fraud_alerts', 'data_sampling.cif', '=', 'fraud_alerts.cif')
@@ -194,16 +194,16 @@ class QalEvaluasiController extends Controller
         //     ->first();
 
         $audit = DB::table('audit')
-        ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
-        ->where('audit.id', $id)
-        ->select(
-            'audit.*',               // Ambil semua kolom dari tabel audit
-            'audit.id as id',        // Pastikan 'id' merujuk ke audit.id
-            'audit_detail.*',        // Ambil kolom dari audit_detail
-            'audit_detail.id as id_detail' // Alias-kan id detail agar tidak menimpa
-        )
-        ->first();
-        
+            ->leftJoin('audit_detail', 'audit.id', '=', 'audit_detail.id_audit')
+            ->where('audit.id', $id)
+            ->select(
+                'audit.*',               // Ambil semua kolom dari tabel audit
+                'audit.id as id',        // Pastikan 'id' merujuk ke audit.id
+                'audit_detail.*',        // Ambil kolom dari audit_detail
+                'audit_detail.id as id_detail' // Alias-kan id detail agar tidak menimpa
+            )
+            ->first();
+
         $temuanLain = DB::table('temuan_lain')
             ->leftJoin('param_profil', 'param_profil.id', '=', 'temuan_lain.id_param_profil')
             ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan_lain.id_ketentuan')
@@ -379,7 +379,7 @@ class QalEvaluasiController extends Controller
                 $file = $request->file($inputName);
                 $nama_file = time() . '_' . $inputName . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path($folderPath), $nama_file);
-                
+
                 // Simpan path lengkap ke database (contoh: uploads/foto_anggota/namafile.jpg)
                 $updateData[$inputName] = $folderPath . '/' . $nama_file;
             }
@@ -393,45 +393,54 @@ class QalEvaluasiController extends Controller
 
     public function updateStatusLanjut(Request $request, $id)
     {
-        
+
         // $id adalah ID Audit
         $audit = Audit::findOrFail($id);
-        
+
         // Update status di tabel Data Sampling
         // Kita gunakan CIF dan ID Ref Sampling agar akurat
         DB::table('data_sampling')
-        ->where('id_ref_sampling', $audit->id_ref_sampling)
-        ->where('cif', $request->cif)
-        ->update(['status' => 'selesai']);
-        
+            ->where('id_ref_sampling', $audit->id_ref_sampling)
+            ->where('cif', $request->cif)
+            ->update(['status' => 'selesai']);
+
         return redirect()->route('qal.evaluasi.index')->with('success', 'Status berhasil diperbarui.');
-        
-        }
-        
-        public function auditUlang($cif)
-        {
-            $tanggal = Carbon::parse(now());
-            $tahun   = $tanggal->format('Y');
-            $bulan   = $tanggal->format('m');
-            
-            $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
+    }
 
-            $auditLama = DataSampling::where('cif', $cif)->firstOrFail();
+    public function auditUlang($cif)
+    {
+        $tanggal = Carbon::parse(now());
+        $tahun   = $tanggal->format('Y');
+        $bulan   = $tanggal->format('m');
+        $prefix  = $tahun . $bulan;
+        $lastRef = DB::table('rencana_audit')
+            ->where('id_ref_sampling', 'regexp', '^' . $prefix . '[0-9]{4,}$')
+            ->orderBy('id_ref_sampling', 'desc')
+            ->value('id_ref_sampling');
 
-            $auditLama->update(['status' => 'selesai']);
+        $nextNum = $lastRef ? ((int) substr($lastRef, strlen($prefix)) + 1) : 1;
 
-            $auditBaru = $auditLama->replicate(); 
-            
-            $auditBaru->status = 'proses';
-            $auditBaru->id_ref_sampling = $idRefSampling;
-            $auditBaru->created_at = now();
-            
-            $auditBaru->save();
+        do {
+            $idRefSampling = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+            $nextNum++;
+        } while (DB::table('rencana_audit')->where('id_ref_sampling', $idRefSampling)->exists() || DB::table('data_sampling')->where('id_ref_sampling', $idRefSampling)->exists());
 
-            // dd($auditBaru);
+        $auditLama = DataSampling::where('cif', $cif)->firstOrFail();
 
-            return redirect()->back()->with([
-                'success' => 'Audit ulang berhasil dibuat dengan ID Ref Sampling: ' . $idRefSampling,
-            ]);
-        }
+        $auditLama->update(['status' => 'selesai']);
+
+        $auditBaru = $auditLama->replicate();
+
+        $auditBaru->status = 'proses';
+        $auditBaru->id_ref_sampling = $idRefSampling;
+        $auditBaru->created_at = now();
+
+        $auditBaru->save();
+
+        // dd($auditBaru);
+
+        return redirect()->back()->with([
+            'success' => 'Audit ulang berhasil dibuat dengan ID Ref Sampling: ' . $idRefSampling,
+        ]);
+    }
 }

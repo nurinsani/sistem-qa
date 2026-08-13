@@ -216,7 +216,23 @@ class RencanaAuditController extends Controller
         
         // Jika manual, gunakan NIK sebagai pengganti kode kelompok untuk ID Ref
         $suffix = $isManual ? $validated['nik'] : $validated['code_kel'];
-        $idRefSampling = $tahun . $bulan . $suffix . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
+        $prefix = $tahun . $bulan . $suffix;
+
+        $lastRef = DB::table('rencana_audit')
+            ->where('id_ref_sampling', 'like', $prefix . '%')
+            ->orderBy('id_ref_sampling', 'desc')
+            ->value('id_ref_sampling');
+
+        if ($lastRef && preg_match('/^' . preg_quote($prefix, '/') . '(\d+)$/', $lastRef, $matches)) {
+            $nextNum = ((int) $matches[1]) + 1;
+        } else {
+            $nextNum = 1;
+        }
+
+        do {
+            $idRefSampling = $prefix . str_pad($nextNum, 2, '0', STR_PAD_LEFT);
+            $nextNum++;
+        } while (DB::table('rencana_audit')->where('id_ref_sampling', $idRefSampling)->exists());
         
         $userQA = DB::table('users')
         ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')

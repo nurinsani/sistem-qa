@@ -23,19 +23,19 @@ class RencanaAuditController extends Controller
         $roleId = Auth::user()->role_id;
 
         $menus = Menu::whereNull('parent_id')
-        ->where(function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        })
-        ->with(['children' => function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        }])
-        ->orderBy('order')
-        ->get();
+            ->where(function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            })
+            ->with(['children' => function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            }])
+            ->orderBy('order')
+            ->get();
 
         $title = 'Rencana Audit';
-        
+
         $masterQa = DB::table('masterqa')
             ->join('branch', 'masterqa.kode_unit', '=', 'branch.code_area')
             ->where('code_qa', Auth::user()->code_qa)
@@ -72,32 +72,32 @@ class RencanaAuditController extends Controller
     {
         try {
             $kodeKel = $request->kode_kel;
-            
+
             $kelompok = Kelompok::where('code_kel', $kodeKel)->first();
 
             $namaAo = DB::table('ao')
-            ->where('cao', $kelompok->cao)
-            ->value('nama_ao');
-            
+                ->where('cao', $kelompok->cao)
+                ->value('nama_ao');
+
             if (!$kelompok) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Kelompok tidak ditemukan'
                 ]);
             }
-            
+
             $cifList = DB::table('data_loan_mob')
                 ->where('code_kel', $kodeKel)
                 ->leftJoin('ao', 'data_loan_mob.cao', '=', 'ao.cao')
                 ->select('cif', 'Cust_Short_name')
                 ->get()
-                ->map(function($item) {
+                ->map(function ($item) {
                     return [
                         'cif' => $item->cif,
                         'Cust_Short_name' => $item->Cust_Short_name ?? 'N/A'
                     ];
                 });
-            
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -105,7 +105,6 @@ class RencanaAuditController extends Controller
                     'cif_list' => $cifList
                 ]
             ]);
-            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -117,14 +116,14 @@ class RencanaAuditController extends Controller
     public function data(Request $request)
     {
         if ($request->ajax()) {
-            
+
             $query = RencanaAudit::query()
                 ->whereExists(function ($query) {
                     $query->select(DB::raw(1))
                         ->from('data_sampling')
                         ->whereColumn('data_sampling.id_ref_sampling', 'rencana_audit.id_ref_sampling')
                         ->where('data_sampling.user_id', auth()->id());
-                });// Pastikan mengambil kolom dari tabel utama saja
+                }); // Pastikan mengambil kolom dari tabel utama saja
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -134,7 +133,7 @@ class RencanaAuditController extends Controller
                 ->addColumn('unit', function ($row) {
                     return $row->branch->unit ?? '-';
                 })
-                ->addColumn('status', function($row) {
+                ->addColumn('status', function ($row) {
                     $status = $row->status ?? 'done';
                     $badges = [
                         'done' => '<span class="badge bg-success">DONE</span>',
@@ -150,7 +149,7 @@ class RencanaAuditController extends Controller
 
                     if ($row->status === 'proses') {
                         return '
-                            <a href="'.$detail_url.'" class="btn btn-sm btn-primary">Detail</a>
+                            <a href="' . $detail_url . '" class="btn btn-sm btn-primary">Detail</a>
                             <button class="btn btn-sm btn-secondary" disabled>
                                 Start
                             </button>
@@ -158,10 +157,10 @@ class RencanaAuditController extends Controller
                     }
 
                     return '
-                        <a href="'.$detail_url.'" class="btn btn-sm btn-primary">Detail</a>
+                        <a href="' . $detail_url . '" class="btn btn-sm btn-primary">Detail</a>
 
-                        <form action="'.$start_url.'" method="POST" style="display:inline;">
-                            '.csrf_field().'
+                        <form action="' . $start_url . '" method="POST" style="display:inline;">
+                            ' . csrf_field() . '
                             <button type="submit" class="btn btn-sm btn-success"
                                 onclick="return confirm(\'Mulai audit ini?\')">
                                 Start
@@ -178,24 +177,37 @@ class RencanaAuditController extends Controller
 
     public function auditRutinStore(Request $request)
     {
-        $validated = $request->validate([
-            'unit' => 'required',
-            'tanggal_awal' => 'required|date',
-            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
-            'jumlah_sampling' => 'nullable|numeric|min:0',
-        ],
-        [
-            'unit.required' => 'AP harus dipilih',
-            'tanggal_awal.required' => 'Tanggal awal harus diisi',
-            'tanggal_akhir.required' => 'Tanggal akhir harus diisi',
-            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus setelah atau sama dengan tanggal awal',
-        ]);
+        $validated = $request->validate(
+            [
+                'unit' => 'required',
+                'tanggal_awal' => 'required|date',
+                'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
+                'jumlah_sampling' => 'nullable|numeric|min:0',
+            ],
+            [
+                'unit.required' => 'AP harus dipilih',
+                'tanggal_awal.required' => 'Tanggal awal harus diisi',
+                'tanggal_akhir.required' => 'Tanggal akhir harus diisi',
+                'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus setelah atau sama dengan tanggal awal',
+            ]
+        );
 
         $tanggal = Carbon::parse($request->tanggal_awal);
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
 
-        $idRefSampling = $tahun . $bulan . str_pad(rand(1, 99), 4, '0', STR_PAD_LEFT);
+        $prefix = $tahun . $bulan;
+        $lastRef = DB::table('rencana_audit')
+            ->where('id_ref_sampling', 'regexp', '^' . $prefix . '[0-9]{4,}$')
+            ->orderBy('id_ref_sampling', 'desc')
+            ->value('id_ref_sampling');
+
+        $nextNum = $lastRef ? ((int) substr($lastRef, strlen($prefix)) + 1) : 1;
+
+        do {
+            $idRefSampling = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+            $nextNum++;
+        } while (DB::table('rencana_audit')->where('id_ref_sampling', $idRefSampling)->exists());
 
         try {
 
@@ -210,13 +222,13 @@ class RencanaAuditController extends Controller
                     'jumlah_sampling' => $validated['jumlah_sampling'] ?? 0,
                     'status' => 'pending',
                 ]);
-                
+
                 // Ambil data menggunakan join untuk memastikan unit diambil dari data_loan_mob
                 $sampling = DB::table('fraud_alerts')
                     // Menggunakan leftJoin ke data_loan_mob
                     ->leftJoin('data_loan_mob', 'fraud_alerts.cif', '=', 'data_loan_mob.cif')
                     // Filter unit sekarang merujuk ke tabel data_loan_mob
-                    ->where('data_loan_mob.unit', $validated['unit']) 
+                    ->where('data_loan_mob.unit', $validated['unit'])
                     ->inRandomOrder()
                     ->limit($validated['jumlah_sampling'])
                     ->select(
@@ -281,7 +293,7 @@ class RencanaAuditController extends Controller
             $rules['nama_manual']  = 'required|string';
         } else {
             $rules['code_kel']     = 'required';
-            $rules['nama_kelompok']= 'required';
+            $rules['nama_kelompok'] = 'required';
             $rules['cif']          = 'required|array|min:1';
             $rules['cif.*']        = 'required|string';
         }
@@ -300,14 +312,30 @@ class RencanaAuditController extends Controller
         $tanggal = Carbon::parse($request->tanggal_awal);
         $tahun   = $tanggal->format('Y');
         $bulan   = $tanggal->format('m');
-        
+
         // Jika manual, gunakan NIK sebagai pengganti kode kelompok untuk ID Ref
         $suffix = $isManual ? $validated['nik'] : $validated['code_kel'];
-        $idRefSampling = $tahun . $bulan . $suffix . str_pad(rand(1, 99), 2, '0', STR_PAD_LEFT);
+        $prefix = $tahun . $bulan . $suffix;
+
+        $lastRef = DB::table('rencana_audit')
+            ->where('id_ref_sampling', 'like', $prefix . '%')
+            ->orderBy('id_ref_sampling', 'desc')
+            ->value('id_ref_sampling');
+
+        if ($lastRef && preg_match('/^' . preg_quote($prefix, '/') . '(\d+)$/', $lastRef, $matches)) {
+            $nextNum = ((int) $matches[1]) + 1;
+        } else {
+            $nextNum = 1;
+        }
+
+        do {
+            $idRefSampling = $prefix . str_pad($nextNum, 2, '0', STR_PAD_LEFT);
+            $nextNum++;
+        } while (DB::table('rencana_audit')->where('id_ref_sampling', $idRefSampling)->exists());
 
         try {
             DB::transaction(function () use ($validated, $idRefSampling, $isManual, $request) {
-                
+
                 $unit = null;
                 $itemsToInsert = [];
 
@@ -346,7 +374,7 @@ class RencanaAuditController extends Controller
                         }
                     }
                 } else {
-                    
+
                     $itemsToInsert[] = [
                         'unit'            => $validated['unit'],
                         'cif'             => $validated['nik'],
@@ -382,7 +410,6 @@ class RencanaAuditController extends Controller
                 'success' => true,
                 'message' => 'Data audit khusus berhasil disimpan'
             ]);
-            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -397,21 +424,21 @@ class RencanaAuditController extends Controller
             $roleId = Auth::user()->role_id;
 
             $menus = Menu::whereNull('parent_id')
-            ->where(function ($query) use ($roleId) {
-                $query->where('role_id', $roleId)
-                    ->orWhereNull('role_id');
-            })
-            ->with(['children' => function ($query) use ($roleId) {
-                $query->where('role_id', $roleId)
-                    ->orWhereNull('role_id');
-            }])
-            ->orderBy('order')
-            ->get();
+                ->where(function ($query) use ($roleId) {
+                    $query->where('role_id', $roleId)
+                        ->orWhereNull('role_id');
+                })
+                ->with(['children' => function ($query) use ($roleId) {
+                    $query->where('role_id', $roleId)
+                        ->orWhereNull('role_id');
+                }])
+                ->orderBy('order')
+                ->get();
 
             $title = 'Detail Rencana Audit';
 
             $data_sampling = DataSampling::where('id_ref_sampling', $ref_sampling)->get();
-            
+
             return view('rencana_audit.detail_rencana_audit', compact('data_sampling', 'title', 'menus'));
         } catch (\Exception $e) {
             return redirect()->back()
@@ -444,7 +471,7 @@ class RencanaAuditController extends Controller
                 ->firstOrFail();
 
             // api CIF
-            $urlCif = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=".$cif;
+            $urlCif = "http://mobcoll.nurinsani.co.id/apimobcol/data-cif.php?function=get_saldo&cif=" . $cif;
 
             $ch = curl_init();
             curl_setopt_array($ch, [
@@ -465,7 +492,7 @@ class RencanaAuditController extends Controller
             $data_api = $data_api_raw['data'][0] ?? [];
 
             // api RMC dokumen
-            $urlDokumen = "http://mobcoll.nurinsani.co.id/apimobcol/rmc.php?cif=".$cif;
+            $urlDokumen = "http://mobcoll.nurinsani.co.id/apimobcol/rmc.php?cif=" . $cif;
 
             $ch = curl_init();
             curl_setopt_array($ch, [
@@ -498,7 +525,6 @@ class RencanaAuditController extends Controller
                 'title',
                 'menus'
             ));
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', $e->getMessage());
@@ -528,7 +554,6 @@ class RencanaAuditController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'Audit berhasil dimulai');
-
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -548,7 +573,7 @@ class RencanaAuditController extends Controller
         $saldo = json_decode($responseSaldo->body())->data[0] ?? [];
 
         $pdf = Pdf::loadView('mutasi_anggota.index', compact('mutasi', 'saldo'));
-        
+
         return $pdf->stream('Mutasi_' . $cif . '.pdf');
     }
 }

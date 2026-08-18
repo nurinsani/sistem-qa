@@ -14,7 +14,7 @@ class InformasiAnggotaController extends Controller
     public function index(Request $request)
     {
 
-    $roleId = Auth::user()->role_id;
+        $roleId = Auth::user()->role_id;
 
         $menus = Menu::whereNull('parent_id')
             ->where(function ($query) use ($roleId) {
@@ -86,10 +86,18 @@ class InformasiAnggotaController extends Controller
             ->where('cao', $dataLocal->cao ?? null)
             ->value('nama_ao');
 
+        $loanWo = DB::table('loan_wo')
+            ->where('cif', $cif)
+            ->first();
+
         // gabungkan
         $dataCif['nama_kelompok'] = $kelompok ?? '-';
         $dataCif['nama_ao'] = $ao ?? '-';
-        
+        $dataCif['is_wo'] = !empty($loanWo);
+        $dataCif['status_wo'] = $loanWo ? 'Pernah WO' : 'Tidak Pernah WO';
+        $dataCif['saldo_wo'] = $loanWo->os ?? 0;
+        $dataCif['data_wo'] = $loanWo;
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception('Response API bukan JSON valid');
         }
@@ -131,7 +139,7 @@ class InformasiAnggotaController extends Controller
 
         return view('informasi_anggota.informasi_anggota_detail', compact('title', 'menus', 'dataCif', 'dataDokumen', 'linkRmc'));
     }
-    
+
 
     public function printMutasi($cif)
     {
@@ -148,10 +156,10 @@ class InformasiAnggotaController extends Controller
         $responseCif = file_get_contents($urlCifMutasi);
         $dataCifRaw = json_decode($responseCif, true);
         $dataCif = $dataCifRaw['data'][0] ?? [];
-        
-        $pdf = Pdf::loadView('informasi_anggota.cetak_mutasi_anggota', compact('mutasi','dataCif'));
 
-        return $pdf->stream('Mutasi_Anggota'. $cif . '.pdf');
+        $pdf = Pdf::loadView('informasi_anggota.cetak_mutasi_anggota', compact('mutasi', 'dataCif'));
+
+        return $pdf->stream('Mutasi_Anggota' . $cif . '.pdf');
     }
 
     public function search(Request $request)
@@ -159,13 +167,13 @@ class InformasiAnggotaController extends Controller
         $q = $request->q;
 
         $data = DB::table('data_loan_mob as a')
-    ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
-    ->where(function ($query) use ($q) {
-        $query->where('a.cif', 'like', "%{$q}%")
-              ->orWhere('a.cust_short_name', 'like', "%{$q}%");
-    })
-    ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
-    ->get();
+            ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
+            ->where(function ($query) use ($q) {
+                $query->where('a.cif', 'like', "%{$q}%")
+                    ->orWhere('a.cust_short_name', 'like', "%{$q}%");
+            })
+            ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
+            ->get();
 
         return response()->json($data);
     }

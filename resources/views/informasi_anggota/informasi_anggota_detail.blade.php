@@ -206,6 +206,22 @@
                             <td>:</td>
                             <td>{{ number_format($dataCif['tunggakan']) ?? '-' }}</td>
                         </tr>
+                        <tr>
+                            <td>Status WO</td>
+                            <td>:</td>
+                            <td>
+                                @if (!empty($dataCif['is_wo']))
+                                    <span class="badge badge-danger">Pernah WO</span>
+                                @else
+                                    <span class="badge badge-secondary">Tidak Pernah WO</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Saldo WO</td>
+                            <td>:</td>
+                            <td>{{ number_format($dataCif['saldo_wo'] ?? 0) }}</td>
+                        </tr>
                     </table>
                 </div>
             </div>

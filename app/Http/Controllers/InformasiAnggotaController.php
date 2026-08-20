@@ -74,7 +74,7 @@ class InformasiAnggotaController extends Controller
         $dataCifRaw = json_decode($responseCif, true);
         $dataCif = $dataCifRaw['data'][0] ?? [];
 
-        $dataLocal = DB::table('data_loan_mob')
+        $dataLocal = DB::table('anggota')
             ->where('cif', $cif)
             ->first();
 
@@ -158,13 +158,14 @@ class InformasiAnggotaController extends Controller
     {
         $q = $request->q;
 
-        $data = DB::table('data_loan_mob as a')
+        $data = DB::table('anggota as a')
     ->join('kelompok as k', 'a.code_kel', '=', 'k.code_kel')
     ->where(function ($query) use ($q) {
         $query->where('a.cif', 'like', "%{$q}%")
-              ->orWhere('a.cust_short_name', 'like', "%{$q}%");
+              ->orWhereRaw('TRIM(a.cust_short_name) LIKE ?', ["%{$q}%"]);
     })
     ->select('a.cif', 'a.cust_short_name', 'k.nama_kel')
+    ->orderBy('a.cust_short_name')
     ->get();
 
         return response()->json($data);

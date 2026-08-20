@@ -74,7 +74,7 @@ class InformasiAnggotaController extends Controller
         $dataCifRaw = json_decode($responseCif, true);
         $dataCif = $dataCifRaw['data'][0] ?? [];
 
-        $dataLocal = DB::table('anggota')
+        $dataLocal = DB::table('data_loan_mob')
             ->where('cif', $cif)
             ->first();
 

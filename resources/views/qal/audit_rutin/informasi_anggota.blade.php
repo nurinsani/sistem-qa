@@ -97,6 +97,23 @@
                         </tr>
 
                         <tr>
+                            <td>Status WO</td>
+                            <td>:</td>
+                            <td>
+                                @if (!empty($data_api['is_wo']))
+                                    <span class="badge badge-danger">Pernah WO</span>
+                                @else
+                                    <span class="badge badge-secondary">Tidak Pernah WO</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Saldo WO</td>
+                            <td>:</td>
+                            <td>{{ number_format($data_api['saldo_wo'] ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+
+                        <tr>
                             <td>Flag Reason</td>
                             <td>:</td>
                             <td>{{ $data_sampling->flag_reason }}</td>

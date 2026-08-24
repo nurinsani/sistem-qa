@@ -93,6 +93,15 @@ class AuditKhususController extends Controller
         $data_api_raw = json_decode($responseCif, true);
         $data_api = $data_api_raw['data'][0] ?? [];
 
+        $loanWo = DB::table('loan_wo')
+            ->where('cif', $cif)
+            ->first();
+
+        $data_api['is_wo'] = !empty($loanWo);
+        $data_api['status_wo'] = $loanWo ? 'Pernah WO' : 'Tidak Pernah WO';
+        $data_api['saldo_wo'] = $loanWo->os ?? 0;
+        $data_api['data_wo'] = $loanWo;
+
         // api RMC dokumen
         $urlDokumen = "http://mobcoll.nurinsani.co.id/apimobcol/rmc.php?cif=".$cif;
 

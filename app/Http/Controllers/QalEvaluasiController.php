@@ -422,6 +422,19 @@ class QalEvaluasiController extends Controller
             ->where('cif', $request->cif)
             ->update(['status' => 'selesai']);
 
+        // Cek apakah seluruh data sampling pada id_ref_sampling ini sudah selesai
+        $masihAdaBelumSelesai = DB::table('data_sampling')
+            ->where('id_ref_sampling', $audit->id_ref_sampling)
+            ->where('status', '!=', 'selesai')
+            ->exists();
+
+        // Jika semua data sampling sudah selesai, update status rencana_audit menjadi 'done'
+        if (!$masihAdaBelumSelesai) {
+            DB::table('rencana_audit')
+                ->where('id_ref_sampling', $audit->id_ref_sampling)
+                ->update(['status' => 'done']);
+        }
+
         return redirect()->route('qal.evaluasi.index')->with('success', 'Status berhasil diperbarui.');
     }
 

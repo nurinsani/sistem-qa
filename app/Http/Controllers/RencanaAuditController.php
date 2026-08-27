@@ -147,7 +147,7 @@ class RencanaAuditController extends Controller
                     $detail_url = route('rencana.audit.show', $row->id_ref_sampling);
                     $start_url  = route('rencana.audit.start', $row->id);
 
-                    if ($row->status === 'proses') {
+                    if (in_array($row->status, ['proses', 'done'])) {
                         return '
                             <a href="' . $detail_url . '" class="btn btn-sm btn-primary">Detail</a>
                             <button class="btn btn-sm btn-secondary" disabled>

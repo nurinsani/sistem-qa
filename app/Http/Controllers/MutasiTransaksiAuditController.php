@@ -133,7 +133,7 @@ class MutasiTransaksiAuditController extends Controller
                     return $row->area ?? '-';
                 })
                 ->addColumn('nama_unit', function ($row) {
-                    return ($row->nama_unit ?? '-') . ' (' . ($row->unit ?? '-') . ')';
+                    return ($row->nama_unit ?? '-');
                 })
                 ->addColumn('petugas', function ($row) {
                     $qaNames = DB::table('data_sampling')

@@ -221,5 +221,21 @@ class MenuSeeder extends Seeder
             'role_id' => null,
             'order' => 8,
         ]);
+
+        Menu::create([
+            'name' => 'Mutasi Transaksi Audit',
+            'icon' => 'fas fa-exchange-alt nav-icon',
+            'url' => '/qal/mutasi-transaksi-audit',
+            'role_id' => 2,
+            'order' => 2,
+        ]);
+
+        Menu::create([
+            'name' => 'Mutasi Transaksi Audit',
+            'icon' => 'fas fa-exchange-alt nav-icon',
+            'url' => '/qam/mutasi-transaksi-audit',
+            'role_id' => 3,
+            'order' => 2,
+        ]);
     }
 }

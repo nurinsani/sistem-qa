@@ -28,6 +28,7 @@ use App\Http\Controllers\Qam\RencanaAuditController as QamRencanaAuditController
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TunggakanController;
 use App\Http\Controllers\UbahSandiController;
+use App\Http\Controllers\MutasiTransaksiAuditController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -172,6 +173,16 @@ Route::middleware(['role:2', 'password.expiry'])->group(function () {
     Route::get('/qal/fraud-alerts/export', [FraudAlertController::class, 'export'])
         ->name('qal.fraud.alerts.export');
     // End Fraud Alert Routes
+
+    // Mutasi Transaksi Audit Routes
+    Route::get('/qal/mutasi', [MutasiTransaksiAuditController::class, 'index']);
+    Route::get('/qal/mutasi-transaksi-audit', [MutasiTransaksiAuditController::class, 'index'])->name('qal.mutasi.transaksi.index');
+    Route::get('/qal/mutasi-transaksi-audit/data', [MutasiTransaksiAuditController::class, 'getData'])->name('qal.mutasi.transaksi.data');
+    Route::put('/qal/mutasi-transaksi-audit/{id}/status', [MutasiTransaksiAuditController::class, 'updateStatus'])->name('qal.mutasi.transaksi.update-status');
+    Route::put('/qal/mutasi-transaksi-audit/{id}/petugas', [MutasiTransaksiAuditController::class, 'updatePetugas'])->name('qal.mutasi.transaksi.update-petugas');
+    Route::put('/qal/mutasi-transaksi-audit/{id}/unit', [MutasiTransaksiAuditController::class, 'updateUnit'])->name('qal.mutasi.transaksi.update-unit');
+    Route::get('/qal/mutasi-transaksi-audit/{id}/log', [MutasiTransaksiAuditController::class, 'getLog'])->name('qal.mutasi.transaksi.log');
+    // End Mutasi Transaksi Audit Routes
 });
 
 Route::middleware(['role:3', 'password.expiry'])->group(function () {
@@ -229,6 +240,15 @@ Route::middleware(['role:3', 'password.expiry'])->group(function () {
 
     Route::get('/qam/approval', [QamApprovalController::class, 'index'])->name('qam.approval.index');
     Route::post('/qam/approval/{id}', [QamApprovalController::class, 'updateStatus'])->name('qam.approval.update');
+
+    // Mutasi Transaksi Audit Routes
+    Route::get('/qam/mutasi-transaksi-audit', [MutasiTransaksiAuditController::class, 'index'])->name('qam.mutasi.transaksi.index');
+    Route::get('/qam/mutasi-transaksi-audit/data', [MutasiTransaksiAuditController::class, 'getData'])->name('qam.mutasi.transaksi.data');
+    Route::put('/qam/mutasi-transaksi-audit/{id}/status', [MutasiTransaksiAuditController::class, 'updateStatus'])->name('qam.mutasi.transaksi.update-status');
+    Route::put('/qam/mutasi-transaksi-audit/{id}/petugas', [MutasiTransaksiAuditController::class, 'updatePetugas'])->name('qam.mutasi.transaksi.update-petugas');
+    Route::put('/qam/mutasi-transaksi-audit/{id}/unit', [MutasiTransaksiAuditController::class, 'updateUnit'])->name('qam.mutasi.transaksi.update-unit');
+    Route::get('/qam/mutasi-transaksi-audit/{id}/log', [MutasiTransaksiAuditController::class, 'getLog'])->name('qam.mutasi.transaksi.log');
+    // End Mutasi Transaksi Audit Routes
 });
 
 Route::middleware(['role:4', 'password.expiry'])->group(function () {

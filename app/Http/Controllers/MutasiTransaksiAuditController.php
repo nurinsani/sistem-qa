@@ -164,6 +164,7 @@ class MutasiTransaksiAuditController extends Controller
                     $petugasUrl = route($prefix . '.mutasi.transaksi.update-petugas', $row->id);
                     $unitUrl = route($prefix . '.mutasi.transaksi.update-unit', $row->id);
                     $logUrl = route($prefix . '.mutasi.transaksi.log', $row->id_ref_sampling);
+                    $deleteUrl = route($prefix . '.mutasi.transaksi.destroy', $row->id);
 
                     return '
                         <div class="dropdown text-center">
@@ -196,6 +197,13 @@ class MutasiTransaksiAuditController extends Controller
                                     data-ref="' . $row->id_ref_sampling . '" 
                                     data-url="' . $logUrl . '">
                                     <i class="fas fa-history text-info mr-2"></i> Riwayat Mutasi
+                                </a>
+                                <div class="dropdown-divider my-1"></div>
+                                <a class="dropdown-item btn-hapus-audit py-2 text-danger" href="javascript:void(0)" 
+                                    data-id="' . $row->id . '" 
+                                    data-ref="' . $row->id_ref_sampling . '" 
+                                    data-url="' . $deleteUrl . '">
+                                    <i class="fas fa-trash-alt text-danger mr-2"></i> Hapus
                                 </a>
                             </div>
                         </div>
@@ -411,5 +419,50 @@ class MutasiTransaksiAuditController extends Controller
             'success' => true,
             'data'    => $logs,
         ]);
+    }
+
+    /**
+     * Hapus Data Mutasi Transaksi Audit beserta data sampling dan temuan terkait
+     */
+    public function destroy($id)
+    {
+        $rencana = is_numeric($id) ? RencanaAudit::find($id) : null;
+        if (!$rencana) {
+            $rencana = RencanaAudit::where('id_ref_sampling', $id)->first();
+        }
+
+        if (!$rencana) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data transaksi audit tidak ditemukan',
+            ], 404);
+        }
+
+        $refSampling = $rencana->id_ref_sampling;
+
+        try {
+            DB::transaction(function () use ($rencana, $refSampling) {
+                // Hapus data terkait berdasarkan id_ref_sampling
+                DB::table('dokumen_pendukung')->where('id_ref_sampling', $refSampling)->delete();
+                DB::table('temuan_lain')->where('id_ref_sampling', $refSampling)->delete();
+                DB::table('temuan')->where('id_ref_sampling', $refSampling)->delete();
+                DB::table('audit')->where('id_ref_sampling', $refSampling)->delete();
+                DB::table('data_sampling')->where('id_ref_sampling', $refSampling)->delete();
+                DB::table('log_mutasi_audit')->where('id_ref_sampling', $refSampling)->delete();
+
+                // Hapus data utama rencana audit
+                $rencana->delete();
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => "Data transaksi audit dengan Ref Sampling [{$refSampling}] beserta seluruh sampling terkait berhasil dihapus.",
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data transaksi audit: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

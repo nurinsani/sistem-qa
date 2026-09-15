@@ -505,6 +505,59 @@
                     }
                 });
             });
+
+            // 5. Event Klik Hapus Audit
+            $(document).on('click', '.btn-hapus-audit', function() {
+                const ref = $(this).data('ref');
+                const url = $(this).data('url');
+
+                Swal.fire({
+                    title: 'Hapus Transaksi Audit?',
+                    html: `Apakah Anda yakin ingin menghapus data dengan Ref Sampling <strong>${ref}</strong>?<br><small class="text-danger font-weight-bold">Semua data sampling dan temuan terkait akan ikut dihapus secara permanen!</small>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-trash-alt mr-1"></i> Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Sedang Menghapus...',
+                            text: 'Mohon tunggu sebentar',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            success: function(res) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Terhapus!',
+                                    text: res.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                                table.ajax.reload(null, false);
+                            },
+                            error: function(xhr) {
+                                const msg = xhr.responseJSON ? xhr.responseJSON.message :
+                                    'Terjadi kesalahan saat menghapus data';
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Menghapus',
+                                    text: msg
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endpush

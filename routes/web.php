@@ -182,6 +182,7 @@ Route::middleware(['role:2', 'password.expiry'])->group(function () {
     Route::put('/qal/mutasi-transaksi-audit/{id}/petugas', [MutasiTransaksiAuditController::class, 'updatePetugas'])->name('qal.mutasi.transaksi.update-petugas');
     Route::put('/qal/mutasi-transaksi-audit/{id}/unit', [MutasiTransaksiAuditController::class, 'updateUnit'])->name('qal.mutasi.transaksi.update-unit');
     Route::get('/qal/mutasi-transaksi-audit/{id}/log', [MutasiTransaksiAuditController::class, 'getLog'])->name('qal.mutasi.transaksi.log');
+    Route::delete('/qal/mutasi-transaksi-audit/{id}', [MutasiTransaksiAuditController::class, 'destroy'])->name('qal.mutasi.transaksi.destroy');
     // End Mutasi Transaksi Audit Routes
 });
 
@@ -248,6 +249,7 @@ Route::middleware(['role:3', 'password.expiry'])->group(function () {
     Route::put('/qam/mutasi-transaksi-audit/{id}/petugas', [MutasiTransaksiAuditController::class, 'updatePetugas'])->name('qam.mutasi.transaksi.update-petugas');
     Route::put('/qam/mutasi-transaksi-audit/{id}/unit', [MutasiTransaksiAuditController::class, 'updateUnit'])->name('qam.mutasi.transaksi.update-unit');
     Route::get('/qam/mutasi-transaksi-audit/{id}/log', [MutasiTransaksiAuditController::class, 'getLog'])->name('qam.mutasi.transaksi.log');
+    Route::delete('/qam/mutasi-transaksi-audit/{id}', [MutasiTransaksiAuditController::class, 'destroy'])->name('qam.mutasi.transaksi.destroy');
     // End Mutasi Transaksi Audit Routes
 });
 

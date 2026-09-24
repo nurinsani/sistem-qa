@@ -125,6 +125,23 @@ class RencanaAuditController extends Controller
                         ->where('data_sampling.user_id', auth()->id());
                 }); // Pastikan mengambil kolom dari tabel utama saja
 
+            if ($request->filled('bulan')) {
+                $query->whereMonth('tanggal_awal', $request->bulan);
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', strtolower($request->status));
+            }
+
+            $query->orderByRaw("
+                CASE 
+                    WHEN status = 'pending' THEN 1 
+                    WHEN status = 'proses' THEN 2 
+                    WHEN status = 'done' THEN 3 
+                    ELSE 4 
+                END
+            ")->orderBy('tanggal_awal', 'asc');
+
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('area', function ($row) {

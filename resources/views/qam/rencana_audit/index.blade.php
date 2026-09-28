@@ -28,6 +28,42 @@
                             <i class="fas fa-plus"></i> Audit Khusus
                         </button>
 
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <select id="filterBulan" class="form-control">
+                                    <option value="">-- Semua Bulan --</option>
+                                    <option value="01">Januari</option>
+                                    <option value="02">Februari</option>
+                                    <option value="03">Maret</option>
+                                    <option value="04">April</option>
+                                    <option value="05">Mei</option>
+                                    <option value="06">Juni</option>
+                                    <option value="07">Juli</option>
+                                    <option value="08">Agustus</option>
+                                    <option value="09">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="filterStatus" class="form-control">
+                                    <option value="">-- Semua Status --</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Proses">Proses</option>
+                                    <option value="Done">Selesai</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="filterPetugas" class="form-control">
+                                    <option value="">-- Semua Petugas --</option>
+                                    @foreach ($qa as $petugas)
+                                        <option value="{{ $petugas->name }}">{{ $petugas->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <table id="dataTable" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -37,6 +73,8 @@
                                     <th>Ref Sampling</th>
                                     <th>Tanggal Awal</th>
                                     <th>Tanggal Akhir</th>
+                                    <th>Jumlah Sampling</th>
+                                    <th>Nama Petugas</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -66,7 +104,15 @@
         table = $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('qam.rencana.audit.data') }}",
+            order: [],
+            ajax: {
+                url: "{{ route('qam.rencana.audit.data') }}",
+                data: function(d) {
+                    d.bulan = $('#filterBulan').val();
+                    d.status = $('#filterStatus').val();
+                    d.petugas = $('#filterPetugas').val();
+                }
+            },
             columns: [
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'area' },
@@ -74,9 +120,15 @@
                 { data: 'id_ref_sampling' },
                 { data: 'tanggal_awal' },
                 { data: 'tanggal_akhir' },
+                { data: 'jumlah_sampling' },
+                { data: 'nama_petugas' },
                 { data: 'status' },
                 { data: 'aksi' }
             ]
+        });
+
+        $('#filterBulan, #filterStatus, #filterPetugas').on('change', function() {
+            table.ajax.reload();
         });
         
         // Initialize Select2 untuk Audit Rutin

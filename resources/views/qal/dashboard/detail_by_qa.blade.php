@@ -39,7 +39,7 @@
                         {{-- tab selesai --}}
                         <div class="tab-pane fade show active" id="custom-tabs-three-home" role="tabpanel"
                             aria-labelledby="custom-tabs-three-home-tab">
-                            <table id="dataTable" class="table table-bordered table-hover">
+                            <table id="dataTableSelesai" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -109,7 +109,7 @@
                         {{-- tab proses --}}
                         <div class="tab-pane fade" id="custom-tabs-three-profile" role="tabpanel"
                             aria-labelledby="custom-tabs-three-profile-tab">
-                            <table id="dataTable" class="table table-bordered table-hover">
+                            <table id="dataTableProses" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -167,7 +167,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('qal.dashboard.detailAudit', ['id' => $item->id, 'cif' => $item->cif]) }}"
+                                                <a href="{{ route('qal.dashboard.detailAudit', ['id' => $item->audit_id ?? $item->id_ref_sampling, 'cif' => $item->cif]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </a>
@@ -185,3 +185,18 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#dataTableSelesai').DataTable({
+            "responsive": true,
+            "autoWidth": false,
+        });
+        $('#dataTableProses').DataTable({
+            "responsive": true,
+            "autoWidth": false,
+        });
+    });
+</script>
+@endpush

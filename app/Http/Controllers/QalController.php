@@ -18,16 +18,16 @@ class QalController extends Controller
         $roleId = Auth::user()->role_id;
 
         $menus = Menu::whereNull('parent_id')
-        ->where(function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        })
-        ->with(['children' => function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        }])
-        ->orderBy('order')
-        ->get();
+            ->where(function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            })
+            ->with(['children' => function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            }])
+            ->orderBy('order')
+            ->get();
 
         $title = 'Dashboard';
 
@@ -37,16 +37,23 @@ class QalController extends Controller
         $dataBulanan = [];
 
         for ($bulan = 1; $bulan <= 12; $bulan++) {
+            $userLogin = auth()->user(); 
+            $myCodeQa = $userLogin->code_qa;
+        
+            $qaBawahan = DB::table('users')
+                ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
+                ->where('masterqa.atasan', $myCodeQa)
+                ->pluck('users.id');
 
-            // hitung total data
             $total = DataSampling::whereMonth('created_at', $bulan)
                 ->whereYear('created_at', $year)
+                ->whereIn('user_id', $qaBawahan)
                 ->count();
 
-            // hitung data yang sudah selesai (CURRENT)
             $selesai = DataSampling::whereMonth('created_at', $bulan)
                 ->whereYear('created_at', $year)
                 ->where('status', 'selesai')
+                ->whereIn('user_id', $qaBawahan)
                 ->count();
 
             $dataBulanan[] = [
@@ -64,16 +71,16 @@ class QalController extends Controller
         $roleId = Auth::user()->role_id;
 
         $menus = Menu::whereNull('parent_id')
-        ->where(function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        })
-        ->with(['children' => function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        }])
-        ->orderBy('order')
-        ->get();
+            ->where(function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            })
+            ->with(['children' => function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            }])
+            ->orderBy('order')
+            ->get();
 
         $title = 'Detail Dashboard';
 
@@ -82,23 +89,23 @@ class QalController extends Controller
 
         $namaBulan = \Carbon\Carbon::create()->month((int)$bulan)->locale('id')->translatedFormat('F');
 
-    $userLogin = auth()->user(); 
-    $myCodeQa = $userLogin->code_qa;
+        $userLogin = auth()->user();
+        $myCodeQa = $userLogin->code_qa;
 
-    // Ambil semua QA yang berada di bawah atasan
-    $qaBawahan = DB::table('users')
-        ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
-        ->where('masterqa.atasan', $myCodeQa)
-        ->pluck('users.id'); // Ambil hanya ID user
+        // Ambil semua QA yang berada di bawah atasan
+        $qaBawahan = DB::table('users')
+            ->join('masterqa', 'users.code_qa', '=', 'masterqa.code_qa')
+            ->where('masterqa.atasan', $myCodeQa)
+            ->pluck('users.id'); // Ambil hanya ID user
 
-    // Filter data sampling berdasarkan user_id yang ada di $qaBawahan
-    $auditsGrouped = DataSampling::with('qa')
-        ->whereMonth('created_at', $bulan)
-        ->whereYear('created_at', $tahun)
-        ->whereIn('user_id', $qaBawahan) // Tambahkan filter ini
-        ->get()
-        ->groupBy('user_id');
-    
+        // Filter data sampling berdasarkan user_id yang ada di $qaBawahan
+        $auditsGrouped = DataSampling::with('qa')
+            ->whereMonth('created_at', $bulan)
+            ->whereYear('created_at', $tahun)
+            ->whereIn('user_id', $qaBawahan) // Tambahkan filter ini
+            ->get()
+            ->groupBy('user_id');
+
 
         // dd($auditsGrouped);
 
@@ -110,16 +117,16 @@ class QalController extends Controller
         $roleId = Auth::user()->role_id;
 
         $menus = Menu::whereNull('parent_id')
-        ->where(function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        })
-        ->with(['children' => function ($query) use ($roleId) {
-            $query->where('role_id', $roleId)
-                ->orWhereNull('role_id');
-        }])
-        ->orderBy('order')
-        ->get();
+            ->where(function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            })
+            ->with(['children' => function ($query) use ($roleId) {
+                $query->where('role_id', $roleId)
+                    ->orWhereNull('role_id');
+            }])
+            ->orderBy('order')
+            ->get();
 
         $title = 'Detail Dashboard';
 
@@ -127,20 +134,20 @@ class QalController extends Controller
         $year = now()->year;
 
         $audits = DB::table('audit')
-            ->join('data_sampling', function($join) {
+            ->join('data_sampling', function ($join) {
                 $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
                     ->on('audit.cif', '=', 'data_sampling.cif');
             })
-            ->join('users', 'data_sampling.user_id', '=', 'users.id') 
+            ->join('users', 'data_sampling.user_id', '=', 'users.id')
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
             ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
-            
+
             ->where('users.id', $user_id)
             ->where('data_sampling.status', 'selesai')
-            ->whereMonth('audit.created_at', $bulan)
-            ->whereYear('audit.created_at', $year)
-            
+            ->whereMonth('data_sampling.created_at', $bulan)
+            ->whereYear('data_sampling.created_at', $year)
+
             ->select(
                 'audit.*',
                 'data_sampling.nama',
@@ -152,24 +159,26 @@ class QalController extends Controller
                 'ao.nama_ao'
             )
             ->get();
-    
-        $audit_proses = DB::table('audit')
-            ->join('data_sampling', function($join) {
-                $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
-                    ->on('audit.cif', '=', 'data_sampling.cif');
+
+        $audit_proses = DB::table('data_sampling')
+            ->leftJoin('audit', function ($join) {
+                $join->on('data_sampling.id_ref_sampling', '=', 'audit.id_ref_sampling')
+                    ->on('data_sampling.cif', '=', 'audit.cif');
             })
-            ->join('users', 'data_sampling.user_id', '=', 'users.id') 
+            ->join('users', 'data_sampling.user_id', '=', 'users.id')
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
             ->leftJoin('kelompok', 'data_sampling.kode_kel', '=', 'kelompok.code_kel')
             ->leftJoin('ao', 'data_sampling.cao', '=', 'ao.cao')
-            
+
             ->where('users.id', $user_id)
             ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
-            ->whereMonth('audit.created_at', $bulan)
-            ->whereYear('audit.created_at', $year)
-            
+            ->whereMonth('data_sampling.created_at', $bulan)
+            ->whereYear('data_sampling.created_at', $year)
+
             ->select(
-                'audit.*',
+                'audit.id as audit_id',
+                'data_sampling.cif',
+                'data_sampling.id_ref_sampling',
                 'data_sampling.nama',
                 'data_sampling.jenis_audit',
                 'data_sampling.status_sampling',
@@ -179,7 +188,7 @@ class QalController extends Controller
                 'ao.nama_ao'
             )
             ->get();
-        
+
         return view('qal.dashboard.detail_by_qa', [
             'audits' => $audits,
             'audit_proses' => $audit_proses,
@@ -214,7 +223,7 @@ class QalController extends Controller
             ->first();
 
         $idRefSampling = $audit->id_ref_sampling ?? $id;
-        
+
         $temuanLain = DB::table('temuan_lain')
             ->leftJoin('param_profil', 'param_profil.id', '=', 'temuan_lain.id_param_profil')
             ->leftJoin('param_ketentuan', 'param_ketentuan.id', '=', 'temuan_lain.id_ketentuan')

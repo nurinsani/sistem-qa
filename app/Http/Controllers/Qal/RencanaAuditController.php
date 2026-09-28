@@ -75,7 +75,39 @@ class RencanaAuditController extends Controller
             $query = RencanaAudit::query()
                 ->join('branch', 'rencana_audit.unit', '=', 'branch.kode_branch')
                 ->whereIn('branch.code_area', $unitsUser) // Filter berdasarkan area yang dimiliki user
-                ->select('rencana_audit.*', 'branch.area', 'branch.unit as nama_unit');
+                ->select(
+                    'rencana_audit.*', 
+                    'branch.area', 
+                    'branch.unit as nama_unit',
+                    DB::raw('(SELECT users.name FROM data_sampling JOIN users ON data_sampling.user_id = users.id WHERE data_sampling.id_ref_sampling = rencana_audit.id_ref_sampling LIMIT 1) as nama_petugas'),
+                    DB::raw('(SELECT COUNT(*) FROM data_sampling WHERE data_sampling.id_ref_sampling = rencana_audit.id_ref_sampling) as jumlah_sampling')
+                );
+
+            if ($request->filled('bulan')) {
+                $query->whereMonth('rencana_audit.tanggal_awal', $request->bulan);
+            }
+
+            if ($request->filled('status')) {
+                if (strtolower($request->status) === 'pending') {
+                    $query->where(function($q) {
+                        $q->where('rencana_audit.status', 'pending')
+                          ->orWhereNull('rencana_audit.status');
+                    });
+                } else {
+                    $query->where('rencana_audit.status', $request->status);
+                }
+            }
+
+            if ($request->filled('petugas')) {
+                $keyword = $request->petugas;
+                $query->whereExists(function($q) use ($keyword) {
+                    $q->select(DB::raw(1))
+                      ->from('data_sampling')
+                      ->join('users', 'data_sampling.user_id', '=', 'users.id')
+                      ->whereColumn('data_sampling.id_ref_sampling', 'rencana_audit.id_ref_sampling')
+                      ->where('users.name', 'like', "%{$keyword}%");
+                });
+            }
 
             return DataTables::of($query)
                 ->addIndexColumn()

@@ -69,6 +69,7 @@
                                     <th>Ref Sampling</th>
                                     <th>Tanggal Awal</th>
                                     <th>Tanggal Akhir</th>
+                                    <th>Jumlah Sampling</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -125,6 +126,9 @@
                             },
                             {
                                 data: 'tanggal_akhir'
+                            },
+                            {
+                                data: 'jumlah_sampling'
                             },
                             {
                                 data: 'status'

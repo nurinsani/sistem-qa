@@ -124,8 +124,8 @@ class QamController extends Controller
             
             ->where('users.id', $user_id)
             ->where('data_sampling.status', 'selesai')
-            ->whereMonth('audit.created_at', $bulan)
-            ->whereYear('audit.created_at', $year)
+            ->whereMonth('data_sampling.created_at', $bulan)
+            ->whereYear('data_sampling.created_at', $year)
             
             ->select(
                 'audit.*',
@@ -139,10 +139,10 @@ class QamController extends Controller
             )
             ->get();
     
-        $audit_proses = DB::table('audit')
-            ->join('data_sampling', function($join) {
-                $join->on('audit.id_ref_sampling', '=', 'data_sampling.id_ref_sampling')
-                    ->on('audit.cif', '=', 'data_sampling.cif');
+        $audit_proses = DB::table('data_sampling')
+            ->leftJoin('audit', function($join) {
+                $join->on('data_sampling.id_ref_sampling', '=', 'audit.id_ref_sampling')
+                    ->on('data_sampling.cif', '=', 'audit.cif');
             })
             ->join('users', 'data_sampling.user_id', '=', 'users.id') 
             ->leftJoin('branch', 'data_sampling.unit', '=', 'branch.kode_branch')
@@ -151,11 +151,13 @@ class QamController extends Controller
             
             ->where('users.id', $user_id)
             ->whereIn('data_sampling.status', ['proses', 'pending', 'tanggapan', 'evaluasi'])
-            ->whereMonth('audit.created_at', $bulan)
-            ->whereYear('audit.created_at', $year)
+            ->whereMonth('data_sampling.created_at', $bulan)
+            ->whereYear('data_sampling.created_at', $year)
             
             ->select(
-                'audit.*',
+                'audit.id as audit_id',
+                'data_sampling.cif',
+                'data_sampling.id_ref_sampling',
                 'data_sampling.nama',
                 'data_sampling.jenis_audit',
                 'data_sampling.status_sampling',

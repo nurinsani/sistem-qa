@@ -199,13 +199,15 @@ class RencanaAuditController extends Controller
                 'unit' => 'required',
                 'tanggal_awal' => 'required|date',
                 'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
-                'jumlah_sampling' => 'nullable|numeric|min:0',
+                'jumlah_sampling' => 'required|numeric|min:1',
             ],
             [
                 'unit.required' => 'AP harus dipilih',
                 'tanggal_awal.required' => 'Tanggal awal harus diisi',
                 'tanggal_akhir.required' => 'Tanggal akhir harus diisi',
                 'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus setelah atau sama dengan tanggal awal',
+                'jumlah_sampling.required' => 'Jumlah sampling harus diisi',
+                'jumlah_sampling.min' => 'Jumlah sampling minimal 1',
             ]
         );
 
@@ -230,22 +232,16 @@ class RencanaAuditController extends Controller
 
             DB::transaction(function () use ($validated, $idRefSampling) {
 
-                // Simpan data
-                RencanaAudit::create([
-                    'unit' => $validated['unit'],
-                    'id_ref_sampling' => $idRefSampling,
-                    'tanggal_awal' => $validated['tanggal_awal'],
-                    'tanggal_akhir' => $validated['tanggal_akhir'],
-                    'jumlah_sampling' => $validated['jumlah_sampling'] ?? 0,
-                    'status' => 'pending',
-                ]);
-
                 // Ambil data menggunakan join untuk memastikan unit diambil dari data_loan_mob
                 $sampling = DB::table('fraud_alerts')
                     // Menggunakan leftJoin ke data_loan_mob
                     ->leftJoin('data_loan_mob', 'fraud_alerts.cif', '=', 'data_loan_mob.cif')
                     // Filter unit sekarang merujuk ke tabel data_loan_mob
                     ->where('data_loan_mob.unit', $validated['unit'])
+                    // Mengecek apakah CIF sudah ada di data_sampling
+                    ->whereNotIn('fraud_alerts.cif', function ($query) {
+                        $query->select('cif')->from('data_sampling');
+                    })
                     ->inRandomOrder()
                     ->limit($validated['jumlah_sampling'])
                     ->select(
@@ -258,9 +254,21 @@ class RencanaAuditController extends Controller
                     )
                     ->get();
 
-                if ($sampling->count() < $validated['jumlah_sampling']) {
-                    throw new \Exception('Data sampling tidak mencukupi');
+                if ($sampling->isEmpty()) {
+                    throw new \Exception('Tidak ada data CIF baru yang tersedia untuk disampling (semua CIF mungkin sudah diaudit atau data kosong).');
                 }
+
+                $actualCount = $sampling->count();
+
+                // Simpan data rencana audit menggunakan jumlah asli yang didapat
+                RencanaAudit::create([
+                    'unit' => $validated['unit'],
+                    'id_ref_sampling' => $idRefSampling,
+                    'tanggal_awal' => $validated['tanggal_awal'],
+                    'tanggal_akhir' => $validated['tanggal_akhir'],
+                    'jumlah_sampling' => $actualCount,
+                    'status' => 'pending',
+                ]);
 
                 // insert ke data_sampling
                 foreach ($sampling as $item) {

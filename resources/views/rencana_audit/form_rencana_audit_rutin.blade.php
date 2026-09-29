@@ -34,7 +34,7 @@
 
                     <div class="form-group">
                         <label>Jumlah Sampling</label>
-                        <input type="number" name="jumlah_sampling" class="form-control">
+                        <input type="number" name="jumlah_sampling" class="form-control" required min="1">
                     </div>
                 </div>
 

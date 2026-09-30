@@ -163,6 +163,7 @@ class MutasiTransaksiAuditController extends Controller
                     $statusUrl = route($prefix . '.mutasi.transaksi.update-status', $row->id);
                     $petugasUrl = route($prefix . '.mutasi.transaksi.update-petugas', $row->id);
                     $unitUrl = route($prefix . '.mutasi.transaksi.update-unit', $row->id);
+                    $tanggalUrl = route($prefix . '.mutasi.transaksi.update-tanggal', $row->id);
                     $logUrl = route($prefix . '.mutasi.transaksi.log', $row->id_ref_sampling);
                     $deleteUrl = route($prefix . '.mutasi.transaksi.destroy', $row->id);
 
@@ -191,6 +192,14 @@ class MutasiTransaksiAuditController extends Controller
                                     data-unit="' . $row->unit . '" 
                                     data-url="' . $unitUrl . '">
                                     <i class="fas fa-map-marker-alt text-danger mr-2"></i> Pindah Unit
+                                </a>
+                                <a class="dropdown-item btn-ubah-tanggal py-2" href="javascript:void(0)" 
+                                    data-id="' . $row->id . '" 
+                                    data-ref="' . $row->id_ref_sampling . '" 
+                                    data-tgl-awal="' . $row->tanggal_awal . '" 
+                                    data-tgl-akhir="' . $row->tanggal_akhir . '" 
+                                    data-url="' . $tanggalUrl . '">
+                                    <i class="fas fa-calendar-alt text-secondary mr-2"></i> Ubah Tanggal
                                 </a>
                                 <div class="dropdown-divider my-1"></div>
                                 <a class="dropdown-item btn-lihat-log py-2" href="javascript:void(0)" 
@@ -326,6 +335,78 @@ class MutasiTransaksiAuditController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal mengubah petugas: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateTanggal(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_awal' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
+        ], [
+            'tanggal_awal.required' => 'Tanggal awal wajib diisi',
+            'tanggal_akhir.required' => 'Tanggal akhir wajib diisi',
+            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus sama dengan atau setelah tanggal awal',
+        ]);
+
+        $rencana = is_numeric($id) ? RencanaAudit::find($id) : null;
+        if (!$rencana) {
+            $rencana = RencanaAudit::where('id_ref_sampling', $id)->firstOrFail();
+        }
+
+        $oldTglAwal = $rencana->tanggal_awal;
+        $oldTglAkhir = $rencana->tanggal_akhir;
+        
+        $newTglAwal = $request->tanggal_awal;
+        $newTglAkhir = $request->tanggal_akhir;
+
+        if ($oldTglAwal === $newTglAwal && $oldTglAkhir === $newTglAkhir) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tanggal yang dimasukkan sama dengan tanggal saat ini',
+            ], 422);
+        }
+
+        try {
+            DB::transaction(function () use ($rencana, $oldTglAwal, $oldTglAkhir, $newTglAwal, $newTglAkhir) {
+                // 1. Update tanggal pada rencana_audit
+                $rencana->update([
+                    'tanggal_awal' => $newTglAwal,
+                    'tanggal_akhir' => $newTglAkhir
+                ]);
+
+                // 2. Catat ke tabel log_mutasi_audit (Tgl Awal)
+                if ($oldTglAwal !== $newTglAwal) {
+                    LogMutasiAudit::create([
+                        'id_ref_sampling' => $rencana->id_ref_sampling,
+                        'jenis_mutasi'    => 'tgl_awal',
+                        'nilai_lama'      => $oldTglAwal ?? '-',
+                        'nilai_baru'      => $newTglAwal,
+                        'diubah_oleh'     => Auth::id(),
+                    ]);
+                }
+
+                // 4. Catat ke tabel log_mutasi_audit (Tgl Akhir)
+                if ($oldTglAkhir !== $newTglAkhir) {
+                    LogMutasiAudit::create([
+                        'id_ref_sampling' => $rencana->id_ref_sampling,
+                        'jenis_mutasi'    => 'tgl_akhir',
+                        'nilai_lama'      => $oldTglAkhir ?? '-',
+                        'nilai_baru'      => $newTglAkhir,
+                        'diubah_oleh'     => Auth::id(),
+                    ]);
+                }
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tanggal audit berhasil diubah',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengubah tanggal: ' . $e->getMessage(),
             ], 500);
         }
     }

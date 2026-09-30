@@ -167,6 +167,43 @@
         </div>
     </div>
 
+    <!-- Modal Ubah Tanggal -->
+    <div class="modal fade" id="modalUbahTanggal" tabindex="-1" role="dialog" aria-labelledby="modalUbahTanggalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalUbahTanggalLabel">Ubah Tanggal Audit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formUbahTanggal">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label>Ref Sampling</label>
+                            <input type="text" class="form-control" id="tanggal_ref_display" readonly>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="input_tanggal_awal">Tanggal Awal <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="input_tanggal_awal" name="tanggal_awal" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="input_tanggal_akhir">Tanggal Akhir <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="input_tanggal_akhir" name="tanggal_akhir" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmitTanggal">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Riwayat Mutasi (Log) -->
     <div class="modal fade" id="modalLogMutasi" tabindex="-1" role="dialog" aria-labelledby="modalLogMutasiLabel"
         aria-hidden="true">
@@ -449,6 +486,55 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal Pindah Unit',
+                            text: msg
+                        });
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false).text('Simpan');
+                    }
+                });
+            });
+
+            // Event Klik Ubah Tanggal
+            $(document).on('click', '.btn-ubah-tanggal', function() {
+                const ref = $(this).data('ref');
+                const tglAwal = $(this).data('tgl-awal');
+                const tglAkhir = $(this).data('tgl-akhir');
+                activeUpdateUrl = $(this).data('url');
+
+                $('#tanggal_ref_display').val(ref);
+                $('#input_tanggal_awal').val(tglAwal);
+                $('#input_tanggal_akhir').val(tglAkhir);
+                $('#modalUbahTanggal').modal('show');
+            });
+
+            // Submit Ubah Tanggal
+            $('#formUbahTanggal').on('submit', function(e) {
+                e.preventDefault();
+                const btn = $('#btnSubmitTanggal');
+                btn.prop('disabled', true).text('Menyimpan...');
+
+                $.ajax({
+                    url: activeUpdateUrl,
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(res) {
+                        $('#modalUbahTanggal').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: res.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        table.ajax.reload(null, false);
+                    },
+                    error: function(xhr) {
+                        const msg = xhr.responseJSON ? xhr.responseJSON.message :
+                            'Terjadi kesalahan sistem';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Mengubah Tanggal',
                             text: msg
                         });
                     },

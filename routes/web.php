@@ -29,6 +29,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TunggakanController;
 use App\Http\Controllers\UbahSandiController;
 use App\Http\Controllers\MutasiTransaksiAuditController;
+use App\Http\Controllers\RekapMobcol\CsController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -114,6 +115,10 @@ Route::middleware(['role:1', 'password.expiry'])->group(function () {
 
     Route::get('/sampling/cetak-mutasi/{cif}', [RencanaAuditController::class, 'cetakMutasi'])
         ->name('sampling.cetak.mutasi');
+
+    // Rekap Mobcol Routes
+    Route::get('/rekap-mobcol/cs', [CsController::class, 'index'])->name('rekap-mobcol.cs.index');
+    Route::get('/rekap-mobcol/cs/export', [CsController::class, 'export'])->name('rekap-mobcol.cs.export');
 });
 
 Route::middleware(['role:2', 'password.expiry'])->group(function () {

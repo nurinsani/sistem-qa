@@ -218,7 +218,7 @@ class MenuSeeder extends Seeder
             'name' => 'Data Tunggakan',
             'icon' => 'fas fa-file-invoice-dollar nav-icon',
             'url' => '/tunggakan',
-            'role_id' => null,
+            'role_id' => 1,
             'order' => 8,
         ]);
 
@@ -237,5 +237,33 @@ class MenuSeeder extends Seeder
             'role_id' => 3,
             'order' => 2,
         ]);
+
+        $rekapMobcol = Menu::create([
+            'name' => 'Rekap Mobcol',
+            'icon' => 'fas fa-folder nav-icon',
+            'url' => '#',
+            'role_id' => 1,
+            'order' => 10,
+        ]);
+
+        $subMenus = [
+            ['name' => 'CS', 'url' => '/rekap-mobcol/cs'],
+            ['name' => 'Omzet', 'url' => '/rekap-mobcol/omzet'],
+            ['name' => 'Pelunasan', 'url' => '/rekap-mobcol/pelunasan'],
+            ['name' => '5%', 'url' => '/rekap-mobcol/5-persen'],
+            ['name' => 'Lebaran', 'url' => '/rekap-mobcol/lebaran'],
+            ['name' => 'Bukti Setor', 'url' => '/rekap-mobcol/bukti-setor'],
+        ];
+
+        foreach ($subMenus as $index => $subMenu) {
+            Menu::create([
+                'name' => $subMenu['name'],
+                'icon' => 'far fa-circle nav-icon',
+                'url' => $subMenu['url'],
+                'role_id' => 1,
+                'parent_id' => $rekapMobcol->id,
+                'order' => $index + 1,
+            ]);
+        }
     }
 }

@@ -30,6 +30,8 @@ use App\Http\Controllers\TunggakanController;
 use App\Http\Controllers\UbahSandiController;
 use App\Http\Controllers\MutasiTransaksiAuditController;
 use App\Http\Controllers\RekapMobcol\CsController;
+use App\Http\Controllers\RekapMobcol\OmzetController;
+use App\Http\Controllers\RekapMobcol\PelunasanController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -119,6 +121,10 @@ Route::middleware(['role:1', 'password.expiry'])->group(function () {
     // Rekap Mobcol Routes
     Route::get('/rekap-mobcol/cs', [CsController::class, 'index'])->name('rekap-mobcol.cs.index');
     Route::get('/rekap-mobcol/cs/export', [CsController::class, 'export'])->name('rekap-mobcol.cs.export');
+    Route::get('/rekap-mobcol/omzet', [OmzetController::class, 'index'])->name('rekap-mobcol.omzet.index');
+    Route::get('/rekap-mobcol/omzet/export', [OmzetController::class, 'export'])->name('rekap-mobcol.omzet.export');
+    Route::get('/rekap-mobcol/pelunasan', [PelunasanController::class, 'index'])->name('rekap-mobcol.pelunasan.index');
+    Route::get('/rekap-mobcol/pelunasan/export', [PelunasanController::class, 'export'])->name('rekap-mobcol.pelunasan.export');
 });
 
 Route::middleware(['role:2', 'password.expiry'])->group(function () {

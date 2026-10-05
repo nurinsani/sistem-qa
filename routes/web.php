@@ -33,6 +33,7 @@ use App\Http\Controllers\RekapMobcol\CsController;
 use App\Http\Controllers\RekapMobcol\OmzetController;
 use App\Http\Controllers\RekapMobcol\PelunasanController;
 use App\Http\Controllers\RekapMobcol\LimaController;
+use App\Http\Controllers\RekapMobcol\LebaranController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -128,6 +129,8 @@ Route::middleware(['role:1', 'password.expiry'])->group(function () {
     Route::get('/rekap-mobcol/pelunasan/export', [PelunasanController::class, 'export'])->name('rekap-mobcol.pelunasan.export');
     Route::get('/rekap-mobcol/5-persen', [LimaController::class, 'index'])->name('rekap-mobcol.lima.index');
     Route::get('/rekap-mobcol/5-persen/export', [LimaController::class, 'export'])->name('rekap-mobcol.lima.export');
+    Route::get('/rekap-mobcol/lebaran', [LebaranController::class, 'index'])->name('rekap-mobcol.lebaran.index');
+    Route::get('/rekap-mobcol/lebaran/export', [LebaranController::class, 'export'])->name('rekap-mobcol.lebaran.export');
 });
 
 Route::middleware(['role:2', 'password.expiry'])->group(function () {

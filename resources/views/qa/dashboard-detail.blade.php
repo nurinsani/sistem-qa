@@ -68,7 +68,7 @@
                                 <th>NO</th>
                                 <th>TANGGAL SAMPLING</th>
                                 <th>ID SAMPLING</th>
-                                <th>NAMA NASABAH</th>
+                                <th>NAMA</th>
                                 <th>JENIS AUDIT</th>
                                 <th>STATUS</th>
                             </tr>

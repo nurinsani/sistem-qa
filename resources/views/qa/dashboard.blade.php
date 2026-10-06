@@ -27,9 +27,9 @@
 
     <div class="container-fluid">
         <div class="row">
-            @foreach ($dataBulanan as $item)
+            @foreach ($dataBulanan as $index => $item)
                 <div class="col-lg-3 col-6">
-                    <div class="small-box gradient-box"
+                    <a href="{{ route('qa.dashboard.detail', ['bulan' => $index + 1]) }}" class="small-box gradient-box" data-bulan="{{ $index + 1 }}" data-nama-bulan="{{ $item['bulan'] }}"
                         data-current="{{ $item['selesai'] }}"
                         data-total="{{ $item['total'] }}">
 
@@ -41,13 +41,11 @@
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                    </div>
+                    </a>
                 </div>
             @endforeach
         </div>
     </div>
-
-
 @endsection
 
 @include('dashboard.script-gradient-box')

@@ -45,7 +45,8 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['role:1', 'password.expiry'])->group(function () {
-    Route::get('/qa/dashboard', [QaController::class, 'index']);
+    Route::get('/qa/dashboard', [QaController::class, 'index'])->name('qa.dashboard');
+    Route::get('/qa/dashboard/detail', [QaController::class, 'detail'])->name('qa.dashboard.detail');
 
     // informasi anggota
     Route::get('/informasi_anggota', [InformasiAnggotaController::class, 'index'])->name('informasi_anggota');

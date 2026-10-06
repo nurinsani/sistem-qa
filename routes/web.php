@@ -34,6 +34,7 @@ use App\Http\Controllers\RekapMobcol\OmzetController;
 use App\Http\Controllers\RekapMobcol\PelunasanController;
 use App\Http\Controllers\RekapMobcol\LimaController;
 use App\Http\Controllers\RekapMobcol\LebaranController;
+use App\Http\Controllers\RekapMobcol\BuktiSetorController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -131,6 +132,8 @@ Route::middleware(['role:1', 'password.expiry'])->group(function () {
     Route::get('/rekap-mobcol/5-persen/export', [LimaController::class, 'export'])->name('rekap-mobcol.lima.export');
     Route::get('/rekap-mobcol/lebaran', [LebaranController::class, 'index'])->name('rekap-mobcol.lebaran.index');
     Route::get('/rekap-mobcol/lebaran/export', [LebaranController::class, 'export'])->name('rekap-mobcol.lebaran.export');
+    Route::get('/rekap-mobcol/bukti-setor', [BuktiSetorController::class, 'index'])->name('rekap-mobcol.bukti-setor.index');
+    Route::get('/rekap-mobcol/bukti-setor/export', [BuktiSetorController::class, 'export'])->name('rekap-mobcol.bukti-setor.export');
 });
 
 Route::middleware(['role:2', 'password.expiry'])->group(function () {

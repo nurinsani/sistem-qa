@@ -28,7 +28,7 @@
                         <div class="col-md-3">
                             <div class="form-group mb-md-0">
                                 <label for="filter_tanggal">Tanggal:</label>
-                                <input type="date" id="filter_tanggal" name="tanggal" class="form-control">
+                                <input type="date" id="filter_tanggal" name="tanggal" class="form-control" value="{{ date('Y-m-d', strtotime('-1 day')) }}">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -38,7 +38,7 @@
                                     style="width: 100%;">
                                     <option value="">-- Semua Unit --</option>
                                     @foreach ($units as $u)
-                                        <option value="{{ $u->kode_branch }}">{{ $u->kode_branch }} - {{ $u->unit }}
+                                        <option value="{{ $u->kode_branch }}" {{ $u->kode_branch == '001' ? 'selected' : '' }}>{{ $u->kode_branch }} - {{ $u->unit }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -78,8 +78,6 @@
                                 <th>AO</th>
                                 <th>CIF</th>
                                 <th>NAMA</th>
-                                <th>PLAFOND</th>
-                                <th>OS</th>
                                 <th>TWM</th>
                                 <th>POKOK</th>
                                 <th>WAJIB</th>
@@ -87,7 +85,6 @@
                                 <th>PB</th>
                                 <th>TAGIHAN</th>
                                 <th>NYATA</th>
-                                <th>OMZET</th>
                                 <th>STATUS TRANSAKSI</th>
                             </tr>
                         </thead>
@@ -117,23 +114,20 @@
                 },
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center' },
-                    { data: 'tgl_tagih', name: 'lebaran.tgl_tagih' },
-                    { data: 'nama_kel', name: 'kelompok.nama_kel' },
-                    { data: 'code_kel', name: 'kelompok.code_kel' },
-                    { data: 'nama_ao', name: 'ao.nama_ao' },
-                    { data: 'cif', name: 'lebaran.cif' },
-                    { data: 'nama', name: 'data_loan_report.nama' },
-                    { data: 'Plafond', name: 'data_loan_report.Plafond', render: $.fn.dataTable.render.number(',', '.', 0, '') },
-                    { data: 'Os', name: 'data_loan_report.Os', render: $.fn.dataTable.render.number(',', '.', 0, '') },
-                    { data: 'twm', name: 'data_loan_report.twm', render: $.fn.dataTable.render.number(',', '.', 0, '') },
-                    { data: 'pokok', name: 'data_loan_report.pokok', render: $.fn.dataTable.render.number(',', '.', 0, '') },
-                    { data: 'sim_wajib', name: 'data_loan_report.sim_wajib', render: $.fn.dataTable.render.number(',', '.', 0, '') },
-                    { data: 'run_tenor', name: 'data_loan_report.run_tenor' },
-                    { data: 'tenor', name: 'data_loan_report.tenor' },
-                    { data: 'angsuran', name: 'data_loan_report.angsuran', render: $.fn.dataTable.render.number(',', '.', 0, '') },
-                    { data: 'nyata_setor', name: 'lebaran.nominal', render: $.fn.dataTable.render.number(',', '.', 0, '') },
-                    { data: 'omzet', name: 'omzet', render: $.fn.dataTable.render.number(',', '.', 0, ''), orderable: false, searchable: false },
-                    { data: 'status_trans', name: 'lebaran.status_trans' }
+                    { data: 'tgl_tagih', name: 'tgl_tagih', className: 'text-center', defaultContent: '' },
+                    { data: 'nama_kel', name: 'nama_kel', defaultContent: '' },
+                    { data: 'kode_kel', name: 'kode_kel', defaultContent: '' },
+                    { data: 'nama_ao', name: 'nama_ao', defaultContent: '' },
+                    { data: 'cif', name: 'cif', defaultContent: '' },
+                    { data: 'nama', name: 'nama', defaultContent: '' },
+                    { data: 'twm', name: 'twm', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
+                    { data: 'simpanan_pokok', name: 'simpanan_pokok', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
+                    { data: 'simpanan_wajib', name: 'simpanan_wajib', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
+                    { data: 'ke', name: 'ke', className: 'text-center', defaultContent: '' },
+                    { data: 'pb', name: 'pb', className: 'text-center', defaultContent: '' },
+                    { data: 'bulat', name: 'bulat', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
+                    { data: 'nominal', name: 'nominal', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
+                    { data: 'status_trans', name: 'status_trans', className: 'text-center', defaultContent: '' }
                 ],
                 pageLength: 10,
                 lengthMenu: [
@@ -161,8 +155,8 @@
             });
 
             $('#btn-reset').click(function() {
-                $('#filter_tanggal').val('');
-                $('#filter_kode_branch').val('').trigger('change');
+                $('#filter_tanggal').val("{{ date('Y-m-d', strtotime('-1 day')) }}");
+                $('#filter_kode_branch').val('001').trigger('change');
                 table.draw();
             });
         });

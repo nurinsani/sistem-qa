@@ -26,8 +26,11 @@ class BuktiSetorController extends Controller
                     'bukti_setor.image'
                 ]);
 
-            if ($request->filled('tanggal')) {
-                $query->whereDate('bukti_setor.tgl_setor', $request->tanggal);
+            $tanggal = $request->filled('tanggal') ? $request->tanggal : date('Y-m-d', strtotime('-1 day'));
+            $query->whereDate('bukti_setor.tgl_setor', $tanggal);
+
+            if ($request->filled('cao')) {
+                $query->where('bukti_setor.cao', $request->cao);
             }
 
             return DataTables::of($query)
@@ -51,14 +54,20 @@ class BuktiSetorController extends Controller
             ->orderBy('order')
             ->get();
 
+        $aoList = DB::table('ao')
+            ->select('cao', 'nama_ao')
+            ->orderBy('nama_ao')
+            ->get();
+
         return view('rekap-mobcol.bukti-setor.index', [
-            'title' => 'Rekap Bukti Setor',
-            'menus' => $menus
+            'title' => 'Bukti Setor',
+            'menus' => $menus,
+            'aoList' => $aoList
         ]);
     }
 
     public function export(Request $request)
     {
-        return Excel::download(new BuktiSetorExport($request->tanggal), 'rekap_bukti_setor.xlsx');
+        return Excel::download(new BuktiSetorExport($request->tanggal, $request->cao), 'rekap_bukti_setor.xlsx');
     }
 }

@@ -28,7 +28,8 @@
                         <div class="col-md-3">
                             <div class="form-group mb-md-0">
                                 <label for="filter_tanggal">Tanggal Tagih:</label>
-                                <input type="date" id="filter_tanggal" name="tanggal" class="form-control">
+                                <input type="date" id="filter_tanggal" name="tanggal" class="form-control"
+                                    value="{{ date('Y-m-d', strtotime('-1 day')) }}">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -38,7 +39,9 @@
                                     style="width: 100%;">
                                     <option value="">-- Semua Unit --</option>
                                     @foreach ($units as $u)
-                                        <option value="{{ $u->kode_branch }}">{{ $u->kode_branch }} - {{ $u->unit }}
+                                        <option value="{{ $u->kode_branch }}"
+                                            {{ $u->kode_branch == '001' ? 'selected' : '' }}>{{ $u->kode_branch }} -
+                                            {{ $u->unit }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -72,18 +75,20 @@
                         <thead class="bg-light">
                             <tr>
                                 <th>No</th>
+                                <th>TGL TAGIH</th>
                                 <th>CIF</th>
                                 <th>NAMA</th>
                                 <th>KODE KEL</th>
-                                <th>BULAT</th>
                                 <th>NAMA KEL</th>
-                                <th>CAO</th>
-                                <th>OS</th>
-                                <th>SALDO MARGIN</th>
-                                <th>STATUS TRANS</th>
-                                <th>NOMINAL</th>
-                                <th>STATUS APPROVE</th>
-                                <th>TGL TAGIH</th>
+                                <th>NAMA AO</th>
+                                <th>PB</th>
+                                <th>KE</th>
+                                <th>TWM</th>
+                                <th>SIMP POKOK</th>
+                                <th>SIMP WAJIB</th>
+                                <th>TAGIHAN</th>
+                                <th>NYATA</th>
+                                <th>STATUS TRANSAKSI</th>
                             </tr>
                         </thead>
                     </table>
@@ -118,6 +123,12 @@
                         className: 'text-center'
                     },
                     {
+                        data: 'tgl_tagih',
+                        name: 'tgl_tagih',
+                        className: 'text-center',
+                        defaultContent: ''
+                    },
+                    {
                         data: 'cif',
                         name: 'cif'
                     },
@@ -130,48 +141,61 @@
                         name: 'kode_kel'
                     },
                     {
-                        data: 'bulat',
-                        name: 'bulat',
-                        className: 'text-right'
-                    },
-                    {
                         data: 'nama_kel',
                         name: 'nama_kel'
                     },
                     {
-                        data: 'cao',
-                        name: 'cao'
+                        data: 'nama_ao',
+                        name: 'nama_ao'
                     },
                     {
-                        data: 'os',
-                        name: 'os',
-                        className: 'text-right'
+                        data: 'pb',
+                        name: 'pb',
+                        className: 'text-center',
+                        defaultContent: ''
                     },
                     {
-                        data: 'saldo_margin',
-                        name: 'saldo_margin',
-                        className: 'text-right'
+                        data: 'ke',
+                        name: 'ke',
+                        className: 'text-center',
+                        defaultContent: ''
                     },
                     {
-                        data: 'status_trans',
-                        name: 'status_trans',
-                        className: 'text-center'
+                        data: 'twm',
+                        name: 'twm',
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'simpanan_pokok',
+                        name: 'simpanan_pokok',
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'simpanan_wajib',
+                        name: 'simpanan_wajib',
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'bulat',
+                        name: 'bulat',
+                        className: 'text-right',
+                        defaultContent: ''
                     },
                     {
                         data: 'nominal',
                         name: 'nominal',
-                        className: 'text-right'
+                        className: 'text-right',
+                        defaultContent: ''
                     },
                     {
-                        data: 'status_approve',
-                        name: 'status_approve',
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'tgl_tagih',
-                        name: 'tgl_tagih',
-                        className: 'text-center'
-                    },
+                        data: 'status_trans',
+                        name: 'status_trans',
+                        className: 'text-center',
+                        defaultContent: ''
+                    }
                 ],
                 pageLength: 10,
                 lengthMenu: [
@@ -199,8 +223,8 @@
             });
 
             $('#btn-reset').click(function() {
-                $('#filter_tanggal').val('');
-                $('#filter_kode_branch').val('').trigger('change');
+                $('#filter_tanggal').val("{{ date('Y-m-d', strtotime('-1 day')) }}");
+                $('#filter_kode_branch').val('001').trigger('change');
                 table.draw();
             });
         });

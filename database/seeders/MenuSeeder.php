@@ -247,12 +247,14 @@ class MenuSeeder extends Seeder
         ]);
 
         $subMenus = [
+            ['name' => 'Bukti Setor', 'url' => '/rekap-mobcol/bukti-setor'],
             ['name' => 'CS', 'url' => '/rekap-mobcol/cs'],
             ['name' => 'Omzet', 'url' => '/rekap-mobcol/omzet'],
             ['name' => 'Pelunasan', 'url' => '/rekap-mobcol/pelunasan'],
             ['name' => '5%', 'url' => '/rekap-mobcol/5-persen'],
             ['name' => 'Lebaran', 'url' => '/rekap-mobcol/lebaran'],
-            ['name' => 'Bukti Setor', 'url' => '/rekap-mobcol/bukti-setor'],
+            ['name' => 'Penarikan', 'url' => '/rekap-mobcol/penarikan'],
+            ['name' => 'Tunggakan', 'url' => '/rekap-mobcol/tunggakan'],
         ];
 
         foreach ($subMenus as $index => $subMenu) {

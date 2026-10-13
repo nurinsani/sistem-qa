@@ -36,6 +36,7 @@ use App\Http\Controllers\RekapMobcol\LimaController;
 use App\Http\Controllers\RekapMobcol\LebaranController;
 use App\Http\Controllers\RekapMobcol\BuktiSetorController;
 use App\Http\Controllers\RekapMobcol\PenarikanController;
+use App\Http\Controllers\RekapMobcol\TunggakanController as RekapTunggakanController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -138,6 +139,8 @@ Route::middleware(['role:1', 'password.expiry'])->group(function () {
     Route::get('/rekap-mobcol/penarikan/export', [PenarikanController::class, 'export'])->name('rekap-mobcol.penarikan.export');
     Route::get('/rekap-mobcol/bukti-setor', [BuktiSetorController::class, 'index'])->name('rekap-mobcol.bukti-setor.index');
     Route::get('/rekap-mobcol/bukti-setor/export', [BuktiSetorController::class, 'export'])->name('rekap-mobcol.bukti-setor.export');
+    Route::get('/rekap-mobcol/tunggakan', [RekapTunggakanController::class, 'index'])->name('rekap-mobcol.tunggakan.index');
+    Route::get('/rekap-mobcol/tunggakan/export', [RekapTunggakanController::class, 'export'])->name('rekap-mobcol.tunggakan.export');
 });
 
 Route::middleware(['role:2', 'password.expiry'])->group(function () {

@@ -28,7 +28,8 @@
                         <div class="col-md-3">
                             <div class="form-group mb-md-0">
                                 <label for="filter_tanggal">Tanggal:</label>
-                                <input type="date" id="filter_tanggal" name="tanggal" class="form-control" value="{{ date('Y-m-d', strtotime('-1 day')) }}">
+                                <input type="date" id="filter_tanggal" name="tanggal" class="form-control"
+                                    value="{{ date('Y-m-d', strtotime('-1 day')) }}">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -38,7 +39,9 @@
                                     style="width: 100%;">
                                     <option value="">-- Semua Unit --</option>
                                     @foreach ($units as $u)
-                                        <option value="{{ $u->kode_branch }}" {{ $u->kode_branch == '001' ? 'selected' : '' }}>{{ $u->kode_branch }} - {{ $u->unit }}
+                                        <option value="{{ $u->kode_branch }}"
+                                            {{ $u->kode_branch == '001' ? 'selected' : '' }}>{{ $u->kode_branch }} -
+                                            {{ $u->unit }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -68,7 +71,8 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="lebaranTable" class="table table-bordered table-striped table-hover text-sm" style="width:100%">
+                    <table id="lebaranTable" class="table table-bordered table-striped table-hover text-sm"
+                        style="width:100%">
                         <thead class="bg-light">
                             <tr>
                                 <th>NOMOR</th>
@@ -112,22 +116,103 @@
                         d.kode_branch = $('#filter_kode_branch').val();
                     }
                 },
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center' },
-                    { data: 'tgl_tagih', name: 'tgl_tagih', className: 'text-center', defaultContent: '' },
-                    { data: 'nama_kel', name: 'nama_kel', defaultContent: '' },
-                    { data: 'kode_kel', name: 'kode_kel', defaultContent: '' },
-                    { data: 'nama_ao', name: 'nama_ao', defaultContent: '' },
-                    { data: 'cif', name: 'cif', defaultContent: '' },
-                    { data: 'nama', name: 'nama', defaultContent: '' },
-                    { data: 'twm', name: 'twm', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
-                    { data: 'simpanan_pokok', name: 'simpanan_pokok', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
-                    { data: 'simpanan_wajib', name: 'simpanan_wajib', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
-                    { data: 'ke', name: 'ke', className: 'text-center', defaultContent: '' },
-                    { data: 'pb', name: 'pb', className: 'text-center', defaultContent: '' },
-                    { data: 'bulat', name: 'bulat', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
-                    { data: 'nominal', name: 'nominal', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'text-right', defaultContent: '' },
-                    { data: 'status_trans', name: 'status_trans', className: 'text-center', defaultContent: '' }
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'tgl_tagih',
+                        name: 'tgl_tagih',
+                        className: 'text-center',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'nama_kel',
+                        name: 'nama_kel',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'kode_kel',
+                        name: 'kode_kel',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'nama_ao',
+                        name: 'nama_ao',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'cif',
+                        name: 'cif',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'twm',
+                        name: 'twm',
+                        render: $.fn.dataTable.render.number(',', '.', 0, ''),
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'simpanan_pokok',
+                        name: 'simpanan_pokok',
+                        render: $.fn.dataTable.render.number(',', '.', 0, ''),
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'simpanan_wajib',
+                        name: 'simpanan_wajib',
+                        render: $.fn.dataTable.render.number(',', '.', 0, ''),
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'ke',
+                        name: 'ke',
+                        className: 'text-center',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'pb',
+                        name: 'pb',
+                        className: 'text-center',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'bulat',
+                        name: 'bulat',
+                        render: $.fn.dataTable.render.number(',', '.', 0, ''),
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'nominal',
+                        name: 'nominal',
+                        render: $.fn.dataTable.render.number(',', '.', 0, ''),
+                        className: 'text-right',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'status_trans',
+                        name: 'status_trans',
+                        className: 'text-center',
+                        render: function(data, type, row) {
+                            if (!data || $.trim(data) === '') {
+                                return '0';
+                            }
+                            return data;
+                        },
+                        defaultContent: '0'
+                    }
                 ],
                 pageLength: 10,
                 lengthMenu: [

@@ -11,8 +11,53 @@ use App\Exports\BuktiSetorExport;
 
 class BuktiSetorController extends Controller
 {
+    /**
+     * Cek apakah waktu saat ini berada dalam jam akses 12.00 - 14.00 WIB
+     */
+    private function isAccessAllowed(): bool
+    {
+        $now = now('Asia/Jakarta');
+        $start = $now->copy()->setTime(12, 0, 0);
+        $end = $now->copy()->setTime(14, 0, 0);
+
+        return $now->between($start, $end);
+    }
+
     public function index(Request $request)
     {
+        $isAllowed = $this->isAccessAllowed();
+        $currentTime = now('Asia/Jakarta')->format('H:i');
+
+        if (!$isAllowed) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => 'Menu Bukti Setor hanya dapat diakses antara pukul 12.00 s/d 14.00 WIB.',
+                    'data' => []
+                ], 403);
+            }
+
+            $roleId = \Illuminate\Support\Facades\Auth::user()->role_id;
+            $menus = \App\Models\Menu::whereNull('parent_id')
+                ->where(function ($query) use ($roleId) {
+                    $query->where('role_id', $roleId)
+                        ->orWhereNull('role_id');
+                })
+                ->with(['children' => function ($query) use ($roleId) {
+                    $query->where('role_id', $roleId)
+                        ->orWhereNull('role_id');
+                }])
+                ->orderBy('order')
+                ->get();
+
+            return view('rekap-mobcol.bukti-setor.index', [
+                'title' => 'Bukti Setor',
+                'menus' => $menus,
+                'aoList' => collect([]),
+                'isAllowed' => false,
+                'currentTime' => $currentTime
+            ]);
+        }
+
         if ($request->ajax()) {
             $query = DB::table('bukti_setor')
                 ->leftJoin('ao', 'bukti_setor.cao', '=', 'ao.cao')
@@ -62,12 +107,19 @@ class BuktiSetorController extends Controller
         return view('rekap-mobcol.bukti-setor.index', [
             'title' => 'Bukti Setor',
             'menus' => $menus,
-            'aoList' => $aoList
+            'aoList' => $aoList,
+            'isAllowed' => true,
+            'currentTime' => $currentTime
         ]);
     }
 
     public function export(Request $request)
     {
+        if (!$this->isAccessAllowed()) {
+            return redirect()->route('rekap-mobcol.bukti-setor.index')
+                ->with('error', 'Export Bukti Setor hanya dapat dilakukan antara pukul 12.00 s/d 14.00 WIB.');
+        }
+
         return Excel::download(new BuktiSetorExport($request->tanggal, $request->cao), 'rekap_bukti_setor.xlsx');
     }
 }

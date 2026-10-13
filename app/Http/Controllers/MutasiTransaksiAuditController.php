@@ -160,6 +160,7 @@ class MutasiTransaksiAuditController extends Controller
                     return $badges[$status] ?? '<span class="badge badge-info px-2 py-1">' . strtoupper($status ?: '-') . '</span>';
                 })
                 ->addColumn('aksi', function ($row) use ($prefix) {
+                    $samplingUrl = route($prefix . '.mutasi.transaksi.sampling', $row->id);
                     $statusUrl = route($prefix . '.mutasi.transaksi.update-status', $row->id);
                     $petugasUrl = route($prefix . '.mutasi.transaksi.update-petugas', $row->id);
                     $unitUrl = route($prefix . '.mutasi.transaksi.update-unit', $row->id);
@@ -173,12 +174,19 @@ class MutasiTransaksiAuditController extends Controller
                                 <i class="fas fa-cog mr-1"></i> Aksi
                             </button>
                             <div class="dropdown-menu dropdown-menu-right shadow border-0">
+                                <a class="dropdown-item btn-kelola-status-cif py-2 font-weight-bold text-primary" href="javascript:void(0)" 
+                                    data-id="' . $row->id . '" 
+                                    data-ref="' . $row->id_ref_sampling . '" 
+                                    data-unit="' . ($row->nama_unit ?? $row->unit) . '" 
+                                    data-url="' . $samplingUrl . '">
+                                    <i class="fas fa-tasks text-primary mr-2"></i> Ubah Status (Per CIF)
+                                </a>
                                 <a class="dropdown-item btn-ubah-status py-2" href="javascript:void(0)" 
                                     data-id="' . $row->id . '" 
                                     data-ref="' . $row->id_ref_sampling . '" 
                                     data-status="' . $row->status . '" 
                                     data-url="' . $statusUrl . '">
-                                    <i class="fas fa-sync-alt text-primary mr-2"></i> Ubah Status
+                                    <i class="fas fa-sync-alt text-secondary mr-2"></i> Ubah Status (Semua)
                                 </a>
                                 <a class="dropdown-item btn-ubah-petugas py-2" href="javascript:void(0)" 
                                     data-id="' . $row->id . '" 
@@ -223,6 +231,183 @@ class MutasiTransaksiAuditController extends Controller
         }
 
         abort(404);
+    }
+
+    /**
+     * Ambil daftar data sampling (CIF) berdasarkan ID / id_ref_sampling
+     */
+    public function getSampling($id)
+    {
+        $rencana = is_numeric($id) ? RencanaAudit::find($id) : null;
+        if (!$rencana) {
+            $rencana = RencanaAudit::where('id_ref_sampling', $id)->first();
+        }
+
+        if (!$rencana) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data transaksi audit tidak ditemukan',
+            ], 404);
+        }
+
+        $branch = Branch::where('kode_branch', $rencana->unit)->first();
+        $unitName = $branch ? ($branch->unit . ' - ' . $branch->area) : $rencana->unit;
+
+        $samplings = DataSampling::with(['kelompok:code_kel,nama_kel', 'ao:cao,nama_ao'])
+            ->where('id_ref_sampling', $rencana->id_ref_sampling)
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id'              => $item->id,
+                    'cif'             => $item->cif ?? '-',
+                    'nik'             => $item->nik ?? '-',
+                    'nama'            => $item->nama ?? '-',
+                    'nama_kel'        => $item->kelompok->nama_kel ?? '-',
+                    'nama_ao'         => $item->ao->nama_ao ?? '-',
+                    'status_sampling' => strtoupper($item->status_sampling ?? 'MEDIUM'),
+                    'status'          => strtolower($item->status ?? 'pending'),
+                ];
+            });
+
+        $counts = [
+            'total'     => $samplings->count(),
+            'pending'   => $samplings->where('status', 'pending')->count(),
+            'proses'    => $samplings->where('status', 'proses')->count(),
+            'tanggapan' => $samplings->where('status', 'tanggapan')->count(),
+            'evaluasi'  => $samplings->where('status', 'evaluasi')->count(),
+            'done'      => $samplings->whereIn('status', ['done', 'selesai'])->count(),
+        ];
+
+        return response()->json([
+            'success'         => true,
+            'id_ref_sampling' => $rencana->id_ref_sampling,
+            'unit'            => $unitName,
+            'status_rencana'  => strtolower($rencana->status ?? 'pending'),
+            'counts'          => $counts,
+            'data'            => $samplings,
+        ]);
+    }
+
+    /**
+     * Update status per sampling (per CIF) atau batch CIF
+     */
+    public function updateSamplingStatus(Request $request)
+    {
+        $request->validate([
+            'status' => 'required|in:proses,done,pending,tanggapan,evaluasi,selesai',
+            'id'     => 'nullable|exists:data_sampling,id',
+            'ids'    => 'nullable|array',
+            'ids.*'  => 'exists:data_sampling,id',
+        ], [
+            'status.required' => 'Status wajib dipilih',
+            'status.in'       => 'Pilihan status tidak valid',
+        ]);
+
+        $newStatus = strtolower($request->status);
+        $ids = [];
+
+        if ($request->filled('id')) {
+            $ids[] = $request->id;
+        } elseif ($request->filled('ids') && is_array($request->ids)) {
+            $ids = $request->ids;
+        }
+
+        if (empty($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada sampling yang dipilih',
+            ], 422);
+        }
+
+        $samplings = DataSampling::whereIn('id', $ids)->get();
+        if ($samplings->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data sampling tidak ditemukan',
+            ], 404);
+        }
+
+        $refSampling = $samplings->first()->id_ref_sampling;
+        $updatedCount = 0;
+
+        try {
+            DB::transaction(function () use ($samplings, $newStatus, $refSampling, &$updatedCount) {
+                foreach ($samplings as $sampling) {
+                    $oldStatus = strtolower($sampling->status ?? 'pending');
+                    if ($oldStatus !== $newStatus) {
+                        $sampling->update(['status' => $newStatus]);
+                        $updatedCount++;
+
+                        // Catat ke tabel log_mutasi_audit
+                        LogMutasiAudit::create([
+                            'id_ref_sampling' => $sampling->id_ref_sampling,
+                            'jenis_mutasi'    => 'status',
+                            'nilai_lama'      => 'CIF ' . ($sampling->cif ?? '-') . ': ' . strtoupper($oldStatus),
+                            'nilai_baru'      => 'CIF ' . ($sampling->cif ?? '-') . ': ' . strtoupper($newStatus),
+                            'diubah_oleh'     => Auth::id(),
+                        ]);
+                    }
+                }
+
+                // Sinkronisasi status rencana_audit induk
+                $this->syncRencanaAuditStatus($refSampling);
+            });
+
+            $msg = count($ids) === 1
+                ? 'Status CIF ' . ($samplings->first()->cif ?? '') . ' berhasil diubah menjadi ' . strtoupper($newStatus)
+                : 'Berhasil mengubah status ' . $updatedCount . ' data sampling menjadi ' . strtoupper($newStatus);
+
+            return response()->json([
+                'success'         => true,
+                'message'         => $msg,
+                'id_ref_sampling' => $refSampling,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengubah status sampling: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Helper sinkronisasi status rencana_audit induk berdasarkan status sampling
+     */
+    private function syncRencanaAuditStatus($refSampling)
+    {
+        $rencana = RencanaAudit::where('id_ref_sampling', $refSampling)->first();
+        if (!$rencana) {
+            return;
+        }
+
+        $statuses = DataSampling::where('id_ref_sampling', $refSampling)
+            ->pluck('status')
+            ->map(function ($s) {
+                return strtolower($s ?? 'pending');
+            });
+
+        if ($statuses->isEmpty()) {
+            return;
+        }
+
+        $allDone = $statuses->every(function ($s) {
+            return in_array($s, ['done', 'selesai']);
+        });
+
+        $allPending = $statuses->every(function ($s) {
+            return $s === 'pending';
+        });
+
+        if ($allDone) {
+            $parentStatus = 'done';
+        } elseif ($allPending) {
+            $parentStatus = 'pending';
+        } else {
+            $parentStatus = 'proses';
+        }
+
+        $rencana->update(['status' => $parentStatus]);
     }
 
     public function updateStatus(Request $request, $id)

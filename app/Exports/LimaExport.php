@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -21,66 +20,56 @@ class LimaExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        $query = DB::table('lima')
-            ->leftJoin('data_loan_report', function($join) {
-                $join->on('lima.cif', '=', DB::raw("REPLACE(data_loan_report.cif, '''', '')"));
-            })
-            ->leftJoin('kelompok', function($join) {
-                $join->on('kelompok.code_kel', '=', DB::raw("REPLACE(data_loan_report.code_kel, '''', '')"));
-            })
-            ->leftJoin('ao', 'lima.cao', '=', 'ao.cao')
-            ->select([
-                'lima.tgl_tagih',
-                'kelompok.nama_kel',
-                'kelompok.code_kel',
-                'ao.nama_ao',
-                'lima.cif',
-                'data_loan_report.nama',
-                'data_loan_report.Plafond',
-                'data_loan_report.Os',
-                'data_loan_report.twm',
-                'data_loan_report.pokok',
-                'data_loan_report.sim_wajib',
-                'data_loan_report.run_tenor',
-                'data_loan_report.tenor',
-                'data_loan_report.angsuran',
-                'lima.nominal as nyata_setor',
-                DB::raw('0 as omzet'),
-                'lima.status_trans'
-            ]);
-
-        if ($this->tanggal) {
-            $query->whereDate('lima.tgl_tagih', $this->tanggal);
-        }
-
+        $url = 'http://mobcoll.nurinsani.co.id/apimobcol/data_report_mobcoll.php?function=lima';
+        
         if ($this->kode_branch) {
-            $query->where('kelompok.code_unit', $this->kode_branch);
+            $url .= '&unit=' . urlencode($this->kode_branch);
+        }
+        
+        if ($this->tanggal) {
+            $url .= '&tgl_tagih=' . urlencode($this->tanggal);
         }
 
-        return $query->get();
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        $data = [];
+        if (!$error && $response) {
+            $decoded = json_decode($response, true);
+            if (is_array($decoded) && isset($decoded['data']) && is_array($decoded['data'])) {
+                $data = $decoded['data'];
+            } elseif (is_array($decoded)) {
+                $data = $decoded;
+            }
+        }
+
+        return collect($data);
     }
 
     public function map($row): array
     {
         return [
             ++$this->rowNumber,
-            $row->tgl_tagih,
-            $row->nama_kel,
-            $row->code_kel,
-            $row->nama_ao,
-            $row->cif,
-            $row->nama,
-            $row->Plafond,
-            $row->Os,
-            $row->twm,
-            $row->pokok,
-            $row->sim_wajib,
-            $row->run_tenor,
-            $row->tenor,
-            $row->angsuran,
-            $row->nyata_setor,
-            $row->omzet,
-            $row->status_trans,
+            $row['tgl_tagih'] ?? '',
+            $row['nama_kel'] ?? '',
+            $row['kode_kel'] ?? '',
+            $row['nama_ao'] ?? '',
+            $row['cif'] ?? '',
+            $row['nama'] ?? '',
+            $row['twm'] ?? '',
+            $row['simpanan_pokok'] ?? '',
+            $row['simpanan_wajib'] ?? '',
+            $row['ke'] ?? '',
+            $row['pb'] ?? '',
+            $row['bulat'] ?? '',
+            $row['nominal'] ?? '',
+            $row['status_trans'] ?? '',
         ];
     }
 
@@ -91,23 +80,20 @@ class LimaExport implements FromCollection, WithHeadings, WithMapping
             [],
             [
                 'NOMOR',
-                'Tgl Tagih',
+                'TGL TAGIH',
                 'KELOMPOK',
-                'KOde Kelompok',
+                'KODE KELOMPOK',
                 'AO',
                 'CIF',
                 'NAMA',
-                'Plafond',
-                'Os',
-                'twm',
-                'pokok',
-                'wajib',
+                'TWM',
+                'POKOK',
+                'WAJIB',
                 'KE',
                 'PB',
-                'Tagihan',
-                'Nyata',
-                'Omzet',
-                'status Transaksi'
+                'TAGIHAN',
+                'NYATA',
+                'STATUS TRANSAKSI'
             ]
         ];
     }

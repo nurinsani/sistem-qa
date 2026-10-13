@@ -10,11 +10,13 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 class BuktiSetorExport implements FromCollection, WithHeadings, WithMapping
 {
     protected $tanggal;
+    protected $cao;
     protected $rowNumber = 0;
 
-    public function __construct($tanggal = null)
+    public function __construct($tanggal = null, $cao = null)
     {
         $this->tanggal = $tanggal;
+        $this->cao = $cao;
     }
 
     public function collection()
@@ -31,8 +33,11 @@ class BuktiSetorExport implements FromCollection, WithHeadings, WithMapping
                 'bukti_setor.image'
             ]);
 
-        if ($this->tanggal) {
-            $query->whereDate('bukti_setor.tgl_setor', $this->tanggal);
+        $tgl = $this->tanggal ?: date('Y-m-d', strtotime('-1 day'));
+        $query->whereDate('bukti_setor.tgl_setor', $tgl);
+
+        if ($this->cao) {
+            $query->where('bukti_setor.cao', $this->cao);
         }
 
         return $query->get();

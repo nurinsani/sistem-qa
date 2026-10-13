@@ -14,19 +14,37 @@ class CsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = DB::table('cs')
-                ->leftJoin('kelompok', 'cs.kode_kel', '=', 'kelompok.code_kel')
-                ->select('cs.*');
-
-            if ($request->filled('tanggal')) {
-                $query->whereDate('cs.tgl_tagih', $request->tanggal);
-            }
+            $url = 'http://mobcoll.nurinsani.co.id/apimobcol/data_report_mobcoll.php?function=cs';
 
             if ($request->filled('kode_branch')) {
-                $query->where('kelompok.code_unit', $request->kode_branch);
+                $url .= '&unit=' . urlencode($request->kode_branch);
             }
 
-            return DataTables::of($query)
+            if ($request->filled('tanggal')) {
+                $url .= '&tgl_tagih=' . urlencode($request->tanggal);
+            }
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+            $response = curl_exec($ch);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            $data = [];
+            if (!$error && $response) {
+                $decoded = json_decode($response, true);
+                if (is_array($decoded) && isset($decoded['data']) && is_array($decoded['data'])) {
+                    $data = $decoded['data'];
+                } elseif (is_array($decoded)) {
+                    // Fallback jika response langsung berupa array data
+                    $data = $decoded;
+                }
+            }
+
+            return DataTables::of($data)
                 ->addIndexColumn()
                 ->make(true);
         }
@@ -53,7 +71,7 @@ class CsController extends Controller
             ->get();
 
         return view('rekap-mobcol.cs.index', [
-            'title' => 'Rekap CS',
+            'title' => 'CS',
             'menus' => $menus,
             'units' => $units
         ]);

@@ -14,43 +14,36 @@ class LimaController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = DB::table('lima')
-                ->leftJoin('data_loan_report', function ($join) {
-                    $join->on('lima.cif', '=', DB::raw("REPLACE(data_loan_report.cif, '''', '')"));
-                })
-                ->leftJoin('kelompok', function ($join) {
-                    $join->on('kelompok.code_kel', '=', DB::raw("REPLACE(data_loan_report.code_kel, '''', '')"));
-                })
-                ->leftJoin('ao', 'lima.cao', '=', 'ao.cao')
-                ->select([
-                    'lima.tgl_tagih',
-                    'kelompok.nama_kel',
-                    'kelompok.code_kel',
-                    'ao.nama_ao',
-                    'lima.cif',
-                    'data_loan_report.nama',
-                    'data_loan_report.Plafond',
-                    'data_loan_report.Os',
-                    'data_loan_report.twm',
-                    'data_loan_report.pokok',
-                    'data_loan_report.sim_wajib',
-                    'data_loan_report.run_tenor',
-                    'data_loan_report.tenor',
-                    'data_loan_report.angsuran',
-                    'lima.nominal as nyata_setor',
-                    DB::raw('0 as omzet'),
-                    'lima.status_trans'
-                ]);
-
-            if ($request->filled('tanggal')) {
-                $query->whereDate('lima.tgl_tagih', $request->tanggal);
-            }
-
+            $url = 'http://mobcoll.nurinsani.co.id/apimobcol/data_report_mobcoll.php?function=lima';
+            
             if ($request->filled('kode_branch')) {
-                $query->where('kelompok.code_unit', $request->kode_branch);
+                $url .= '&unit=' . urlencode($request->kode_branch);
+            }
+            
+            if ($request->filled('tanggal')) {
+                $url .= '&tgl_tagih=' . urlencode($request->tanggal);
             }
 
-            return DataTables::of($query)
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            
+            $response = curl_exec($ch);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            $data = [];
+            if (!$error && $response) {
+                $decoded = json_decode($response, true);
+                if (is_array($decoded) && isset($decoded['data']) && is_array($decoded['data'])) {
+                    $data = $decoded['data'];
+                } elseif (is_array($decoded)) {
+                    $data = $decoded;
+                }
+            }
+
+            return DataTables::of($data)
                 ->addIndexColumn()
                 ->make(true);
         }

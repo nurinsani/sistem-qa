@@ -202,6 +202,8 @@ Route::middleware(['role:2', 'password.expiry'])->group(function () {
     Route::get('/qal/mutasi', [MutasiTransaksiAuditController::class, 'index']);
     Route::get('/qal/mutasi-transaksi-audit', [MutasiTransaksiAuditController::class, 'index'])->name('qal.mutasi.transaksi.index');
     Route::get('/qal/mutasi-transaksi-audit/data', [MutasiTransaksiAuditController::class, 'getData'])->name('qal.mutasi.transaksi.data');
+    Route::get('/qal/mutasi-transaksi-audit/{id}/sampling', [MutasiTransaksiAuditController::class, 'getSampling'])->name('qal.mutasi.transaksi.sampling');
+    Route::put('/qal/mutasi-transaksi-audit/sampling/status', [MutasiTransaksiAuditController::class, 'updateSamplingStatus'])->name('qal.mutasi.transaksi.sampling.update-status');
     Route::put('/qal/mutasi-transaksi-audit/{id}/status', [MutasiTransaksiAuditController::class, 'updateStatus'])->name('qal.mutasi.transaksi.update-status');
     Route::put('/qal/mutasi-transaksi-audit/{id}/petugas', [MutasiTransaksiAuditController::class, 'updatePetugas'])->name('qal.mutasi.transaksi.update-petugas');
     Route::put('/qal/mutasi-transaksi-audit/{id}/unit', [MutasiTransaksiAuditController::class, 'updateUnit'])->name('qal.mutasi.transaksi.update-unit');
@@ -270,6 +272,8 @@ Route::middleware(['role:3', 'password.expiry'])->group(function () {
     // Mutasi Transaksi Audit Routes
     Route::get('/qam/mutasi-transaksi-audit', [MutasiTransaksiAuditController::class, 'index'])->name('qam.mutasi.transaksi.index');
     Route::get('/qam/mutasi-transaksi-audit/data', [MutasiTransaksiAuditController::class, 'getData'])->name('qam.mutasi.transaksi.data');
+    Route::get('/qam/mutasi-transaksi-audit/{id}/sampling', [MutasiTransaksiAuditController::class, 'getSampling'])->name('qam.mutasi.transaksi.sampling');
+    Route::put('/qam/mutasi-transaksi-audit/sampling/status', [MutasiTransaksiAuditController::class, 'updateSamplingStatus'])->name('qam.mutasi.transaksi.sampling.update-status');
     Route::put('/qam/mutasi-transaksi-audit/{id}/status', [MutasiTransaksiAuditController::class, 'updateStatus'])->name('qam.mutasi.transaksi.update-status');
     Route::put('/qam/mutasi-transaksi-audit/{id}/petugas', [MutasiTransaksiAuditController::class, 'updatePetugas'])->name('qam.mutasi.transaksi.update-petugas');
     Route::put('/qam/mutasi-transaksi-audit/{id}/unit', [MutasiTransaksiAuditController::class, 'updateUnit'])->name('qam.mutasi.transaksi.update-unit');

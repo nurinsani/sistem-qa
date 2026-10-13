@@ -21,11 +21,11 @@ class LebaranExport implements FromCollection, WithHeadings, WithMapping
     public function collection()
     {
         $url = 'http://mobcoll.nurinsani.co.id/apimobcol/data_report_mobcoll.php?function=lebaran';
-        
+
         if ($this->kode_branch) {
             $url .= '&unit=' . urlencode($this->kode_branch);
         }
-        
+
         if ($this->tanggal) {
             $url .= '&tgl_tagih=' . urlencode($this->tanggal);
         }
@@ -34,7 +34,7 @@ class LebaranExport implements FromCollection, WithHeadings, WithMapping
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        
+
         $response = curl_exec($ch);
         $error = curl_error($ch);
         curl_close($ch);
@@ -54,6 +54,11 @@ class LebaranExport implements FromCollection, WithHeadings, WithMapping
 
     public function map($row): array
     {
+        $statusTrans = $row['status_trans'] ?? null;
+        if (empty($statusTrans) || trim($statusTrans) === '') {
+            $statusTrans = '0';
+        }
+
         return [
             ++$this->rowNumber,
             $row['tgl_tagih'] ?? '',
@@ -69,7 +74,7 @@ class LebaranExport implements FromCollection, WithHeadings, WithMapping
             $row['pb'] ?? '',
             $row['bulat'] ?? '',
             $row['nominal'] ?? '',
-            $row['status_trans'] ?? '',
+            $statusTrans,
         ];
     }
 

@@ -26,25 +26,30 @@
                 flex-wrap: wrap;
                 gap: 5px;
             }
+
             .filter-actions .btn {
                 flex: 1 1 auto;
             }
+
             .dataTables_wrapper .dataTables_filter,
             .dataTables_wrapper .dataTables_length {
                 text-align: left !important;
                 float: none !important;
             }
+
             .dataTables_wrapper .dataTables_filter input {
                 width: 100% !important;
                 margin-left: 0 !important;
                 margin-top: 4px;
             }
         }
+
         #buktiSetorTable th,
         #buktiSetorTable td {
             white-space: nowrap;
             vertical-align: middle;
         }
+
         .img-preview-thumb {
             width: 45px;
             height: 45px;
@@ -59,72 +64,94 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="card card-outline card-success">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-filter mr-1"></i> Filter & Export</h3>
-            </div>
-            <div class="card-body">
-                <form action="{{ route('rekap-mobcol.bukti-setor.export') }}" method="GET" id="form-filter">
-                    <div class="row">
-                        <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
-                            <div class="form-group mb-md-0">
-                                <label for="filter_tanggal">Tanggal Setor:</label>
-                                <input type="date" id="filter_tanggal" name="tanggal" class="form-control"
-                                    value="{{ date('Y-m-d', strtotime('-1 day')) }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-6 mb-2 mb-md-0">
-                            <div class="form-group mb-md-0">
-                                <label for="filter_cao">AO:</label>
-                                <select id="filter_cao" name="cao" class="form-control select2" style="width: 100%;">
-                                    <option value="">-- Semua AO --</option>
-                                    @foreach ($aoList as $ao)
-                                        <option value="{{ $ao->cao }}">{{ $ao->cao }} - {{ $ao->nama_ao }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-5 d-flex align-items-end">
-                            <div class="form-group mb-0 w-100 filter-actions">
-                                <button type="button" id="btn-filter" class="btn btn-primary btn-sm mr-md-2">
-                                    <i class="fas fa-search mr-1"></i> Filter
-                                </button>
-                                <button type="button" id="btn-reset" class="btn btn-secondary btn-sm mr-md-2">
-                                    <i class="fas fa-undo mr-1"></i> Reset
-                                </button>
-                                <button type="submit" class="btn btn-success btn-sm">
-                                    <i class="fas fa-file-excel mr-1"></i> Export Excel
-                                </button>
-                            </div>
-                        </div>
+        @if (!($isAllowed ?? true))
+            <div class="card card-outline card-warning shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-clock fa-4x text-warning"></i>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="card card-outline card-success">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-receipt mr-1"></i> Data Bukti Setor</h3>
-            </div>
-            <div class="card-body p-2 p-md-3">
-                <div class="table-responsive">
-                    <table id="buktiSetorTable" class="table table-bordered table-striped table-hover text-sm"
-                        style="width:100%">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>NO</th>
-                                <th>TGL SETOR</th>
-                                <th>KODE AO</th>
-                                <th>NAMA AO</th>
-                                <th>BANK</th>
-                                <th>NOMINAL</th>
-                                <th>BUKTI SETOR</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <h4 class="font-weight-bold text-dark mb-2">Akses Menu Dibatasi</h4>
+                    <p class="text-muted mb-4" style="font-size: 1.05rem;">
+                        Menu <strong>Bukti Setor</strong> hanya dapat diakses pada jam <strong>12.00 WIB</strong> sampai jam
+                        <strong>14.00 WIB</strong>.<br>
+                        Waktu saat ini: <span
+                            class="badge badge-secondary px-2 py-1 font-size-14">{{ $currentTime ?? date('H:i') }}
+                            WIB</span>
+                    </p>
+                    <a href="{{ url('/') }}" class="btn btn-primary btn-sm px-3">
+                        <i class="fas fa-home mr-1"></i> Kembali ke Dashboard
+                    </a>
                 </div>
             </div>
-        </div>
+        @else
+            <div class="card card-outline card-success">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-filter mr-1"></i> Filter & Export</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('rekap-mobcol.bukti-setor.export') }}" method="GET" id="form-filter">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                                <div class="form-group mb-md-0">
+                                    <label for="filter_tanggal">Tanggal Setor:</label>
+                                    <input type="date" id="filter_tanggal" name="tanggal" class="form-control"
+                                        value="{{ date('Y-m-d', strtotime('-1 day')) }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-2 mb-md-0">
+                                <div class="form-group mb-md-0">
+                                    <label for="filter_cao">AO:</label>
+                                    <select id="filter_cao" name="cao" class="form-control select2"
+                                        style="width: 100%;">
+                                        <option value="">-- Semua AO --</option>
+                                        @foreach ($aoList as $ao)
+                                            <option value="{{ $ao->cao }}">{{ $ao->cao }} - {{ $ao->nama_ao }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-5 d-flex align-items-end">
+                                <div class="form-group mb-0 w-100 filter-actions">
+                                    <button type="button" id="btn-filter" class="btn btn-primary btn-sm mr-md-2">
+                                        <i class="fas fa-search mr-1"></i> Filter
+                                    </button>
+                                    <button type="button" id="btn-reset" class="btn btn-secondary btn-sm mr-md-2">
+                                        <i class="fas fa-undo mr-1"></i> Reset
+                                    </button>
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-file-excel mr-1"></i> Export Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card card-outline card-success">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-receipt mr-1"></i> Data Bukti Setor</h3>
+                </div>
+                <div class="card-body p-2 p-md-3">
+                    <div class="table-responsive">
+                        <table id="buktiSetorTable" class="table table-bordered table-striped table-hover text-sm"
+                            style="width:100%">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>NO</th>
+                                    <th>TGL SETOR</th>
+                                    <th>KODE AO</th>
+                                    <th>NAMA AO</th>
+                                    <th>BANK</th>
+                                    <th>NOMINAL</th>
+                                    <th>BUKTI SETOR</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
     </div>
 
     <!-- Modal Preview Gambar -->
@@ -146,14 +173,17 @@
                     <button type="button" id="btnDownloadImg" class="btn btn-success btn-sm w-100 w-sm-auto mb-2 mb-sm-0">
                         <i class="fas fa-download mr-1"></i> Download Gambar
                     </button>
-                    <a id="btnOpenNewTab" href="#" target="_blank" class="btn btn-primary btn-sm w-100 w-sm-auto mb-2 mb-sm-0 mr-sm-2">
+                    <a id="btnOpenNewTab" href="#" target="_blank"
+                        class="btn btn-primary btn-sm w-100 w-sm-auto mb-2 mb-sm-0 mr-sm-2">
                         <i class="fas fa-external-link-alt mr-1"></i> Buka di Tab Baru
                     </a>
-                    <button type="button" class="btn btn-secondary btn-sm w-100 w-sm-auto" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary btn-sm w-100 w-sm-auto"
+                        data-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
+    @endif
 @endsection
 
 @push('scripts')
@@ -214,7 +244,8 @@
                                 return '<span class="badge badge-secondary">Tidak ada gambar</span>';
                             }
 
-                            let imageUrl = 'http://mobcoll.nurinsani.co.id/apimobcol/uploads/' + data;
+                            let imageUrl = 'http://mobcoll.nurinsani.co.id/apimobcol/uploads/' +
+                                data;
                             return `
                                 <div class="d-inline-flex align-items-center justify-content-center">
                                     <a href="javascript:void(0)" class="btn-preview-img mr-2" data-img="${imageUrl}" data-filename="${data}" title="Lihat Bukti Setor">

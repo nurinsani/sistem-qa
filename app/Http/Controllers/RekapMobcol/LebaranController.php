@@ -45,6 +45,10 @@ class LebaranController extends Controller
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->editColumn('status_trans', function ($row) {
+                    $status = $row['status_trans'] ?? null;
+                    return (empty($status) || trim($status) === '') ? '0' : $status;
+                })
                 ->make(true);
         }
 

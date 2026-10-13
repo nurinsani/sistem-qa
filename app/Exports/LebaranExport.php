@@ -5,6 +5,7 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Illuminate\Support\Facades\DB;
 
 class LebaranExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -49,6 +50,27 @@ class LebaranExport implements FromCollection, WithHeadings, WithMapping
             }
         }
 
+        if (!empty($data)) {
+            $cifs = array_values(array_filter(array_unique(array_map('trim', array_column($data, 'cif')))));
+            $loans = [];
+            if (!empty($cifs)) {
+                $loanRows = DB::table('data_loan_mob')
+                    ->whereIn('cif', $cifs)
+                    ->select('cif', 'Plafond')
+                    ->get();
+
+                foreach ($loanRows as $loan) {
+                    $loans[strtoupper(trim($loan->cif))] = $loan->Plafond;
+                }
+            }
+
+            foreach ($data as &$row) {
+                $cif = isset($row['cif']) ? strtoupper(trim($row['cif'])) : null;
+                $row['plafond'] = ($cif && isset($loans[$cif])) ? (float) $loans[$cif] : 0;
+            }
+            unset($row);
+        }
+
         return collect($data);
     }
 
@@ -67,6 +89,7 @@ class LebaranExport implements FromCollection, WithHeadings, WithMapping
             $row['nama_ao'] ?? '',
             $row['cif'] ?? '',
             $row['nama'] ?? '',
+            $row['plafond'] ?? 0,
             $row['twm'] ?? '',
             $row['simpanan_pokok'] ?? '',
             $row['simpanan_wajib'] ?? '',
@@ -91,6 +114,7 @@ class LebaranExport implements FromCollection, WithHeadings, WithMapping
                 'AO',
                 'CIF',
                 'NAMA',
+                'PLAFOND',
                 'TWM',
                 'POKOK',
                 'WAJIB',

@@ -43,6 +43,27 @@ class LebaranController extends Controller
                 }
             }
 
+            if (!empty($data)) {
+                $cifs = array_values(array_filter(array_unique(array_map('trim', array_column($data, 'cif')))));
+                $loans = [];
+                if (!empty($cifs)) {
+                    $loanRows = DB::table('data_loan_mob')
+                        ->whereIn('cif', $cifs)
+                        ->select('cif', 'Plafond')
+                        ->get();
+
+                    foreach ($loanRows as $loan) {
+                        $loans[strtoupper(trim($loan->cif))] = $loan->Plafond;
+                    }
+                }
+
+                foreach ($data as &$row) {
+                    $cif = isset($row['cif']) ? strtoupper(trim($row['cif'])) : null;
+                    $row['plafond'] = ($cif && isset($loans[$cif])) ? (float) $loans[$cif] : 0;
+                }
+                unset($row);
+            }
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status_trans', function ($row) {

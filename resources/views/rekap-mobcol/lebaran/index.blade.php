@@ -82,6 +82,7 @@
                                 <th>AO</th>
                                 <th>CIF</th>
                                 <th>NAMA</th>
+                                <th>PLAFOND</th>
                                 <th>TWM</th>
                                 <th>POKOK</th>
                                 <th>WAJIB</th>
@@ -153,6 +154,13 @@
                         data: 'nama',
                         name: 'nama',
                         defaultContent: ''
+                    },
+                    {
+                        data: 'plafond',
+                        name: 'plafond',
+                        render: $.fn.dataTable.render.number(',', '.', 0, ''),
+                        className: 'text-right',
+                        defaultContent: 0
                     },
                     {
                         data: 'twm',
